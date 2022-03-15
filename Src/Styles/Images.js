@@ -10,6 +10,8 @@ const images = {
   notification: require('../Assets/Dashboard/notification.png'),
   userPic: require('../Assets/Dashboard/userPic.png'),
   members: require('../Assets/Dashboard/members.png'),
+  task: require('../Assets/Dashboard/task.png'),
+  message: require('../Assets/Dashboard/message.png'),
 
 };
 export default images;
