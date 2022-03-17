@@ -75,7 +75,7 @@ class Dashboard extends Component {
       ]
     };
   }
-  categoriesList = (item, index) => {
+  categoriesList = (item, index, props) => {
     return (
       <>
         <TouchableOpacity style={Styles.categoryContent}>
@@ -109,7 +109,7 @@ class Dashboard extends Component {
                 {/* My Task */}
                 <View style={Styles.mainContent}>
                   <Text style={Styles.taskText}>{"My tasks"}</Text>
-                  <TouchableOpacity style={Styles.viewAllButton}>
+                  <TouchableOpacity style={Styles.viewAllButton} onPress={() => { this.props.navigation.navigate("Profile") }}>
                     <Text style={Styles.viewAllText}>{"View all"}</Text>
                   </TouchableOpacity>
                 </View>

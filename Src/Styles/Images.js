@@ -13,5 +13,14 @@ const images = {
   task: require('../Assets/Dashboard/task.png'),
   message: require('../Assets/Dashboard/message.png'),
 
+  //Profile Assests
+  leftArrow: require('../Assets/Profile/Stroke.png'),
+  rightArrow: require('../Assets/Profile/Strokeright.png'),
+  contacts : require('../Assets/Profile/Contacts.png'),
+  write: require('../Assets/Profile/Write.png'),
+  logOut: require('../Assets/Profile/Logout.png'),
+  Setting: require('../Assets/Profile/Setting.png'),
+  User: require('../Assets/Profile/user.png')
+
 };
 export default images;

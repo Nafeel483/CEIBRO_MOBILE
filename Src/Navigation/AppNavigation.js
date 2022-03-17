@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { enableScreens } from 'react-native-screens';
 import Login from '../Screens/Authentication/Login';
 import Dashboard from '../Screens/Dashboard';
+import Profile from '../Screens/Profile';
 
 
 enableScreens();
@@ -34,6 +35,13 @@ export default function RootNavigator() {
             }
           ]} />
         <Stack.Screen name='Dashboard' component={Dashboard} options={() => options}
+          sharedElementsConfig={(props) => [
+            {
+              id: 'Dashboard', animation: 'fade-in'
+            }
+          ]}
+        />
+        <Stack.Screen name='Profile' component={Profile} options={() => options}
           sharedElementsConfig={(props) => [
             {
               id: 'Dashboard', animation: 'fade-in'
