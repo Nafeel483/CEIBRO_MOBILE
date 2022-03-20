@@ -10,7 +10,9 @@ const colors = {
   darkGrey: "#7D7E80",
   lightGrey: "#BDC3C7",
   parrotGreen: "#55BCB3",
-  mediumGrey: "#605C5C"
+  mediumGrey: "#605C5C",
+  borderColor: "#DEE2E6",
+  green: "#009900"
 };
 
 export default colors;

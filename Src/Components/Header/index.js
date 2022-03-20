@@ -51,8 +51,12 @@ const Header = (props) => {
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity>
-              <Image source={Images.userPic} style={Styles.userPicImage}/>
+            <TouchableOpacity onPress={() => {
+              props.navigation.navigate('ProfileStack', {
+                screen: 'Profile',
+              })
+            }}>
+              <Image source={Images.userPic} style={Styles.userPicImage} />
             </TouchableOpacity>
 
 

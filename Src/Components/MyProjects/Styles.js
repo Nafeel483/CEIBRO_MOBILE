@@ -25,15 +25,43 @@ const styles = StyleSheet.create({
     marginTop: hp(1.5),
     marginBottom: hp(1.5)
   },
+  headerImage: {
+    width: '100%',
+    alignSelf: 'center',
+    height: hp(14)
+  },
   headerWrapper: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    width: '90%',
+    alignSelf: 'center',
+    marginTop: hp(1.5),
   },
   mainCenterWrapper: {
     flexDirection: 'row',
     marginTop: hp(1)
   },
   taskContainerName: {
-    borderRadius: 6
+    borderRadius: 6,
+    backgroundColor: Colors.White
+  },
+  taskName: {
+    margin: hp(1),
+    fontSize: hp(1.5),
+    fontFamily: "Inter",
+    fontWeight: '500',
+    color: Colors.Black,
+  },
+  dateText: {
+    fontWeight: '500',
+    fontFamily: "Inter",
+    fontSize: hp(1.5),
+    color: Colors.Black,
+    marginTop: hp(1),
+    marginLeft: hp(2)
+  },
+  mainCenterWrapper: {
+    flexDirection: 'row',
+    marginTop: hp(1)
   },
   taskName: {
     margin: hp(1),
@@ -65,67 +93,12 @@ const styles = StyleSheet.create({
   titleText: {
     marginTop: hp(1.3),
     fontSize: hp(2),
-    fontWeight: '500',
-    color: Colors.blue,
-    fontFamily: "Inter",
-  },
-  bottomWrapContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    alignSelf: 'center',
-    marginTop: hp(3),
-    justifyContent: 'space-between'
-  },
-
-  taskImage: {
-    width: hp(1.5),
-    height: hp(1.5)
-  },
-  subtastText: {
-    fontSize: hp(1.3),
-    fontWeight: "500",
-    color: Colors.Black,
-    fontFamily: "Inter",
-    marginLeft: hp(1)
-  },
-  messageCount: {
-    fontSize: hp(1.3),
-    fontWeight: "500",
-    color: Colors.Black,
-    fontFamily: "Inter",
-    marginLeft: hp(0.5)
-  },
-  categoryCircle: {
-    width: hp(1.7),
-    height: hp(1.7),
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: hp(1.7),
-    marginLeft: hp(0.5)
-  },
-  counterText: {
-    fontSize: hp(1),
-    fontWeight: '500',
-    fontFamily: "Inter",
-  },
-  messageImage: {
-    width: hp(1.6),
-    height: hp(1.6)
-  },
-  bottomWrapContainer1: {
-    flexDirection: 'row',
-    width: '100%',
-    alignSelf: 'center',
-    marginTop: hp(1.5),
-    justifyContent: 'space-between'
-  },
-  lastTitleText: {
-    fontSize: hp(1.7),
     fontWeight: '700',
     color: Colors.Black,
     fontFamily: "Inter",
   },
   mapText: {
+    marginTop: hp(1),
     fontSize: hp(1.7),
     fontWeight: '500',
     color: Colors.blue,
@@ -137,6 +110,25 @@ const styles = StyleSheet.create({
     height: hp(0.1),
     width: '100%',
     alignSelf: 'center'
-  }
+  },
+  bottomWrapContainer1: {
+    flexDirection: 'row',
+    width: '100%',
+    alignSelf: 'center',
+    marginTop: hp(1.5),
+    marginBottom: hp(0.5),
+    justifyContent: 'space-between'
+  },
+  messageImage: {
+    width: hp(1.6),
+    height: hp(1.6)
+  },
+  messageCount: {
+    fontSize: hp(1.3),
+    fontWeight: "500",
+    color: Colors.Black,
+    fontFamily: "Inter",
+    marginLeft: hp(0.5)
+  },
 });
 export default styles;

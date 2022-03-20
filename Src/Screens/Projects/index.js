@@ -8,7 +8,7 @@ import {
   TextInput,
   ScrollView,
   StatusBar,
-  FlatList,
+  FlatList
 } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import SafeAreaView from 'react-native-safe-area-view';
@@ -17,12 +17,11 @@ import Styles from './Styles';
 import Images from '../../Styles/Images';
 import Colors from '../../Styles/Colors';
 import Header from '../../Components/Header';
-import MyTask from '../../Components/MyTask';
 import MyProjects from '../../Components/MyProjects';
 import ButtonModel from '../../Components/ButtonModel';
 
 
-class Dashboard extends Component {
+class Projects extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -64,17 +63,6 @@ class Dashboard extends Component {
           textFill: Colors.White,
         },
       ],
-      allTaskList: [
-        {
-          name: 'Draft'
-        },
-        {
-          name: 'Submitted'
-        },
-        {
-          name: 'Rejected'
-        },
-      ],
       allProjectList: [
         {
           name: 'Draft',
@@ -89,6 +77,7 @@ class Dashboard extends Component {
           image: Images.project1
         },
       ],
+      listColumn: 1,
       actions: [
         {
           label: "New chat",
@@ -106,7 +95,6 @@ class Dashboard extends Component {
         },
       ],
       isMenuOpen: false,
-
     };
   }
   handleMenuToggle = () => {
@@ -116,7 +104,6 @@ class Dashboard extends Component {
   handleItemPress = (item, index) => {
     console.log("_____Nafeel:::::", item, index)
   }
-
 
   categoriesList = (item, index) => {
     return (
@@ -131,41 +118,41 @@ class Dashboard extends Component {
     )
   }
 
-  mytaskList = (item, index) => {
-    return (
-      <>
-        <MyTask item={item} key={index} content={"Dashboard"} />
-      </>
-    )
-  }
+
   myProjectList = (item, index) => {
     return (
       <>
-        <MyProjects item={item} key={index} content={"Dashboard"} />
+        <View style={Styles.myListProject}>
+          <MyProjects item={item} key={index} content={"Projects"} />
+        </View>
       </>
     )
   }
-
-
   render() {
-    const { categoryList, allTaskList, allProjectList, actions, isMenuOpen } = this.state
+    const { categoryList, allProjectList, listColumn, actions, isMenuOpen } = this.state
     return (
       <>
         <SafeAreaProvider>
           <SafeAreaView style={Styles.safeHeadContainer} />
-          <SafeAreaView style={Styles.safeAreaContainer} >
+          <SafeAreaView style={Styles.safeAreaContainer} forceInset={{ bottom: 'never' }}>
             <StatusBar barStyle="dark-content" />
             <Header navigation={this.props.navigation} />
-
+            <View style={Styles.headerContainer}>
+              <View style={Styles.seperator} />
+              <View style={Styles.mainContent}>
+                <Text style={Styles.taskText}>{"Projects"}</Text>
+                <View style={{ flexDirection: 'row' }}>
+                  <TouchableOpacity>
+                    <Image source={Images.search} style={Styles.searchStyle} />
+                  </TouchableOpacity>
+                  <TouchableOpacity>
+                    <Image source={Images.filter} style={Styles.filterImage} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
             <ScrollView showsVerticalScrollIndicator={false}>
               <View style={Styles.scrollContent}>
-                {/* My Task */}
-                <View style={Styles.mainContent}>
-                  <Text style={Styles.taskText}>{"My tasks"}</Text>
-                  <TouchableOpacity style={Styles.viewAllButton}>
-                    <Text style={Styles.viewAllText}>{"View all"}</Text>
-                  </TouchableOpacity>
-                </View>
                 <View style={Styles.allProductList}>
                   <FlatList
                     horizontal={true}
@@ -176,51 +163,19 @@ class Dashboard extends Component {
                     renderItem={({ item, index }) => this.categoriesList(item, index)}
                   />
                 </View>
-
-                <View style={Styles.allProductList}>
+                <View style={Styles.allProductList1}>
                   <FlatList
-                    horizontal={true}
-                    scrollEnabled={true}
-                    showsHorizontalScrollIndicator={false}
-                    data={allTaskList}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item, index }) => this.mytaskList(item, index)}
-                  />
-                </View>
-                {/* My Task End*/}
-                {/* My Projects */}
-                <View style={Styles.mainContent1}>
-                  <Text style={Styles.taskText}>{"My projects"}</Text>
-                  <TouchableOpacity style={Styles.viewAllButton}>
-                    <Text style={Styles.viewAllText}>{"View all"}</Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={Styles.allProductList}>
-                  <FlatList
-                    horizontal={true}
-                    scrollEnabled={true}
-                    showsHorizontalScrollIndicator={false}
-                    data={categoryList}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item, index }) => this.categoriesList(item, index)}
-                  />
-                </View>
-                <View style={Styles.allProductList}>
-                  <FlatList
-                    horizontal={true}
-                    scrollEnabled={true}
-                    showsHorizontalScrollIndicator={false}
+                    key={listColumn}
+                    horizontal={false}
+                    scrollEnabled={false}
+                    numColumns={listColumn}
                     data={allProjectList}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item, index }) => this.myProjectList(item, index)}
                   />
                 </View>
-
-
               </View>
             </ScrollView>
-
-            
             {
               isMenuOpen == true ?
                 <ButtonModel
@@ -232,7 +187,6 @@ class Dashboard extends Component {
                   <Image source={Images.plus} style={Styles.filterStyle} />
                 </TouchableOpacity>
             }
-
           </SafeAreaView>
         </SafeAreaProvider>
 
@@ -240,4 +194,4 @@ class Dashboard extends Component {
     );
   }
 }
-export default Dashboard;
+export default Projects;

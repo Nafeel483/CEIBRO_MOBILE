@@ -114,8 +114,12 @@ class Login extends Component {
                 </View>
 
                 <View style={Styles.loginButtonContainer}>
-                  <TouchableOpacity onPress={() => { this.props.navigation.navigate("Dashboard") }}
-                  style={Styles.checkOutButton}>
+                  <TouchableOpacity onPress={() => {
+                    this.props.navigation.navigate('BottomTabView', {
+                      screen: 'Dashboard',
+                    })
+                  }}
+                    style={Styles.checkOutButton}>
                     <Text style={Styles.checkOutText}>{"Login"}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity>

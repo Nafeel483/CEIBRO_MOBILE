@@ -3,15 +3,8 @@ import {
   View,
   Image,
   Text,
-  ImageBackground,
   TouchableOpacity,
-  TextInput,
-  ScrollView,
-  StatusBar,
-  FlatList
 } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import SafeAreaView from 'react-native-safe-area-view';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Styles from './Styles';
 import Images from '../../Styles/Images';
@@ -19,7 +12,7 @@ import Colors from '../../Styles/Colors';
 
 const MyTask = (props) => {
 
-  const { item, key } = props
+  const { item, key, content } = props
 
   const [counterList, setCounterList] = useState([
     {
@@ -56,7 +49,7 @@ const MyTask = (props) => {
 
   return (
     <>
-      <View style={[Styles.taskContainer, {
+      <TouchableOpacity style={[content == "Tasks" ? Styles.taskProjectContainer :Styles.taskContainer, {
         borderColor: item.name == 'Draft' ? Colors.darkGrey : item.name == 'Rejected' ? Colors.red :
           item.name == 'Ongoing' ? Colors.golden : item.name == 'Approved' ? Colors.blue :
             item.name == 'Done' ? Colors.lightGrey : Colors.parrotGreen
@@ -119,7 +112,7 @@ const MyTask = (props) => {
             </View>
           </View>
 
-          <View style={Styles.seperator}/>
+          <View style={Styles.seperator} />
 
           <View style={Styles.bottomWrapContainer1}>
             <Text style={Styles.lastTitleText}>{"Vesse-12"}</Text>
@@ -127,7 +120,7 @@ const MyTask = (props) => {
           </View>
 
         </View>
-      </View>
+      </TouchableOpacity>
 
     </>
   )

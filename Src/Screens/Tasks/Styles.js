@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
     width: widthScreen / 1.12,
     alignSelf: 'center',
     marginTop: hp(2),
+    marginBottom: hp(2),
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
@@ -30,7 +31,7 @@ const styles = StyleSheet.create({
     marginBottom: hp(3)
   },
   taskText: {
-    fontSize: hp(3),
+    fontSize: hp(2.7),
     fontWeight: '500',
     color: Colors.Black,
     fontFamily: "Inter",
@@ -53,8 +54,10 @@ const styles = StyleSheet.create({
   },
   allProductList: {
     marginTop: hp(3),
-    // marginBottom: hp(2),
     marginLeft: hp(2.6)
+  },
+  allProductList1: {
+    marginTop: hp(3),
   },
   categoryContent: {
     flexDirection: 'row',
@@ -87,5 +90,29 @@ const styles = StyleSheet.create({
     bottom: hp(3),
     right: hp(3),
   },
+  headerContainer: {
+    backgroundColor: Colors.White
+  },
+  seperator: {
+    marginTop: hp(0.5),
+    backgroundColor: "#ECF0F1",
+    height: hp(0.1),
+    width: '100%',
+    alignSelf: 'center'
+  },
+  searchStyle: {
+    width: hp(2.5),
+    height: hp(2.5),
+    marginTop: hp(0.8)
+  },
+  filterImage: {
+    width: hp(2.5),
+    height: hp(2.5),
+    marginTop: hp(0.8),
+    marginLeft: hp(4)
+  },
+  myListProject: {
+    marginTop: hp(2)
+  }
 });
 export default styles;
