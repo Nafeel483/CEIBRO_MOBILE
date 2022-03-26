@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     backgroundColor: Colors.White
   },
-  taskName: {
+  taskName1: {
     margin: hp(1),
     fontSize: hp(1.5),
     fontFamily: "Inter",

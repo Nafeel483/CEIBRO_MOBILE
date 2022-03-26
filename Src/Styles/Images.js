@@ -28,6 +28,8 @@ const images = {
   popProject: require('../Assets/Projects/popProject.png'),
   popTask: require('../Assets/Projects/popTask.png'),
   closeIcon: require('../Assets/Projects/closeIcon.png'),
+  reject: require('../Assets/Projects/reject.png'),
+  accept: require('../Assets/Projects/accept.png'),
 
 
   // Profile Assets
@@ -37,6 +39,8 @@ const images = {
   contacts: require('../Assets/Profile/contacts.png'),
   write: require('../Assets/Profile/write.png'),
   leftArrow: require('../Assets/Profile/leftArrow.png'),
+  gallery: require('../Assets/Profile/gallery.png'),
+  pin: require('../Assets/Profile/pin.png'),
 
   // Chat Assets
   favourite: require('../Assets/Chat/favourite.png'),
@@ -69,6 +73,9 @@ const images = {
   forwardMessage: require('../Assets/Chat/forwardMessage.png'),
   addTask: require('../Assets/Chat/addTask.png'),
   Download: require('../Assets/Chat/Download.png'),
+  calender: require('../Assets/Chat/calender.png'),
+  setAdmin: require('../Assets/Chat/setAdmin.png'),
+
 
 };
 export default images;

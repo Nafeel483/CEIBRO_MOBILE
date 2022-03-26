@@ -18,6 +18,7 @@ import Images from '../../Styles/Images';
 import Colors from '../../Styles/Colors';
 import Header from '../../Components/Header';
 import MyTask from '../../Components/MyTask';
+import SubTask from '../../Components/SubTask';
 import ButtonModel from '../../Components/ButtonModel';
 
 
@@ -92,6 +93,21 @@ class Tasks extends Component {
         },
       ],
       isMenuOpen: false,
+      tabClick: 1,
+      allSubTaskList: [
+        {
+          name: 'Ongoing',
+          title: "Magnis dis parturient montes, nascetur ridiculus mus."
+        },
+        {
+          name: 'Submitted',
+          title: "Parturient montes, nascetur culus mus."
+        },
+        {
+          name: 'Ongoing',
+          title: "Magnis dis parturient montes, nascetur ridiculus mus."
+        },
+      ],
     };
   }
   handleMenuToggle = () => {
@@ -123,10 +139,23 @@ class Tasks extends Component {
       </>
     )
   }
+  mySubtaskList = (item, index) => {
+    return (
+      <>
+        <View style={Styles.myListProject}>
+          <SubTask item={item} key={index} content={"Tasks"} />
+        </View>
+      </>
+    )
+  }
 
+  tabSelect = (num) => {
+    this.setState({ tabClick: num })
+  }
 
   render() {
-    const { categoryList, allTaskList, listColumn, actions, isMenuOpen } = this.state
+    const { categoryList, allTaskList, listColumn,
+      actions, isMenuOpen, tabClick, allSubTaskList } = this.state
     return (
       <>
         <SafeAreaProvider>
@@ -137,7 +166,14 @@ class Tasks extends Component {
             <View style={Styles.headerContainer}>
               <View style={Styles.seperator} />
               <View style={Styles.mainContent}>
-                <Text style={Styles.taskText}>{"Tasks"}</Text>
+                <View style={{ flexDirection: 'row' }}>
+                  <TouchableOpacity onPress={() => { this.tabSelect(1) }}>
+                    <Text style={[Styles.taskText, { color: tabClick == 1 ? Colors.Black : Colors.blue }]}>{"Tasks"}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => { this.tabSelect(2) }}>
+                    <Text style={[Styles.taskText, { marginLeft: hp(2), color: tabClick == 2 ? Colors.Black : Colors.blue }]}>{"Subtasks"}</Text>
+                  </TouchableOpacity>
+                </View>
                 <View style={{ flexDirection: 'row' }}>
                   <TouchableOpacity>
                     <Image source={Images.search} style={Styles.searchStyle} />
@@ -161,15 +197,28 @@ class Tasks extends Component {
                   />
                 </View>
                 <View style={Styles.allProductList1}>
-                  <FlatList
-                    key={listColumn}
-                    horizontal={false}
-                    scrollEnabled={false}
-                    numColumns={listColumn}
-                    data={allTaskList}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item, index }) => this.mytaskList(item, index)}
-                  />
+                  {
+                    tabClick == 1 ?
+                      <FlatList
+                        key={listColumn}
+                        horizontal={false}
+                        scrollEnabled={false}
+                        numColumns={listColumn}
+                        data={allTaskList}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={({ item, index }) => this.mytaskList(item, index)}
+                      />
+                      :
+                      <FlatList
+                        key={listColumn}
+                        horizontal={false}
+                        scrollEnabled={false}
+                        numColumns={listColumn}
+                        data={allSubTaskList}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={({ item, index }) => this.mySubtaskList(item, index)}
+                      />
+                  }
                 </View>
               </View>
             </ScrollView>

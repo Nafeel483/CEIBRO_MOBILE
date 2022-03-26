@@ -98,8 +98,9 @@ const QuestionareModel = (props) => {
             <CheckBox
               disabled={false}
               value={indexValue == index ? optionSelect : false}
-              onValueChange={() => onAddChatPerson(index)}
+              onValueChange={() => { onAddChatPerson(index) }}
               boxType="circle"
+              tintColors={optionSelect == true ? Colors.golden : "#DADFE6"}
               onCheckColor={Colors.golden}
               onTintColor={Colors.golden}
               tintColor={'#DADFE6'}

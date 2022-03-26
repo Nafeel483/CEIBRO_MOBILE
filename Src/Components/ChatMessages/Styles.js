@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   },
   questionDoc: {
     width: hp(2),
-    height: hp(2.2),
+    height: hp(2.4),
     marginLeft: hp(1.5)
   },
   messageText: {

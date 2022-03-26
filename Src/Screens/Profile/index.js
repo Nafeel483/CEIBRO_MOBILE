@@ -32,7 +32,7 @@ class Profile extends Component {
                 </View>
                 <TouchableOpacity>
 
-                  <Image source={Images.write} style={Styles.Setimage} />
+                  <Image source={Images.write} style={Styles.searchStyle} />
                 </TouchableOpacity>
               </View>
               <View

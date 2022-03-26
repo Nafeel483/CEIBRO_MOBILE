@@ -2,6 +2,7 @@ import React from 'react';
 import {
   StyleSheet,
   Image,
+  Platform
 } from 'react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Images from '../Styles/Images';
@@ -98,15 +99,20 @@ export const BottomTabView = () => {
             <Image
               source={image}
               style={{
-                width: hp(2.5),
-                height: hp(2.5), tintColor: focused ? Colors.Black : Colors.blue,
-                marginTop: hp(0.5)
+                width: route.name === 'Tasks' ? hp(2.6) : route.name === 'Projects' ? hp(2.8) : hp(2.8),
+                height: route.name === 'Tasks' ? hp(2.8) : route.name === 'Projects' ? hp(2.9) : hp(2.8),
+                tintColor: focused ? Colors.Black : Colors.blue,
+                marginTop: Platform.OS == 'ios' ? hp(1) : 0
               }}
             />
           );
         },
         tabBarStyle: { height: hp(10), },
-        headerShown: false
+        headerShown: false,
+        tabBarLabelStyle: {
+          marginBottom: Platform.OS == 'android' ? hp(1.5) : hp(0.3),
+          marginTop: Platform.OS == 'android' ? hp(-1.5) : hp(1)
+        }
       })}
       tabBarOptions={{
         activeTintColor: Colors.Black,

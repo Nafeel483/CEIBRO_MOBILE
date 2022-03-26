@@ -12,7 +12,8 @@ const colors = {
   parrotGreen: "#55BCB3",
   mediumGrey: "#605C5C",
   borderColor: "#DEE2E6",
-  green: "#009900"
+  green: "#009900",
+  lightPurple: "#AEADBD"
 };
 
 export default colors;

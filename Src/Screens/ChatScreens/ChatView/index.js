@@ -22,6 +22,7 @@ import {
   MenuTrigger,
 } from 'react-native-popup-menu';
 import QuestionareModel from '../../../Components/QuestionareModel';
+import CreateQuestionare from '../../../Components/CreateQuestionare';
 
 
 class ChatView extends Component {
@@ -86,14 +87,19 @@ class ChatView extends Component {
           time: '1542006036549'
         }
       ],
-      openModel: false
+      openModel: false,
+      createModel: false
     };
   }
   questionModelCall = () => {
     this.setState({ openModel: !this.state.openModel })
   }
+  createQuestion = () => {
+    this.setState({ createModel: !this.state.createModel })
+  }
   render() {
-    const { chatMessage, allChatList, Opposite, receiverID, senderID, openModel } = this.state
+    const { chatMessage, allChatList, Opposite, receiverID,
+      senderID, openModel, createModel } = this.state
     return (
       <>
         <MenuProvider>
@@ -108,7 +114,13 @@ class ChatView extends Component {
                         <Image source={Images.close} style={Styles.Setimage} />
                       </TouchableOpacity >
                       <View style={Styles.touchviewone}>
-                        <Text style={Styles.touchViewprofileOne}>{"Group name"}</Text>
+                        <TouchableOpacity onPress={() => {
+                          this.props.navigation.navigate('ChatFeature', {
+                            screen: 'GroupInfo',
+                          })
+                        }}>
+                          <Text style={Styles.touchViewprofileOne}>{"Group name"}</Text>
+                        </TouchableOpacity>
                         <Text style={Styles.mergeMessage}>
                           <Text style={Styles.displayProject}>{"Project:  "}</Text>
                           <Text style={Styles.nameProject}>{"Vesse-12"}</Text>
@@ -204,7 +216,7 @@ class ChatView extends Component {
                     <Image source={Images.Nudge} style={Styles.iconBottom1} />
                   </TouchableOpacity>
                   <View style={Styles.inboxLine} />
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={this.createQuestion}>
                     <Image source={Images.document} style={Styles.iconBottom2} />
                   </TouchableOpacity>
 
@@ -216,6 +228,13 @@ class ChatView extends Component {
                   <QuestionareModel
                     open={openModel}
                     close={this.questionModelCall} />
+                  : null
+              }
+              {
+                createModel == true ?
+                  <CreateQuestionare
+                    open={createModel}
+                    close={this.createQuestion} />
                   : null
               }
             </SafeAreaView>

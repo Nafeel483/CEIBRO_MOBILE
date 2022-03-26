@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     height: hp(2.4),
   },
   bottomWrapper: {
-    marginBottom: hp(3.5)
+    marginBottom: Platform.OS == 'android' ? hp(2) : hp(3.5)
   },
   bottomIconsWrapper: {
     marginTop: hp(1.5),
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   },
   iconBottom2: {
     width: hp(2.2),
-    height: hp(2.4),
+    height: hp(2.5),
     marginLeft: hp(3)
   },
   inboxLine: {

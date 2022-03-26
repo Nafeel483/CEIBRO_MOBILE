@@ -89,16 +89,18 @@ class NewChat extends Component {
   }
   onAddChatPerson = (key) => {
     const { suggestList } = this.state
-    let data = suggestList
+    let data = this.state.suggestList
     data[key].add = !data[key].add
+    console.log("Nafjsjd____", data)
     this.setState({ suggestList: data })
   }
 
   addSuggestListList = (item, index) => {
     return (
       <>
-        <TouchableOpacity style={Styles.listChatContainer}>
-          <View style={Styles.chatFirstWrapper}>
+        <View key={index}
+          style={Styles.listChatContainer}>
+          <TouchableOpacity style={Styles.chatFirstWrapper}>
             <Image source={item.pic} style={Styles.userPicImage} />
             <View style={{
               marginLeft: hp(1)
@@ -106,25 +108,28 @@ class NewChat extends Component {
               <Text style={Styles.userName}>{item.name}</Text>
               <Text style={Styles.displayMessage}>{`Company . ${item.profession}`}</Text>
             </View>
-          </View>
+          </TouchableOpacity>
           <CheckBox
             disabled={false}
             value={item.add}
             onValueChange={() => this.onAddChatPerson(index)}
+            onChange={() => { this.onAddChatPerson(index) }}
             boxType='square'
             onCheckColor={Colors.golden}
             onTintColor={Colors.golden}
+            tintColors={item.add == true ? Colors.golden : "#DADFE6"}
             tintColor={'#DADFE6'}
             style={{
               marginTop: hp(0.5),
               width: hp(1.7),
               height: hp(1.7),
-              borderRadius: 15
+              borderRadius: 15,
+              marginRight: hp(0.5)
             }}
             onAnimationType={'stroke'}
             offAnimationType={'one-stroke'}
           />
-        </TouchableOpacity>
+        </View>
       </>
     )
   }

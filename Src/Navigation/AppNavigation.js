@@ -7,6 +7,7 @@ import Login from '../Screens/Authentication/Login';
 import Profile from '../Screens/Profile';
 import NewChat from '../Screens/ChatScreens/NewChat';
 import ChatView from '../Screens/ChatScreens/ChatView';
+import GroupInfo from '../Screens/ChatScreens/GroupInfo';
 
 enableScreens();
 
@@ -41,7 +42,7 @@ export default function RootNavigator() {
         <Stack.Screen name='BottomTabView' component={BottomTabView} />
         <Stack.Screen name='ProfileStack' component={ProfileStack} />
         <Stack.Screen name='ChatFeature' component={ChatFeature} />
-    
+
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -150,13 +151,18 @@ export const ChatFeature = () => {
             id: 'NewChat', animation: 'fade-in'
           }
         ]} />
-          <Stack.Screen name='ChatView' component={ChatView} options={() => options}
+      <Stack.Screen name='ChatView' component={ChatView} options={() => options}
         sharedElementsConfig={(props) => [
           {
             id: 'ChatView', animation: 'fade-in'
           }
         ]} />
-
+      <Stack.Screen name='GroupInfo' component={GroupInfo} options={() => options}
+        sharedElementsConfig={(props) => [
+          {
+            id: 'GroupInfo', animation: 'fade-in'
+          }
+        ]} />
     </Stack.Navigator>
   )
 }

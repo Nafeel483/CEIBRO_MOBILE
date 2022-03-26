@@ -120,6 +120,11 @@ const styles = StyleSheet.create({
     height: hp(3),
     width: hp(3),
   },
+  searchStyle: {
+    width: hp(1.5),
+    height: hp(1.5),
+    marginRight: hp(1.4)
+  },
   newpro: {
     marginTop: hp('2%'),
     width: wp('8%'),

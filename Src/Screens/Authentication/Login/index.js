@@ -17,6 +17,8 @@ import Styles from './Styles';
 import Images from '../../../Styles/Images';
 import Colors from '../../../Styles/Colors';
 import CheckBox from '@react-native-community/checkbox';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
+
 
 
 class Login extends Component {
@@ -40,6 +42,7 @@ class Login extends Component {
     const { password, email, checkBoxValue, passwordSeen } = this.state
     return (
       <>
+       <KeyboardAwareScrollView contentContainerStyle={Styles.fullContainer}>
         <SafeAreaProvider>
           <SafeAreaView style={Styles.safeAreaContainer} forceInset={{ top: 'never' }}>
             <StatusBar barStyle="light-content" />
@@ -96,6 +99,7 @@ class Login extends Component {
                     value={checkBoxValue}
                     onValueChange={this.onChange}
                     boxType='square'
+                    tintColors={checkBoxValue == true ? Colors.golden : "#DADFE6"}
                     onCheckColor={Colors.golden}
                     onTintColor={Colors.golden}
                     tintColor={'#DADFE6'}
@@ -144,6 +148,7 @@ class Login extends Component {
 
           </SafeAreaView>
         </SafeAreaProvider>
+        </KeyboardAwareScrollView>
       </>
     );
   }

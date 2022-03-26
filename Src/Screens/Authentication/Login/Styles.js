@@ -6,6 +6,10 @@ const widthScreen = Dimensions.get('window').width;
 // const heightScreen = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
+  fullContainer: {
+    flex: 1,
+    backgroundColor: Colors.White
+  },
   safeAreaContainer: {
     flex: 1,
     backgroundColor: Colors.White
@@ -48,7 +52,8 @@ const styles = StyleSheet.create({
   bottomContainer1: {
     width: widthScreen / 1.12,
     alignSelf: 'center',
-    marginTop: hp(3)
+    // marginTop: hp(3),
+    marginBottom: hp(1)
   },
   emailWrapper: {
     flexDirection: 'row',

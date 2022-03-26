@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     marginBottom: hp(3)
   },
   taskText: {
-    fontSize: hp(2.7),
+    fontSize: hp(2.6),
     fontWeight: '500',
     color: Colors.Black,
     fontFamily: "Inter",
@@ -103,12 +103,12 @@ const styles = StyleSheet.create({
   searchStyle: {
     width: hp(2.5),
     height: hp(2.5),
-    marginTop: hp(0.8)
+    marginTop: hp(0.6)
   },
   filterImage: {
     width: hp(2.5),
     height: hp(2.5),
-    marginTop: hp(0.8),
+    marginTop: hp(0.6),
     marginLeft: hp(4)
   },
   myListProject: {

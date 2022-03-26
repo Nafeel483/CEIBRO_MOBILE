@@ -42,7 +42,7 @@ const MyProjects = (props) => {
                 }]}>{item.name}</Text>
               </View>
               <View style={Styles.taskContainerName}>
-                <Text style={Styles.taskName}>{"27.05.2021"}</Text>
+                <Text style={Styles.taskName1}>{"27.05.2021"}</Text>
               </View>
 
             </View>
