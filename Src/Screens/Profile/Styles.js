@@ -121,9 +121,10 @@ const styles = StyleSheet.create({
     width: hp(3),
   },
   searchStyle: {
-    width: hp(1.5),
-    height: hp(1.5),
-    marginRight: hp(1.4)
+    width: hp(2.5),
+    height: hp(2.5),
+    marginRight: hp(1.4),
+    marginTop: hp(1)
   },
   newpro: {
     marginTop: hp('2%'),

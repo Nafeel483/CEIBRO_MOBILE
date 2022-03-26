@@ -30,7 +30,11 @@ class Profile extends Component {
                     <Text style={Styles.touchViewprofileOne}>{"Profile"}</Text>
                   </View>
                 </View>
-                <TouchableOpacity>
+                <TouchableOpacity  onPress={() => {
+                this.props.navigation.navigate('ProfileStack', {
+                  screen: 'EditProfile',
+                })
+              }}>
 
                   <Image source={Images.write} style={Styles.searchStyle} />
                 </TouchableOpacity>
