@@ -3,24 +3,24 @@ import Colors from '../../Styles/Colors';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 const widthScreen = Dimensions.get('window').width;
 const styles = StyleSheet.create({
-   MainContainer: {
+  MainContainer: {
     flex: 1,
     backgroundColor: '#FFFFFF'
   },
-   Setimage: {
+  Setimage: {
     width: wp('5%'),
     height: wp('5%')
   },
- contain: {
+  contain: {
     flexDirection: 'row',
-    marginTop: hp('7%'),
+    marginTop: hp('2%'),
     justifyContent: 'space-between',
     marginHorizontal: hp('2%')
   },
   touchstyles: {
     width: wp('10%')
   },
-   touchviewone: {
+  touchviewone: {
     width: wp('60%')
   },
   touchViewprofileOne: {
@@ -34,9 +34,9 @@ const styles = StyleSheet.create({
     //alignItems: 'flex-end',
     backgroundColor: '#0076CB'
   },
-  
-  
-    line: {
+
+
+  line: {
     borderBottomColor: '#ECF0F1',
     borderBottomWidth: 1.5,
     marginTop: hp('2%')
@@ -45,96 +45,101 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     textAlign: 'center',
     marginTop: 5,
-    fontWeight:'bold'
+    fontWeight: 'bold'
   },
   btnone:
   {
     color: '#FFFFFF',
     textAlign: 'center',
     marginTop: 7,
-    fontWeight:'bold'
-    
+    fontWeight: 'bold'
+
   },
-  viewAccept:{
-    flexDirection:'row',
-    marginHorizontal:hp('2%'),
-    marginTop:hp('2%')
+  viewAccept: {
+    flexDirection: 'row',
+    marginHorizontal: hp('2%'),
+    marginTop: hp('2%')
   },
-  accepttouch:{
-    width:wp('50%')
+  accepttouch: {
+    width: wp('50%')
   },
-  acceptall:{
-    color:'#0076C8',
-   fontWeight:'bold',
-   fontSize:15
+  acceptall: {
+    color: '#0076C8',
+    fontWeight: 'bold',
+    fontSize: 15
   },
-  touchdecline:{
-    width:wp('40%'),
-   alignItems:'flex-end'
+  touchdecline: {
+    width: wp('40%'),
+    alignItems: 'flex-end'
   },
-  textDecline:{
-    color:'red',
-     fontWeight:'bold',
-      fontSize:15
+  textDecline: {
+    color: 'red',
+    fontWeight: 'bold',
+    fontSize: 15
   },
-  viewMain:{
-    flexDirection:'row',
-     marginTop:hp('3%'),
-      marginHorizontal:hp('2%')
+  viewMain: {
+    flexDirection: 'row',
+    marginTop: hp('3%'),
+    marginHorizontal: hp('2%')
   },
-  viewMainA:{
-    flexDirection:'row',
-      marginHorizontal:hp('2%'),
-      marginTop:hp('1%'),
+  viewMainA: {
+    flexDirection: 'row',
+    marginHorizontal: hp('2%'),
+    marginTop: hp('1%'),
   },
-  imgstyle:{
-    height:wp('13%'),
-     width:wp('13%')
+  imgstyle: {
+    height: wp('13%'),
+    width: wp('13%')
   },
-  subView:{
-    marginLeft:wp('1.5%'),
-   marginTop:wp('0.5%'),
-   width:wp('38%')
+  subView: {
+    marginLeft: wp('1.5%'),
+    marginTop: wp('0.5%'),
+    width: wp('38%')
   },
-  textSubView:{
-    color:'#0076C8',
-     fontWeight:'bold',
-      fontSize:15
+  textSubView: {
+    color: '#0076C8',
+    fontWeight: 'bold',
+    fontSize: 15
   },
-  textSubtView:{
-     fontWeight:'bold',
-      fontSize:16
+  textSubtView: {
+    fontWeight: 'bold',
+    fontSize: 16
   },
-  viewone:{
-    width:wp('50%'),
-    flexDirection:'row',
-    marginTop:hp('0.5')
+  viewone: {
+    width: wp('50%'),
+    flexDirection: 'row',
+    marginTop: hp('0.5')
   },
-  touchtwo:{
+  touchtwo: {
     width: wp('20%'),
     height: wp('8.5%'),
     borderRadius: 6,
     //alignItems: 'flex-end',
     backgroundColor: '#0076CB',
-    marginLeft:wp('10%')
+    marginLeft: wp('10%')
   },
-  touchdeclinestyle:{
-    width:wp('8%'),
-     height:wp('8%'),
-      marginLeft:hp('1%')
+  touchdeclinestyle: {
+    width: wp('8%'),
+    height: wp('8%'),
+    marginLeft: hp('1%')
   },
-  viewA:{
-    marginHorizontal:hp('2%'),
-     marginTop:hp('1%')
+  viewA: {
+    marginHorizontal: hp('2%'),
+    marginTop: hp('1%')
   },
-  textA:{
-    fontSize:18,
-     fontWeight:'bold'
+  textA: {
+    fontSize: 18,
+    fontWeight: 'bold'
+  },
+  scrollWrapper: {
+    marginBottom: hp(5),
+    // width: widthScreen / 1.12,
+    // alignSelf: 'center'
   }
-  
-    
-  
-  
-  
+
+
+
+
+
 });
 export default styles;

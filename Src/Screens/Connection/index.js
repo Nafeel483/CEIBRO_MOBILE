@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, Image, TextInput, ScrollView, TouchableOpacity, ImageBackground } from 'react-native'
+import { View, Text, Image, TextInput, ScrollView, TouchableOpacity, ImageBackground,SafeAreaView } from 'react-native'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import Images from '../../Styles/Images'
 import Colors from '../../Styles/Colors';
@@ -15,7 +15,7 @@ class Connection extends Component {
   render() {
     return (
       <>
-        <View style={Styles.MainContainer}>
+        <SafeAreaView style={Styles.MainContainer}>
           <View style={Styles.contain} >
             <TouchableOpacity style={Styles.touchstyles} onPress={() => this.props.navigation.goBack()}>
               <Image source={Images.close} style={Styles.Setimage} />
@@ -43,11 +43,12 @@ class Connection extends Component {
           <View
             style={Styles.line}
           />
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={Styles.scrollWrapper}>
             <View>
               <View style={Styles.viewMain}>
                 <View>
-                  <Image source={Images.picture} style={Styles.imgstyle} />
+                  <Image source={Images.charUserpic2} style={Styles.imgstyle} />
                 </View>
                 <View style={Styles.subView}>
                   <Text style={Styles.textSubView}>Kristo Vunukainen</Text>
@@ -95,7 +96,7 @@ class Connection extends Component {
             <View>
               <View style={Styles.viewMain}>
                 <View>
-                  <Image source={Images.MK} style={Styles.imgstyle} />
+                  <Image source={Images.charUserpic3} style={Styles.imgstyle} />
                 </View>
                 <View style={Styles.subView}>
                   <Text style={Styles.textSubView}>Mart Kivikas</Text>
@@ -147,7 +148,7 @@ class Connection extends Component {
               </View>
               <View style={Styles.viewMain}>
                 <View>
-                  <Image source={Images.usertwo} style={Styles.imgstyle} />
+                  <Image source={Images.charUserpic3} style={Styles.imgstyle} />
                 </View>
                 <View style={Styles.subView}>
                   <Text style={Styles.textSubtView}>Andres Kütt</Text>
@@ -161,7 +162,7 @@ class Connection extends Component {
             <View>
               <View style={Styles.viewMainA}>
                 <View>
-                  <Image source={Images.userr} style={Styles.imgstyle} />
+                  <Image source={Images.charUserpic3} style={Styles.imgstyle} />
                 </View>
                 <View style={Styles.subView}>
                   <Text style={Styles.textSubtView}>Andreas Lustik</Text>
@@ -183,7 +184,7 @@ class Connection extends Component {
               </View>
               <View style={Styles.viewMain}>
                 <View>
-                  <Image source={Images.userthree} style={Styles.imgstyle} />
+                  <Image source={Images.charUserpic3} style={Styles.imgstyle} />
                 </View>
                 <View style={Styles.subView}>
                   <Text style={Styles.textSubtView}>Boris Antseferov</Text>
@@ -197,7 +198,7 @@ class Connection extends Component {
             <View>
               <View style={Styles.viewMainA}>
                 <View>
-                  <Image source={Images.userone} style={Styles.imgstyle} />
+                  <Image source={Images.charUserpic3} style={Styles.imgstyle} />
                 </View>
                 <View style={Styles.subView}>
                   <Text style={Styles.textSubtView}>Andreas Lustik</Text>
@@ -208,9 +209,9 @@ class Connection extends Component {
                 </View>
               </View>
             </View>
-
+            </View>
           </ScrollView>
-        </View>
+        </SafeAreaView>
 
       </>
 
