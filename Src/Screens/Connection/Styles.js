@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     width: wp('60%')
   },
   touchViewprofileOne: {
-    fontSize: 17,
+    fontSize: 18,
     fontWeight: '700'
   },
   touchwrite: {
@@ -136,10 +136,6 @@ const styles = StyleSheet.create({
     // width: widthScreen / 1.12,
     // alignSelf: 'center'
   }
-
-
-
-
 
 });
 export default styles;
