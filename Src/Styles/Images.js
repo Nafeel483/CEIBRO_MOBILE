@@ -20,6 +20,7 @@ const images = {
   workIcon: require('../Assets/Dashboard/workIcon.png'),
   dashboadIcon: require('../Assets/Dashboard/dashboadIcon.png'),
   plus: require('../Assets/Dashboard/plus.png'),
+  loaderLogo: require('../Assets/Dashboard/loaderLogo.png'),
 
   // Projects Assets
   filter: require('../Assets/Projects/filter.png'),

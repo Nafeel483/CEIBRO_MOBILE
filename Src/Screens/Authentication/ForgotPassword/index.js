@@ -28,7 +28,7 @@ const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 
 
-class Login extends Component {
+class ForgotPassword extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -49,7 +49,7 @@ class Login extends Component {
   }
 
   submit = () => {
-    const { email, password } = this.state
+    const { email, password, storeID } = this.state
     if (email.length == 0 || reg.test(email) === false) {
       showMessage({
         message: "Invaid Email",
@@ -73,9 +73,10 @@ class Login extends Component {
         email: email,
         password: password,
       };
-      // console.log("Login User::", user)
+      console.log("Login User::", user)
       this.props.loginUsers(user);
 
+      // this.props.navigation.navigate('Dashboard')
     }
   }
 
@@ -94,7 +95,7 @@ class Login extends Component {
                 <ImageBackground source={Images.visual} style={Styles.headingBackground} >
                   <Image source={Images.loginLogo} style={Styles.logoStyle} />
                   <View style={Styles.innerHeader}>
-                    <Text style={Styles.loginText}>{"Login"}</Text>
+                    <Text style={Styles.loginText}>{"Forgot Password"}</Text>
                   </View>
                 </ImageBackground>
               </View>
@@ -116,64 +117,19 @@ class Login extends Component {
                     />
                   </View>
 
-                  <View style={Styles.emailWrapper}>
-                    <TextInput
-                      style={Styles.emailInput}
-                      value={password}
-                      placeholder={"************"}
-                      secureTextEntry={passwordSeen == false ? true : false}
-                      placeholderTextColor={Colors.textColor}
-                      autoCapitalize='none'
-                      onChangeText={(value) => {
-                        this.setState({
-                          password: value,
-                        })
-                      }}
-                    />
-                    <TouchableOpacity onPress={() => {
-                      this.passwordShow()
-                    }}>
-                      <Image source={Images.passwordVisible} style={Styles.inputImage} />
-                    </TouchableOpacity>
-                  </View>
-
-                  <View style={Styles.orderCheckContainer}>
-                    <CheckBox
-                      disabled={false}
-                      value={checkBoxValue}
-                      onValueChange={this.onChange}
-                      boxType='square'
-                      tintColors={checkBoxValue == true ? Colors.golden : "#DADFE6"}
-                      onCheckColor={Colors.golden}
-                      onTintColor={Colors.golden}
-                      tintColor={'#DADFE6'}
-                      style={{
-                        // marginTop: 5,
-                        width: hp(2.5),
-                        height: hp(2.5),
-                        borderRadius: 15
-                      }}
-                      onAnimationType={'stroke'}
-                      offAnimationType={'one-stroke'}
-                    />
-                    <Text style={[Styles.cartProductName, {
-                      marginLeft: hp(1.5),
-                    }]}>{"Remember me"}</Text>
-                  </View>
+                
 
                   <View style={Styles.loginButtonContainer}>
                     <TouchableOpacity onPress={this.submit}
-                     
+                      // onPress={() => {
+                      //   this.props.navigation.navigate('BottomTabView', {
+                      //     screen: 'Dashboard',
+                      //   })
+                      // }}
                       style={Styles.checkOutButton}>
-                      <Text style={Styles.checkOutText}>{"Login"}</Text>
+                      <Text style={Styles.checkOutText}>{"Forgot Password"}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => {
-                      this.props.navigation.navigate('AuthStack', {
-                        screen: 'ForgotPassword',
-                      })
-                    }}>
-                      <Text style={Styles.forgotText}>{"Forgot Password?"}</Text>
-                    </TouchableOpacity>
+                    
                   </View>
 
 
@@ -215,4 +171,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Login);
+)(ForgotPassword);

@@ -15,6 +15,7 @@ import Styles from './Styles';
 import Images from '../../Styles/Images';
 import Colors from '../../Styles/Colors';
 import CheckBox from '@react-native-community/checkbox';
+import ToggleSwitch from 'toggle-switch-react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 
@@ -26,6 +27,9 @@ const CreateQuestionare = (props) => {
   const [questionTitle, setQuestionTitle] = useState("")
   const [questionType, setQuestionType] = useState("")
 
+
+  const [nudgeToogle, setNudgeToogle] = useState(false)
+  const [answerToogle, setAnswerToogle] = useState(false)
 
 
   return (
@@ -115,9 +119,31 @@ const CreateQuestionare = (props) => {
           </View>
           <View style={Styles.seperator} />
 
+          <View style={Styles.toogleContainer}>
+            <View style={Styles.toogleInner}>
+              <ToggleSwitch
+                isOn={nudgeToogle}
+                onColor={Colors.golden}
+                offColor="#AEADBD"
+                size="small"
+                onToggle={isOn => setNudgeToogle(isOn)}
+              />
+              <Text style={Styles.listText}>{"Nudge"}</Text>
+            </View>
+            <View style={Styles.toogleInner1}>
+              <ToggleSwitch
+                isOn={answerToogle}
+                onColor={Colors.golden}
+                offColor="#AEADBD"
+                size="small"
+                onToggle={isOn => setAnswerToogle(isOn)}
+              />
+              <Text style={Styles.listText}>{"Show answers"}</Text>
+            </View>
+          </View>
           <ScrollView>
             <View style={Styles.scrollWrapper}>
-              <Text style={Styles.questionText}>{"Questionarie"}</Text>
+              <Text style={Styles.questionText}>{"Question"}</Text>
 
               <View style={Styles.seperator} />
 

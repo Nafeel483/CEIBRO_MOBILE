@@ -4,15 +4,19 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { enableScreens } from 'react-native-screens';
 import BottomTabView from './BottomNavigation';
 import Login from '../Screens/Authentication/Login';
+import Signup from '../Screens/Authentication/Signup';
 import Profile from '../Screens/Profile';
 import NewChat from '../Screens/ChatScreens/NewChat';
 import ChatView from '../Screens/ChatScreens/ChatView';
 import GroupInfo from '../Screens/ChatScreens/GroupInfo';
 import EditProfile from '../Screens/EditProfile';
+import ForgotPassword from '../Screens/Authentication/ForgotPassword';
 
 enableScreens();
 
 const Stack = createStackNavigator();
+const navigationRef = React.createRef();
+
 
 const options = {
   headerBackTitleVisible: false,
@@ -27,9 +31,13 @@ const options = {
 
 };
 
+export function navigate(name, params) {
+  navigationRef.current?.navigate(name, params);
+}
+
 export default function RootNavigator() {
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Stack.Navigator headerMode="none"
         screenOptions={{
           transitionConfig: () => ({
@@ -80,6 +88,20 @@ export const AuthStack = () => {
             id: 'Login', animation: 'fade-in'
           }
         ]} />
+      <Stack.Screen name='Signup' component={Signup} options={() => options}
+        sharedElementsConfig={(props) => [
+          {
+            id: 'Signup', animation: 'fade-in'
+          }
+        ]} />
+      <Stack.Screen name='ForgotPassword' component={ForgotPassword} options={() => options}
+        sharedElementsConfig={(props) => [
+          {
+            id: 'ForgotPassword', animation: 'fade-in'
+          }
+        ]} />
+
+
 
     </Stack.Navigator>
   )
@@ -116,13 +138,13 @@ export const ProfileStack = () => {
             id: 'Profile', animation: 'fade-in'
           }
         ]} />
-        <Stack.Screen name='EditProfile' component={EditProfile} options={() => options}
+      <Stack.Screen name='EditProfile' component={EditProfile} options={() => options}
         sharedElementsConfig={(props) => [
           {
             id: 'EditProfile', animation: 'fade-in'
           }
         ]} />
-       
+
 
     </Stack.Navigator>
   )

@@ -130,6 +130,27 @@ const styles = StyleSheet.create({
     fontFamily: "Inter",
     marginLeft: hp(1)
   },
+  toogleContainer: {
+    width: widthScreen / 1.12,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    marginTop: hp(4),
+    marginBottom: hp(2)
+  },
+  toogleInner: {
+    flexDirection: 'row'
+  },
+  toogleInner1: {
+    flexDirection: 'row',
+    marginLeft: hp(4)
+  },
+  listText: {
+    fontSize: hp(1.8),
+    fontWeight: '600',
+    fontFamily: "Inter",
+    color: Colors.Black,
+    marginLeft: hp(2)
+  },
 });
 
 export default styles;
