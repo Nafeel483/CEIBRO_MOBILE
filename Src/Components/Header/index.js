@@ -27,7 +27,12 @@ const Header = (props) => {
           <View style={Styles.rightContent}>
 
             {/* Members Tag */}
-            <TouchableOpacity style={{ marginTop: hp(1.5) }}>
+            <TouchableOpacity onPress={() => {
+              props.navigation.navigate('ProfileStack', {
+                screen: 'Connection',
+              })
+            }}
+              style={{ marginTop: hp(1.5) }}>
 
               <View style={Styles.notificationWrapper}>
                 <Image source={Images.members} style={Styles.notificationImage} />

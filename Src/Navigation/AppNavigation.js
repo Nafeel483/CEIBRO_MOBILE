@@ -11,6 +11,7 @@ import ChatView from '../Screens/ChatScreens/ChatView';
 import GroupInfo from '../Screens/ChatScreens/GroupInfo';
 import EditProfile from '../Screens/EditProfile';
 import ForgotPassword from '../Screens/Authentication/ForgotPassword';
+import Connection from '../Screens/Connection';
 
 enableScreens();
 
@@ -144,6 +145,13 @@ export const ProfileStack = () => {
             id: 'EditProfile', animation: 'fade-in'
           }
         ]} />
+         <Stack.Screen name='Connection' component={Connection} options={() => options}
+        sharedElementsConfig={(props) => [
+          {
+            id: 'Connection', animation: 'fade-in'
+          }
+        ]} />
+        {/*  */}
 
 
     </Stack.Navigator>
