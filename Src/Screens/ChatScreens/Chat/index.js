@@ -24,6 +24,14 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
+import { connect } from 'react-redux';
+import { showMessage, hideMessage } from "react-native-flash-message";
+import Loader from '../../../Components/Loader';
+import { getAllUserChats } from '../../../Redux/Actions/chat';
+import moment from 'moment';
+import * as API from '../../../Redux/Selectors/AllApi';
+
+
 
 class Chats extends Component {
   constructor(props) {
@@ -32,182 +40,114 @@ class Chats extends Component {
       search: '',
       tabClick: 1,
       listColumn: 1,
-      allChatList: [
-        {
-          name: "Kristo Vunukainen",
-          message: "Duis mollis, est non  onec ulla",
-          group: true,
-          project: "Vesse-12",
-          date: "10:25",
-          newMessage: false,
-          messageCount: "0"
-        },
-        {
-          name: "Paul Mets",
-          message: "Cursus Condimentum tempus",
-          group: false,
-          project: "Vesse-12",
-          date: "Sun",
-          newMessage: true,
-          messageCount: "1"
-        },
-        {
-          name: "Indrek Ilumäe",
-          message: "Quam Fusce Risus Dolor",
-          group: false,
-          project: "Vesse-12",
-          date: "Sun",
-          newMessage: true,
-          messageCount: "4"
-        },
-        {
-          name: "Mart Pärtel",
-          message: "Quam Fusce Risus Dolor",
-          group: false,
-          project: "Vesse-12",
-          date: "Sat",
-          newMessage: false,
-          messageCount: "0"
-        },
-        {
-          name: "Margus Pirkmets",
-          message: "Porta Ipsum Bibendum ",
-          group: true,
-          project: "Paevälja",
-          date: "Sat",
-          newMessage: false,
-          messageCount: "0"
-        },
-      ],
-      unreadChatList: [
-        {
-          name: "Paul Mets",
-          message: "Cursus Condimentum tempus",
-          group: false,
-          project: "Vesse-12",
-          date: "Sun",
-          newMessage: true,
-          messageCount: "1"
-        },
-        {
-          name: "Indrek Ilumäe",
-          message: "Quam Fusce Risus Dolor",
-          group: false,
-          project: "Vesse-12",
-          date: "Sun",
-          newMessage: true,
-          messageCount: "4"
-        },
-      ],
       favouriteList: []
     };
   }
 
-  onClickTab = (num) => {
-    this.setState({ tabClick: num })
-  }
-
-  addToFavourite = (item, index) => {
-    const { favouriteList } = this.state
-    let data = {
-      key: index,
-      data: item
+  componentDidMount = () => {
+    let accessToken = this.props.auth?.userLogin?.tokens?.access?.token
+    let chatData = {
+      name: "",
+      type: "all",
+      favourite: false,
+      token: accessToken
     }
-    this.setState({ favouriteList: favouriteList.concat(data) })
-  }
-  removeToFavourite = (item, index) => {
-    const { favouriteList } = this.state
-    let filter = favouriteList?.filter(o1 => o1.key != index)
-    console.log("_____Nafeel--", filter, index)
-    this.setState({ favouriteList: filter })
+    this.props.getAllChats(chatData)
+
   }
 
-  chatFavouriteList = (favItem, index) => {
-    let item = favItem?.data
-    var str_Name = item?.name.slice(0, 2)
-    return (
-      <>
-        <TouchableOpacity
-          onPress={() => {
-            this.props.navigation.navigate('ChatFeature', {
-              screen: 'ChatView',
-            })
-          }}
-          onLongPress={() => { alert("onLongPress") }}
-          style={Styles.listChatContainer}>
-          <View style={Styles.chatFirstWrapper}>
-            {
-              item?.image ?
-                <Image source={Images.userPic} style={Styles.userPicImage} />
-                :
-                <View style={Styles.userProfileWrapper}>
-                  <Text style={Styles.userProfileText}>{str_Name?.toUpperCase()}</Text>
-                </View>
-            }
-            <View style={{
-              marginLeft: hp(1)
-            }}>
-              <Text style={Styles.userName}>{item.name}</Text>
-              <Text style={Styles.displayMessage}>{item.message}</Text>
+  onClickTab = (num) => {
+    let token = this.props.auth?.userLogin?.tokens?.access?.token
 
-              {
-                item.group == true ?
-                  <Text style={Styles.mergeMessage}>
-                    <Text style={Styles.displayProject}>{"Project:  "}</Text>
-                    <Text style={Styles.nameProject}>{item.project}</Text>
-                  </Text>
-                  : null
-              }
-            </View>
-          </View>
-          <View style={Styles.chatSecondWrapper}>
-
-            <TouchableOpacity onPress={() => this.removeToFavourite(item, favItem?.key)}>
-              <Image source={Images.favourite} style={Styles.favoEmptyIcon} />
-            </TouchableOpacity>
-
-            <View style={{
-              marginLeft: hp(2)
-            }}>
-              {
-                item.newMessage == true ?
-                  <View style={Styles.notifTag}>
-                    <Text style={Styles.tagTextStyle}>
-                      {item.messageCount}
-                    </Text>
-                  </View>
-                  : null
-              }
-              <Text style={Styles.displayTime}>{item.date}</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-        <View style={Styles.seperator} />
-      </>
-    )
+    if (num == 1) {
+      let chatData = {
+        name: "",
+        type: "all",
+        favourite: false,
+        token: token
+      }
+      this.props.getAllChats(chatData)
+      this.setState({ tabClick: num })
+    }
+    else if (num == 2) {
+      let chatData = {
+        name: "",
+        type: "unread",
+        favourite: false,
+        token: token
+      }
+      this.props.getAllChats(chatData)
+      this.setState({ tabClick: num })
+    }
+    else {
+      let chatData = {
+        name: "",
+        type: "all",
+        favourite: true,
+        token: token
+      }
+      this.props.getAllChats(chatData)
+      this.setState({ tabClick: num })
+    }
+  }
+  markUnread = (id) => {
+    let token = this.props.auth?.userLogin?.tokens?.access?.token
+    const { tabClick } = this.state
+    API.markUnreadChatRoomMessage(id, token)
+      .then((res) => {
+        console.log("markUnreadChatRoomMessage Response api====>", res)
+        let chatData = {
+          name: "",
+          type: tabClick == 2 ? "unread" : "all",
+          favourite: false,
+          token: token
+        }
+        this.props.getAllChats(chatData)
+      })
+      .catch((error) => {
+        console.log("markUnreadChatRoomMessage api error====>", error)
+      });
   }
 
-  popOverMenu = (item, index) => {
-    return (
-      <>
-
-      </>
-    )
+  addToFavourite = (id) => {
+    let token = this.props.auth?.userLogin?.tokens?.access?.token
+    API.addRoomChatToFavourite(id, token)
+      .then((res) => {
+        console.log("Favourite Response api====>", res)
+        let chatData = {
+          name: "",
+          type: "all",
+          favourite: false,
+          token: token
+        }
+        this.props.getAllChats(chatData)
+      })
+      .catch((error) => {
+        console.log("Favourite api error", error)
+      });
   }
+
+
 
   chatList = (item, index) => {
-    const { favouriteList } = this.state
-    var str_Name = item.name.slice(0, 2)
-    let favouriteItem = favouriteList?.length > 0 ? favouriteList?.some(o1 => o1.key == index) : null
+    const currentUser = this.props.auth?.userLogin?.user?.id
+    var str_Name = item?.name.slice(0, 2)
+    let favouriteItem = item?.pinnedBy?.length > 0 ? item?.pinnedBy?.some(o1 => o1 == currentUser) : null
     return (
       <>
         <TouchableOpacity
+          key={index}
           onPress={() => {
             this.props.navigation.navigate('ChatFeature', {
               screen: 'ChatView',
+              params: {
+                chatRoomID: item?._id,
+                chatRoomName: item?.name,
+                chatRoomProject: item?.project,
+                chatRoomMembers: item?.members
+              }
             })
           }}
-          onLongPress={() => { this.popOverMenu(item, index) }}
           style={Styles.listChatContainer}>
           <View style={Styles.chatFirstWrapper}>
             {
@@ -219,16 +159,16 @@ class Chats extends Component {
                 </View>
             }
             <View style={{
-              marginLeft: hp(1)
+              marginLeft: hp(2.5)
             }}>
-              <Text style={Styles.userName}>{item.name}</Text>
-              <Text style={Styles.displayMessage}>{item.message}</Text>
+              <Text style={Styles.userName}>{item?.name}</Text>
+              <Text style={Styles.displayMessage}>{item?.lastMessage?.message}</Text>
 
               {
-                item.group == true ?
+                item?.project != null ?
                   <Text style={Styles.mergeMessage}>
                     <Text style={Styles.displayProject}>{"Project:  "}</Text>
-                    <Text style={Styles.nameProject}>{item.project}</Text>
+                    <Text style={Styles.nameProject}>{item?.project}</Text>
                   </Text>
                   : null
               }
@@ -237,73 +177,79 @@ class Chats extends Component {
           <View style={Styles.chatSecondWrapper}>
             {
               favouriteItem == true ?
-                <TouchableOpacity onPress={() => this.removeToFavourite(item, index)}>
+                <TouchableOpacity onPress={() => this.addToFavourite(item?._id)}>
                   <Image source={Images.favourite} style={Styles.favoEmptyIcon} />
                 </TouchableOpacity>
                 :
-                <TouchableOpacity onPress={() => this.addToFavourite(item, index)}>
+                <TouchableOpacity onPress={() => this.addToFavourite(item?._id)}>
                   <Image source={Images.emptyFavourite} style={Styles.favoEmptyIcon} />
                 </TouchableOpacity>
             }
             <View style={{
-              marginLeft: hp(2)
+              marginLeft: hp(1)
             }}>
               {
-                item.newMessage == true ?
+                item?.unreadCount ?
                   <>
-                    <Menu>
-                      <MenuTrigger>
-                        <View style={Styles.notifTag}>
-                          <Text style={Styles.tagTextStyle}>
-                            {item.messageCount}
-                          </Text>
-                        </View>
-                      </MenuTrigger>
-                      <MenuOptions
-                        customStyles={{
-                          optionsContainer: {
-                            marginTop: hp(6.2), borderRadius: 6
-                          },
-                          optionWrapper: {
-                          },
-                        }}>
-                        <MenuOption>
-                          <TouchableOpacity style={Styles.menuOptionStyle}>
-                            <Image source={Images.unreadMessage} style={Styles.menuOptionImage} />
-                            <Text style={[Styles.menuOptionText, { color: Colors.blue }]}>{"Mark unread"}</Text>
-                          </TouchableOpacity>
-                        </MenuOption>
+                    <TouchableOpacity onPress={() => this.markUnread(item?._id)}
+                      style={Styles.notifTag}>
+                      <Text style={Styles.tagTextStyle}>
+                        {item?.unreadCount}
+                      </Text>
+                    </TouchableOpacity>
 
-                        <View style={Styles.menuDivider} />
-                        <MenuOption>
-                          <TouchableOpacity style={Styles.menuOptionStyle}>
-                            <Image source={Images.volume} style={Styles.menuOptionImage} />
-                            <Text style={[Styles.menuOptionText, { color: Colors.blue }]}>{"Mute chat"}</Text>
-                          </TouchableOpacity>
-                        </MenuOption>
-                        
-                        <View style={Styles.menuDivider} />
-                        <MenuOption>
-                          <TouchableOpacity style={Styles.menuOptionStyle}>
-                            <Image source={Images.fillFavourite} style={Styles.menuOptionImage} />
-                            <Text style={[Styles.menuOptionText, { color: Colors.blue }]}>{"Add to favorites"}</Text>
-                          </TouchableOpacity>
-                        </MenuOption>
-                        
-                        <View style={Styles.menuDivider} />
-                        <MenuOption>
-                          <TouchableOpacity style={Styles.menuOptionStyle}>
-                            <Image source={Images.Delete} style={Styles.menuOptionImage} />
-                            <Text style={[Styles.menuOptionText, { color: Colors.red }]}>{"Delete Conversation"}</Text>
-                          </TouchableOpacity>
-                        </MenuOption>
-                      </MenuOptions>
-                    </Menu>
                   </>
                   : null
               }
-              <Text style={Styles.displayTime}>{item.date}</Text>
+              <Text style={Styles.displayTime}>{moment(item?.updatedAt).format('ddd')}</Text>
             </View>
+            <Menu>
+              <MenuTrigger>
+                <Image source={Images.menu} style={Styles.menuimage} />
+              </MenuTrigger>
+              <MenuOptions
+                customStyles={{
+                  optionsContainer: {
+                    marginTop: hp(6.2), borderRadius: 6,
+                    width: hp(28)
+                  },
+                  optionWrapper: {
+                  },
+                }}>
+                <MenuOption>
+                  <TouchableOpacity onPress={() => this.markUnread(item?._id)}
+                    style={Styles.menuOptionStyle}>
+                    <Image source={Images.unreadMessage} style={Styles.menuOptionImage} />
+                    <Text style={[Styles.menuOptionText, { color: Colors.blue }]}>{"Mark unread"}</Text>
+                  </TouchableOpacity>
+                </MenuOption>
+
+                <View style={Styles.menuDivider} />
+                <MenuOption>
+                  <TouchableOpacity style={Styles.menuOptionStyle}>
+                    <Image source={Images.volume} style={Styles.menuOptionImage} />
+                    <Text style={[Styles.menuOptionText, { color: Colors.blue }]}>{"Mute chat"}</Text>
+                  </TouchableOpacity>
+                </MenuOption>
+
+                <View style={Styles.menuDivider} />
+                <MenuOption>
+                  <TouchableOpacity onPress={() => this.addToFavourite(item?._id)}
+                    style={Styles.menuOptionStyle}>
+                    <Image source={favouriteItem == true ? Images.favourite : Images.fillFavourite} style={Styles.menuOptionImage} />
+                    <Text style={[Styles.menuOptionText, { color: Colors.blue }]}>{favouriteItem == true ? "Remove from Favorites" : "Add to Favorites"}</Text>
+                  </TouchableOpacity>
+                </MenuOption>
+
+                <View style={Styles.menuDivider} />
+                <MenuOption>
+                  <TouchableOpacity style={Styles.menuOptionStyle}>
+                    <Image source={Images.Delete} style={Styles.menuOptionImage} />
+                    <Text style={[Styles.menuOptionText, { color: Colors.red }]}>{"Delete Conversation"}</Text>
+                  </TouchableOpacity>
+                </MenuOption>
+              </MenuOptions>
+            </Menu>
           </View>
         </TouchableOpacity>
         <View style={Styles.seperator} />
@@ -312,7 +258,8 @@ class Chats extends Component {
   }
 
   render() {
-    const { search, tabClick, listColumn, allChatList, favouriteList, unreadChatList } = this.state
+    const { search, tabClick, listColumn, favouriteList } = this.state
+    const { loadingAllChats, allChats } = this.props.chat
 
     return (
       <>
@@ -367,37 +314,39 @@ class Chats extends Component {
                   <View>
                     {
                       tabClick == 1 ?
-
-                        <FlatList
-                          key={listColumn}
-                          horizontal={false}
-                          scrollEnabled={false}
-                          numColumns={listColumn}
-                          data={allChatList}
-                          keyExtractor={(item, index) => index.toString()}
-                          renderItem={({ item, index }) => this.chatList(item, index)}
-                        />
-                        :
-                        tabClick == 2 ?
+                        allChats?.length > 0 ?
                           <FlatList
                             key={listColumn}
                             horizontal={false}
                             scrollEnabled={false}
                             numColumns={listColumn}
-                            data={unreadChatList}
+                            data={allChats}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item, index }) => this.chatList(item, index)}
-                          />
-                          :
-                          favouriteList?.length > 0 ?
+                          /> : null
+                        :
+                        tabClick == 2 ?
+                          allChats?.length > 0 ?
                             <FlatList
                               key={listColumn}
                               horizontal={false}
                               scrollEnabled={false}
                               numColumns={listColumn}
-                              data={favouriteList}
+                              data={allChats}
                               keyExtractor={(item, index) => index.toString()}
-                              renderItem={({ item, index }) => this.chatFavouriteList(item, index)}
+                              renderItem={({ item, index }) => this.chatList(item, index)}
+                            /> :
+                            null
+                          :
+                          allChats?.length > 0 ?
+                            <FlatList
+                              key={listColumn}
+                              horizontal={false}
+                              scrollEnabled={false}
+                              numColumns={listColumn}
+                              data={allChats}
+                              keyExtractor={(item, index) => index.toString()}
+                              renderItem={({ item, index }) => this.chatList(item, index)}
                             /> : null
 
                     }
@@ -416,9 +365,24 @@ class Chats extends Component {
 
             </SafeAreaView>
           </SafeAreaProvider>
+          {loadingAllChats ? <Loader /> : null}
         </MenuProvider>
       </>
     );
   }
 }
-export default Chats;
+const mapStateToProps = (state) => {
+  return {
+    auth: state.auth,
+    chat: state.chat
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getAllChats: (user) => dispatch(getAllUserChats(user)),
+  };
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Chats);

@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     width: widthScreen / 1.12,
     alignSelf: 'center',
     marginTop: hp(1.5),
-    marginBottom: hp(1.5),
+    marginBottom: hp(1.8),
     justifyContent: 'space-between'
   },
   myconnect: {
@@ -55,6 +55,13 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontFamily: "Inter",
     color: Colors.Black
+  },
+  touchViewprofileOne1: {
+    fontSize: hp(2),
+    fontWeight: '700',
+    fontFamily: "Inter",
+    color: Colors.Black,
+    marginTop: hp(1)
   },
   mergeMessage: {
     marginTop: hp(0.5),

@@ -46,6 +46,41 @@ const authReducer = (state = initialState, action) => {
       };
 
 
+    // Forgot Password User
+    case types.FORGOT_USER_REQUEST:
+      return {
+        ...state,
+        loadingForgot: true,
+      };
+    case types.FORGOT_USER_SUCCESS:
+      return {
+        ...state,
+        // forgotEmail: action.payload,
+        loadingForgot: false,
+      };
+    case types.FORGOT_USER_FAILURE:
+      return {
+        ...state,
+        loadingForgot: false,
+      };
+
+
+
+       // Logout User
+    case types.LOGOUT_USER_REQUEST:
+      return {
+        ...state,
+      };
+    case types.LOGOUT_USER_SUCCESS:
+      return {
+        ...state,
+      };
+    case types.LOGOUT_USER_FAILURE:
+      return {
+        ...state,
+      };
+
+
     default: {
       return { ...state };
     }

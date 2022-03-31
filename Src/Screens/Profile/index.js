@@ -6,7 +6,10 @@ import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-nat
 import Images from '../../Styles/Images'
 import Styles from './Styles'
 import Colors from '../../Styles/Colors';
-
+import { connect } from 'react-redux';
+import { logoutUser } from '../../Redux/Actions/auth';
+import Loader from '../../Components/Loader';
+import { showMessage, hideMessage } from "react-native-flash-message";
 
 class Profile extends Component {
   constructor(props) {
@@ -14,6 +17,14 @@ class Profile extends Component {
     this.state = {
     };
   }
+
+  userlogOut = () => {
+    let data = {
+      refreshToken: this.props.auth?.userLogin?.tokens?.refresh?.token
+    }
+    this.props.logoutUser(data)
+  }
+
   render() {
 
     return (
@@ -30,11 +41,11 @@ class Profile extends Component {
                     <Text style={Styles.touchViewprofileOne}>{"Profile"}</Text>
                   </View>
                 </View>
-                <TouchableOpacity  onPress={() => {
-                this.props.navigation.navigate('ProfileStack', {
-                  screen: 'EditProfile',
-                })
-              }}>
+                <TouchableOpacity onPress={() => {
+                  this.props.navigation.navigate('ProfileStack', {
+                    screen: 'EditProfile',
+                  })
+                }}>
 
                   <Image source={Images.write} style={Styles.searchStyle} />
                 </TouchableOpacity>
@@ -96,12 +107,14 @@ class Profile extends Component {
             </View>
             <View style={Styles.secondPortion}>
               <View style={Styles.mainlog}>
-                <TouchableOpacity style={Styles.touchimglogout}>
+                <TouchableOpacity onPress={this.userlogOut}
+                  style={Styles.touchimglogout}>
                   <Image source={Images.logOut} style={Styles.imglogout} />
                   <Text style={Styles.touchtextlogout}>{"Logout"}</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={Styles.touchableimgarrow}>
+                <TouchableOpacity onPress={this.userlogOut}
+                style={Styles.touchableimgarrow}>
                   <Image source={Images.rightArrow} style={Styles.imgarrow} />
                 </TouchableOpacity>
               </View>
@@ -115,5 +128,17 @@ class Profile extends Component {
   }
 
 }
-
-export default Profile;
+const mapStateToProps = (state) => {
+  return {
+    auth: state.auth,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    logoutUser: (user) => dispatch(logoutUser(user)),
+  };
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Profile);

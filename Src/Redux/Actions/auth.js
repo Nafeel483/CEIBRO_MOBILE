@@ -16,4 +16,17 @@ export function registerUser(user) {
 }
 
 
+export function forgotPasswordUser(user) {
+  return {
+    type: types.FORGOT_USER_REQUEST,
+    payload: user
+  };
+}
 
+
+export function logoutUser(user) {
+  return {
+    type: types.LOGOUT_USER_REQUEST,
+    payload: user
+  };
+}

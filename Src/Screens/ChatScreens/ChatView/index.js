@@ -21,8 +21,11 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
+import { connect } from 'react-redux';
 import QuestionareModel from '../../../Components/QuestionareModel';
 import CreateQuestionare from '../../../Components/CreateQuestionare';
+import Loader from '../../../Components/Loader';
+import * as API from '../../../Redux/Selectors/AllApi';
 
 
 class ChatView extends Component {
@@ -30,46 +33,7 @@ class ChatView extends Component {
     super(props);
     this.state = {
       chatMessage: '',
-      allChatList: [
-        {
-          message: "Curabitur blandit tempus porttitor. Maecenas sed diam eget risus varius blandit sit amet non magna.",
-          sender: '2',
-          createdAt: '10:18 AM',
-          receiverName: 'Ilja Nikolajev',
-          receiverProfession: 'Electrician',
-          receiverPic: Images.charUserpic2,
-          document: false
-        },
-        {
-          message: "Duis mollis, est non onec ullamcorper nulla non metus auctor fringilla. Fusce dapibus, tellus ac cursus.",
-          sender: '2',
-          createdAt: '10:18 AM',
-          receiverName: 'Kristo Vunukainen',
-          receiverProfession: 'Project manager',
-          // receiverPic: Images.charUserpic3,
-          document: true
-        },
-        {
-          message: "Curabitur blandit tempus porttitor. Maecenas sed diam eget risus varius blandit sit amet non magna.",
-          sender: '3',
-          createdAt: '10:18 AM',
-          receiverName: 'Endel Pärn',
-          receiverProfession: 'Electrician',
-          receiverPic: Images.charUserpic1,
-          document: false
-        },
-        {
-          message: "Curabitur blandit tempus porttitor. Maecenas sed diam eget risus varius blandit sit amet non magna.",
-          sender: '3',
-          createdAt: '10:18 AM',
-          receiverName: 'Endel Pärn',
-          receiverProfession: 'Electrician',
-          receiverPic: Images.charUserpic1,
-          document: false,
-          questionare: true
-        },
-
-      ],
+      allChatList: [],
       receiverID: '2',
       senderID: '3',
       Opposite: [
@@ -88,9 +52,27 @@ class ChatView extends Component {
         }
       ],
       openModel: false,
-      createModel: false
+      createModel: false,
     };
   }
+
+  componentDidMount = () => {
+    let token = this.props.auth?.userLogin?.tokens?.access?.token
+
+    const messageID = this.props.route?.params?.chatRoomID
+
+
+    console.log("Nafeel__ messageID", messageID)
+    API.getChatRoomMessage(messageID, token)
+      .then((res) => {
+        console.log("Favourite Response api====>", res)
+        this.setState({ allChatList: res })
+      })
+      .catch((error) => {
+        console.log("Favourite api error", error)
+      });
+  }
+
   questionModelCall = () => {
     this.setState({ openModel: !this.state.openModel })
   }
@@ -100,6 +82,9 @@ class ChatView extends Component {
   render() {
     const { chatMessage, allChatList, Opposite, receiverID,
       senderID, openModel, createModel } = this.state
+    const chatRoomName = this.props.route?.params?.chatRoomName
+    const chatRoomProject = this.props.route?.params?.chatRoomProject
+    const chatRoomMembers = this.props.route?.params?.chatRoomMembers
     return (
       <>
         <MenuProvider>
@@ -114,17 +99,31 @@ class ChatView extends Component {
                         <Image source={Images.close} style={Styles.Setimage} />
                       </TouchableOpacity >
                       <View style={Styles.touchviewone}>
-                        <TouchableOpacity onPress={() => {
-                          this.props.navigation.navigate('ChatFeature', {
-                            screen: 'GroupInfo',
-                          })
-                        }}>
-                          <Text style={Styles.touchViewprofileOne}>{"Group name"}</Text>
-                        </TouchableOpacity>
-                        <Text style={Styles.mergeMessage}>
-                          <Text style={Styles.displayProject}>{"Project:  "}</Text>
-                          <Text style={Styles.nameProject}>{"Vesse-12"}</Text>
-                        </Text>
+                        {
+                          chatRoomProject != null ?
+                            <>
+                              <TouchableOpacity onPress={() => {
+                                this.props.navigation.navigate('ChatFeature', {
+                                  screen: 'GroupInfo',
+                                })
+                              }}>
+                                <Text style={Styles.touchViewprofileOne}>{chatRoomName}</Text>
+                              </TouchableOpacity>
+
+                              <Text style={Styles.mergeMessage}>
+                                <Text style={Styles.displayProject}>{"Project:  "}</Text>
+                                <Text style={Styles.nameProject}>{"Vesse-12"}</Text>
+                              </Text>
+                            </>
+                            :
+                            <TouchableOpacity onPress={() => {
+                              this.props.navigation.navigate('ChatFeature', {
+                                screen: 'GroupInfo',
+                              })
+                            }}>
+                              <Text style={Styles.touchViewprofileOne1}>{chatRoomName}</Text>
+                            </TouchableOpacity>
+                        }
                       </View>
                     </View>
                     <View style={Styles.myconnect}>
@@ -174,10 +173,11 @@ class ChatView extends Component {
                 <View style={{
                   marginTop: 20, marginBottom: 20, width: '95%', alignSelf: 'center'
                 }}>
-                  {allChatList.length > 0 && allChatList.map((showmessage) => (
+                  {allChatList?.length > 0 && allChatList?.map((showmessage) => (
                     <ShowChatMessages
                       showmessage={showmessage} key={showmessage._id} userId={showmessage._id} oppositeUser={Opposite}
                       receiverID={receiverID} senderID={senderID} questionModelCall={this.questionModelCall}
+                      chatRoomMembers={chatRoomMembers}
                     />
                   ))}
                 </View>
@@ -247,5 +247,18 @@ class ChatView extends Component {
   }
 
 }
-
-export default ChatView;
+const mapStateToProps = (state) => {
+  return {
+    auth: state.auth,
+    chat: state.chat
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getAllChats: (user) => dispatch(getAllUserChats(user)),
+  };
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ChatView);

@@ -149,10 +149,12 @@ const styles = StyleSheet.create({
     color: Colors.blue,
   },
   displayTime: {
-    fontSize: hp(1.7),
+    fontSize: hp(1.5),
     fontFamily: "Inter",
     fontWeight: '500',
     color: Colors.Black,
+    textAlign: 'center',
+    marginTop: hp(0.3)
   },
   notifTag: {
     height: hp(2.3),
@@ -161,7 +163,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Colors.red,
-    marginBottom: hp(0.5)
+    marginBottom: hp(0.5),
+    marginLeft: hp(0.3)
   },
   tagTextStyle: {
     fontSize: hp(1.3),
@@ -223,6 +226,12 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     height: hp(0.2),
     backgroundColor: Colors.bottomLine
-  }
+  },
+  menuimage: {
+    width: hp(0.8),
+    height: hp(2.5),
+    // marginTop: hp(1),
+    marginLeft: hp(2.5)
+  },
 });
 export default styles;

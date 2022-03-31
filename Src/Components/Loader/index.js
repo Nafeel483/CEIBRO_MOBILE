@@ -3,6 +3,8 @@ import { View, Animated, Easing, Image } from 'react-native';
 import styles from './styles';
 import Colors from "../../Styles/Colors";
 import Images from '../../Styles/Images';
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 
 class Loading extends Component {
   constructor(props) {
@@ -32,23 +34,23 @@ class Loading extends Component {
     });
     return (
       <View style={styles.container}>
-        <View
+        {/* <View
           style={{
-            backgroundColor: Colors.White,
+            // backgroundColor: Colors.White,
             width: 70,
             height: 70,
             borderRadius: 100,
             justifyContent: 'center',
             alignItems: 'center',
-          }}>
-          <Image
-            style={{
-              width: 60,
-              height: 60,
-            }}
-            source={Images.loaderLogo}
-          />
-        </View>
+          }}> */}
+        <Image
+          style={{
+            width: hp(8),
+            height: hp(8)
+          }}
+          source={Images.loaderLogo}
+        />
+        {/* </View> */}
       </View>
     )
   }

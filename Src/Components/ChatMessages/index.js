@@ -3,12 +3,11 @@ import styles from './Styles';
 import {
   View,
   Text,
-  SafeAreaView,
   TouchableOpacity,
   ScrollView,
   Image,
   TextInput,
-  ImageBackground
+  FlatList
 } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import Images from '../../Styles/Images';
@@ -21,16 +20,48 @@ import {
   MenuTrigger,
 } from 'react-native-popup-menu';
 
-export const ShowChatMessages = ({ showmessage, userId, oppositeUser, receiverID, senderID, questionModelCall }) => {
-  const { message, sender, createdAt, receiverName, receiverProfession, receiverPic } = showmessage;
-  var str_Name = receiverName.slice(0, 2)
+export const ShowChatMessages = ({ key, showmessage, userId, chatRoomMembers, questionModelCall }) => {
+  const { sender, createdAt, receiverName, receiverProfession, receiverPic,
+    myMessage, time, message,
+  } = showmessage;
+  var str_Name = showmessage?.sender?.firstName ? `${showmessage?.sender?.firstName?.[0]} ${showmessage?.sender?.surName?.[0]}` : ""
   var date = new Date()
   const recieved = userId != 2;
 
-  return <View style={senderID != sender ? styles.receivedWrapper : styles.chatMessageWrapper}>
-    <View style={senderID != sender ? styles.receivedInnerWrapper : styles.chatMessageInner}>
+  let seenMembers = chatRoomMembers?.length > 0 ? chatRoomMembers?.filter(o1 => showmessage?.readBy?.find(o2 => o1?.id === o2)) : []
+
+  // console.log("All___Seen Members:::::", seenMembers)
+  const mediaList = (item, index) => {
+    return (
+      <>
+        <TouchableOpacity key={index}>
+          <Image source={{ uri: item?.url }} style={styles.mediaFiles} />
+        </TouchableOpacity>
+      </>
+    )
+  }
+  const showSeenMembers = (item, index) => {
+    return (
+      <>
+        {
+          item?.profilePic ?
+            <TouchableOpacity>
+              <Image source={{ uri: item?.profilePic }} style={styles.mediaSeenFiles} />
+            </TouchableOpacity> :
+
+            <TouchableOpacity style={styles.mediaSeenFilesName}>
+              <Text style={styles.mediaSeenInnerName}>{`${item?.firstName?.[0]} ${item?.surName?.[0]}`}</Text>
+            </TouchableOpacity>
+        }
+      </>
+    )
+  }
+
+  return <View key={key}
+    style={myMessage == false ? styles.receivedWrapper : styles.chatMessageWrapper}>
+    <View style={myMessage == false ? styles.receivedInnerWrapper : styles.chatMessageInner}>
       <View style={styles.chatMessageHeader}>
-        {senderID != sender ?
+        {myMessage == false ?
           <View style={styles.avatarName}>
             {/* <Text style={styles.textName}>{"Rosa Morales Aspillaga"}</Text> */}
             <View style={{
@@ -52,7 +83,7 @@ export const ShowChatMessages = ({ showmessage, userId, oppositeUser, receiverID
       </View>
 
       {
-        senderID != sender ?
+        myMessage == false ?
           <>
             <Menu>
               <MenuTrigger>
@@ -60,8 +91,8 @@ export const ShowChatMessages = ({ showmessage, userId, oppositeUser, receiverID
                   <View style={styles.innerView}>
                     <View style={styles.messageHeader}>
                       {
-                        showmessage?.receiverPic ?
-                          <Image source={receiverPic} style={styles.userPicImage} />
+                        showmessage?.sender?.profilePic ?
+                          <Image source={{ uri: showmessage?.sender?.profilePic }} style={styles.userPicImage} />
                           :
                           <View style={styles.userProfileWrapper}>
                             <Text style={styles.userProfileText}>{str_Name?.toUpperCase()}</Text>
@@ -71,18 +102,40 @@ export const ShowChatMessages = ({ showmessage, userId, oppositeUser, receiverID
                         marginLeft: hp(2)
                       }}>
                         <View style={styles.messageHeader}>
-                          <Text style={styles.userName}>{receiverName}</Text>
-                          <Text style={styles.DateWrapper1}>{createdAt}</Text>
+                          <Text style={styles.userName}>{`${showmessage?.sender?.firstName} ${showmessage?.sender?.surName}`}</Text>
+                          <Text style={styles.DateWrapper1}>{time}</Text>
                         </View>
-                        <Text style={styles.displayMessage}>{`Company . ${receiverProfession}`}</Text>
-                        <Text style={styles.messageText}>{message}</Text>
+                        {
+                          showmessage?.sender?.companyName ?
+                            <Text style={styles.displayMessage}>{`Company . ${showmessage?.sender?.companyName}`}</Text>
+                            : null
+                        }
 
                         {
-                          showmessage?.document == true ?
+                          showmessage?.questions?.length > 0 ?
+                            <TouchableOpacity onPress={questionModelCall}
+                              style={styles.questionContainer}>
+                              <Text style={styles.questionText}>{"Questionarie name"}</Text>
+                              <Image source={Images.document} style={styles.questionDoc} />
+                            </TouchableOpacity>
+                            :
+                            <Text style={styles.messageText}>{message}</Text>
+                        }
+                        {
+                          showmessage?.files?.length > 0 ?
                             <View style={styles.documentWrapper}>
                               <View style={styles.documentInnerWrapper}>
                                 <View style={styles.mediaFilesWrapper}>
-                                  <TouchableOpacity>
+                                  <FlatList
+                                    key={4}
+                                    horizontal={false}
+                                    scrollEnabled={false}
+                                    numColumns={4}
+                                    data={showmessage?.files}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    renderItem={({ item, index }) => mediaList(item, index)}
+                                  />
+                                  {/* <TouchableOpacity>
                                     <Image source={Images.media1} style={styles.mediaFiles} />
                                   </TouchableOpacity>
                                   <TouchableOpacity>
@@ -90,7 +143,7 @@ export const ShowChatMessages = ({ showmessage, userId, oppositeUser, receiverID
                                   </TouchableOpacity>
                                   <TouchableOpacity>
                                     <Image source={Images.media3} style={styles.mediaFiles} />
-                                  </TouchableOpacity>
+                                  </TouchableOpacity> */}
                                 </View>
                                 <TouchableOpacity style={styles.menuContainer}>
                                   <Image source={Images.menu} style={styles.menuimage} />
@@ -152,20 +205,26 @@ export const ShowChatMessages = ({ showmessage, userId, oppositeUser, receiverID
               </MenuOptions>
             </Menu>
             {/* Seen Users */}
-            <View style={styles.bottomScene}>
-              <View style={styles.mediaFilesWrapper}>
-                <TouchableOpacity>
-                  <Image source={Images.charUserpic1} style={styles.mediaSeenFiles} />
-                </TouchableOpacity>
-                <TouchableOpacity>
-                  <Image source={Images.charUserpic4} style={styles.mediaSeenFiles} />
-                </TouchableOpacity>
-                <TouchableOpacity>
-                  <Image source={Images.charUserpic5} style={styles.mediaSeenFiles} />
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.seenMessage}>{"Seen"}</Text>
-            </View>
+            {
+              seenMembers?.length > 0 ?
+
+                <View style={styles.bottomScene}>
+                  <View style={styles.mediaFilesWrapper}>
+                    <FlatList
+                      key={4}
+                      horizontal={false}
+                      scrollEnabled={false}
+                      numColumns={4}
+                      data={seenMembers}
+                      keyExtractor={(item, index) => index.toString()}
+                      renderItem={({ item, index }) => showSeenMembers(item, index)}
+                    />
+                   
+                  </View>
+                  <Text style={styles.seenMessage}>{"Seen"}</Text>
+                </View>
+                : null
+            }
             {/* <Text style={styles.DateWrapper}>{createdAt}</Text> */}
           </>
           :
@@ -174,8 +233,8 @@ export const ShowChatMessages = ({ showmessage, userId, oppositeUser, receiverID
               <View style={styles.innerView}>
                 <View style={styles.messageHeader}>
                   {
-                    showmessage?.receiverPic ?
-                      <Image source={receiverPic} style={styles.userPicImage} />
+                    showmessage?.sender?.profilePic ?
+                      <Image source={{ uri: showmessage?.sender?.profilePic }} style={styles.userPicImage} />
                       :
                       <View style={styles.userProfileWrapper}>
                         <Text style={styles.userProfileText}>{str_Name?.toUpperCase()}</Text>
@@ -185,12 +244,16 @@ export const ShowChatMessages = ({ showmessage, userId, oppositeUser, receiverID
                     marginLeft: hp(2)
                   }}>
                     <View style={styles.messageHeader}>
-                      <Text style={styles.userName}>{receiverName}</Text>
-                      <Text style={styles.DateWrapper1}>{createdAt}</Text>
+                      <Text style={styles.userName}>{`${showmessage?.sender?.firstName} ${showmessage?.sender?.surName}`}</Text>
+                      <Text style={styles.DateWrapper1}>{time}</Text>
                     </View>
-                    <Text style={styles.displayMessage}>{`Company . ${receiverProfession}`}</Text>
                     {
-                      showmessage?.questionare == true ?
+                      showmessage?.sender?.companyName ?
+                        <Text style={styles.displayMessage}>{`Company . ${showmessage?.sender?.companyName}`}</Text>
+                        : null
+                    }
+                    {
+                      showmessage?.questions?.length > 0 ?
                         <TouchableOpacity onPress={questionModelCall}
                           style={styles.questionContainer}>
                           <Text style={styles.questionText}>{"Questionarie name"}</Text>
@@ -201,19 +264,19 @@ export const ShowChatMessages = ({ showmessage, userId, oppositeUser, receiverID
                     }
 
                     {
-                      showmessage?.document == true ?
+                      showmessage?.files?.length > 0 ?
                         <View style={styles.documentWrapper}>
                           <View style={styles.documentInnerWrapper}>
                             <View style={styles.mediaFilesWrapper}>
-                              <TouchableOpacity>
-                                <Image source={Images.media1} style={styles.mediaFiles} />
-                              </TouchableOpacity>
-                              <TouchableOpacity>
-                                <Image source={Images.media2} style={styles.mediaFiles} />
-                              </TouchableOpacity>
-                              <TouchableOpacity>
-                                <Image source={Images.media3} style={styles.mediaFiles} />
-                              </TouchableOpacity>
+                              <FlatList
+                                key={4}
+                                horizontal={false}
+                                scrollEnabled={false}
+                                numColumns={4}
+                                data={showmessage?.files}
+                                keyExtractor={(item, index) => index.toString()}
+                                renderItem={({ item, index }) => mediaList(item, index)}
+                              />
                             </View>
                             <TouchableOpacity style={styles.menuContainer}>
                               <Image source={Images.menu} style={styles.menuimage} />
@@ -226,6 +289,26 @@ export const ShowChatMessages = ({ showmessage, userId, oppositeUser, receiverID
                 </View>
               </View>
             </View>
+            {
+              seenMembers?.length > 0 ?
+
+                <View style={styles.bottomScene}>
+                  <View style={styles.mediaFilesWrapper}>
+                    <FlatList
+                      key={4}
+                      horizontal={false}
+                      scrollEnabled={false}
+                      numColumns={4}
+                      data={seenMembers}
+                      keyExtractor={(item, index) => index.toString()}
+                      renderItem={({ item, index }) => showSeenMembers(item, index)}
+                    />
+                   
+                  </View>
+                  <Text style={styles.seenMessage}>{"Seen"}</Text>
+                </View>
+                : null
+            }
             {/* <Text style={styles.DateWrapper1}>{createdAt}</Text> */}
           </>
       }

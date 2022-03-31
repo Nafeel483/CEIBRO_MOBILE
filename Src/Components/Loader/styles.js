@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 10,
-    backgroundColor: 'rgba(60,60,60,0.75)',
+    backgroundColor: 'rgba(60,60,60,0.35)',
     // opacity: 0.5,
     position: 'absolute'
 

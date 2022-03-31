@@ -34,7 +34,7 @@ class Login extends Component {
     this.state = {
       email: '',
       password: '',
-      checkBoxValue: false,
+      checkBoxValue: true,
       passwordSeen: false,
       emptyEmail: false,
       emptyPassword: false
@@ -163,7 +163,7 @@ class Login extends Component {
 
                   <View style={Styles.loginButtonContainer}>
                     <TouchableOpacity onPress={this.submit}
-                     
+
                       style={Styles.checkOutButton}>
                       <Text style={Styles.checkOutText}>{"Login"}</Text>
                     </TouchableOpacity>
@@ -194,10 +194,10 @@ class Login extends Component {
                   </View>
                 </View>
               </View>
-              {loadingLoginEmail ? <Loader /> : null}
             </SafeAreaView>
           </SafeAreaProvider>
         </KeyboardAwareScrollView>
+        {loadingLoginEmail ? <Loader /> : null}
       </>
     );
   }

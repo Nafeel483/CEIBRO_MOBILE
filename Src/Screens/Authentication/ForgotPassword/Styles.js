@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   },
   loginButtonContainer: {
     width: widthScreen / 1.2,
-    marginTop: hp(4),
+    marginTop: hp(8),
     flexDirection: 'row',
     alignSelf: 'center',
     justifyContent: 'space-between'

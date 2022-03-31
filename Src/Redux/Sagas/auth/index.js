@@ -2,7 +2,8 @@ import { Alert } from 'react-native';
 import { put, takeEvery, call, delay } from 'redux-saga/effects';
 import { types } from '../../Types/auth';
 import {
-  loginWithEmailApi, registerUserApi
+  loginWithEmailApi, registerUserApi,
+  forgotUserApi, logoutApi
 } from './api';
 import AsyncStorage from '@react-native-community/async-storage';
 import { showMessage, hideMessage } from "react-native-flash-message";
@@ -90,9 +91,75 @@ function* registerUser(action) {
 
 
 
+// forgotPasswordUser
+function* forgotPasswordUser(action) {
+  try {
+    const result = yield forgotUserApi(action.payload);
+    console.log('Forgot Email Response', result)
+    if (result?.status === 204) {
+      yield put({ type: types.FORGOT_USER_SUCCESS, payload: result.message });
+      // saveLoginData(result.message)     
+      // navigate('BottomTabView', {
+      //   screen: 'Dashboard',
+      // });
+    }
+    else {
+      yield put({ type: types.FORGOT_USER_FAILURE, payload: result.message });
+      if (result.message?.message) {
+        showMessage({
+          message: "Email Not Found",
+          description: "No Such Email Found",
+          type: "default",
+          backgroundColor: "#9c1730", // background color
+          color: "white" // text color
+        })
+      }
+      else {
+      }
+    }
+  } catch (error) {
+    yield put({ type: types.FORGOT_USER_FAILURE, payload: error });
+    console.log("The Error", error);
+  }
+}
+
+// logoutUser
+function* logoutUser(action) {
+  try {
+    const result = yield logoutApi(action.payload);
+    console.log('Logout Response', result)
+    if (result?.status == 204) {
+      yield put({ type: types.LOGOUT_USER_SUCCESS, payload: result.message });
+      navigate('AuthStack', {
+        screen: 'Login',
+      });
+    }
+    else {
+      yield put({ type: types.LOGOUT_USER_FAILURE, payload: result.message });
+      if (result.message?.message) {
+        // showMessage({
+        //   message: "Email Not Found",
+        //   description: "No Such Email Found",
+        //   type: "default",
+        //   backgroundColor: "#9c1730", // background color
+        //   color: "white" // text color
+        // })
+      }
+      else {
+      }
+    }
+  } catch (error) {
+    yield put({ type: types.LOGOUT_USER_FAILURE, payload: error });
+    console.log("The Error", error);
+  }
+}
+
+
 export function* authWatcher() {
   yield takeEvery(types.LOGIN_REQUEST, loginWithEmail);
   yield takeEvery(types.REGISTER_USER_REQUEST, registerUser);
+  yield takeEvery(types.FORGOT_USER_REQUEST, forgotPasswordUser);
+  yield takeEvery(types.LOGOUT_USER_REQUEST, logoutUser);
 
 
 }

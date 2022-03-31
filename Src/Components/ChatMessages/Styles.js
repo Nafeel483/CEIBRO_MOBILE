@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontFamily: "Inter",
     color: Colors.Black,
+    width: hp(18)
   },
   displayMessage: {
     fontSize: hp(1.5),
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
     width: hp(3),
     height: hp(3),
     borderRadius: 5,
-    marginRight: hp(0.5)
+    marginRight: hp(1)
   },
   menuContainer: {
     width: hp(3),
@@ -193,6 +194,23 @@ const styles = StyleSheet.create({
     height: hp(1.65),
     borderRadius: 5,
     marginRight: hp(0.5)
+  },
+  mediaSeenFilesName:{
+    width: hp(1.65),
+    height: hp(1.65),
+    borderRadius: 5,
+    marginRight: hp(0.5),
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.borderColor,
+    backgroundColor: Colors.borderColor
+  },
+  mediaSeenInnerName:{
+    fontSize: hp(0.5),
+    fontWeight: '500',
+    fontFamily: "Inter",
+    color: Colors.Black
   },
   seenMessage: {
     fontSize: hp(1.3),

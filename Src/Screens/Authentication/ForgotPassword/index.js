@@ -6,21 +6,17 @@ import {
   ImageBackground,
   TouchableOpacity,
   TextInput,
-  ScrollView,
   StatusBar,
-  FlatList
 } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import SafeAreaView from 'react-native-safe-area-view';
-import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Styles from './Styles';
 import Images from '../../../Styles/Images';
 import Colors from '../../../Styles/Colors';
-import CheckBox from '@react-native-community/checkbox';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 import AsyncStorage from '@react-native-community/async-storage';
 import { connect } from 'react-redux';
-import { loginWithEmail } from '../../../Redux/Actions/auth';
+import { forgotPasswordUser } from '../../../Redux/Actions/auth';
 import Loader from '../../../Components/Loader';
 import { showMessage, hideMessage } from "react-native-flash-message";
 
@@ -33,19 +29,7 @@ class ForgotPassword extends Component {
     super(props);
     this.state = {
       email: '',
-      password: '',
-      checkBoxValue: false,
-      passwordSeen: false,
-      emptyEmail: false,
-      emptyPassword: false
     };
-  }
-
-  onChange = () => {
-    this.setState({ checkBoxValue: !this.state.checkBoxValue })
-  }
-  passwordShow = () => {
-    this.setState({ passwordSeen: !this.state.passwordSeen })
   }
 
   submit = () => {
@@ -59,30 +43,20 @@ class ForgotPassword extends Component {
         color: "white", // text color
       });
     }
-    else if (password.length == 0) {
-      showMessage({
-        message: "Invaid Password",
-        description: "Enter Valid Password",
-        type: "default",
-        backgroundColor: "#9c1730", // background color
-        color: "white", // text color
-      });
-    }
     else {
       const user = {
         email: email,
-        password: password,
       };
-      console.log("Login User::", user)
-      this.props.loginUsers(user);
+      console.log("Forgot User::", user)
+      this.props.forgotUserPassword(user);
 
       // this.props.navigation.navigate('Dashboard')
     }
   }
 
   render() {
-    const { password, email, checkBoxValue, passwordSeen } = this.state
-    const { loadingLoginEmail } = this.props.auth
+    const { email } = this.state
+    const { loadingForgot } = this.props.auth
 
     return (
       <>
@@ -117,7 +91,7 @@ class ForgotPassword extends Component {
                     />
                   </View>
 
-                
+
 
                   <View style={Styles.loginButtonContainer}>
                     <TouchableOpacity onPress={this.submit}
@@ -127,9 +101,9 @@ class ForgotPassword extends Component {
                       //   })
                       // }}
                       style={Styles.checkOutButton}>
-                      <Text style={Styles.checkOutText}>{"Forgot Password"}</Text>
+                      <Text style={Styles.checkOutText}>{"Reset Password"}</Text>
                     </TouchableOpacity>
-                    
+
                   </View>
 
 
@@ -150,7 +124,7 @@ class ForgotPassword extends Component {
                   </View>
                 </View>
               </View>
-              {loadingLoginEmail ? <Loader /> : null}
+              {loadingForgot ? <Loader /> : null}
             </SafeAreaView>
           </SafeAreaProvider>
         </KeyboardAwareScrollView>
@@ -165,7 +139,7 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    loginUsers: (user) => dispatch(loginWithEmail(user)),
+    forgotUserPassword: (user) => dispatch(forgotPasswordUser(user)),
   };
 };
 export default connect(
