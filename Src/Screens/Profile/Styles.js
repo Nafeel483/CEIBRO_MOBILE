@@ -48,10 +48,9 @@ const styles = StyleSheet.create({
     width: wp('19%')
   },
   textiija: {
-
     marginTop: hp('2%'),
     fontWeight: '700',
-    fontSize: 25
+    fontSize: hp(2)
   },
   textno: {
     fontWeight: '500',

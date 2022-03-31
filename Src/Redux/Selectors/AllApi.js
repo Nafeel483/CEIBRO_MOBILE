@@ -46,6 +46,21 @@ export const getChatRoomMessage = (roomId, token) => {
   }).then(response => response.data);
 }
 
+
+export const getProjectMembers = (projectId, token) => {
+  console.log("Data getProjectMembers_  ::  ", projectId, token)
+  return axios({
+    method: 'get',
+    url: `${CONSTANTS.BASE_URL}/project/members/${projectId}`,
+    headers: {
+      "accept": 'application/json',
+      "Content-Type": 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer ' + token,
+    },
+
+  }).then(response => response.data);
+}
+
 // export const employeeByPin = (data, token) => {
 
 //   return axios({

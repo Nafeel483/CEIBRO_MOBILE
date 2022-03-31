@@ -31,7 +31,8 @@ const images = {
   closeIcon: require('../Assets/Projects/closeIcon.png'),
   reject: require('../Assets/Projects/reject.png'),
   accept: require('../Assets/Projects/accept.png'),
-
+  checked: require('../Assets/Projects/checked.png'),
+  emptyChecked: require('../Assets/Projects/emptyChecked.png'),
 
   // Profile Assets
   logOut: require('../Assets/Profile/logOut.png'),

@@ -8,6 +8,7 @@ import Styles from './Styles'
 import Colors from '../../Styles/Colors';
 import { connect } from 'react-redux';
 import { logoutUser } from '../../Redux/Actions/auth';
+import { getMyProfile } from '../../Redux/Actions/users';
 import Loader from '../../Components/Loader';
 import { showMessage, hideMessage } from "react-native-flash-message";
 
@@ -16,6 +17,11 @@ class Profile extends Component {
     super(props);
     this.state = {
     };
+  }
+
+  componentDidMount = () => {
+    let accessToken = this.props.auth?.userLogin?.tokens?.access?.token
+    this.props.getMyProfile(accessToken)
   }
 
   userlogOut = () => {
@@ -27,6 +33,8 @@ class Profile extends Component {
 
   render() {
 
+    const { loadingMyProfile } = this.props.user
+    const myProfile = this.props.user?.myProfile
     return (
       <>
         <SafeAreaProvider>
@@ -55,8 +63,8 @@ class Profile extends Component {
               />
               <View style={Styles.mainviewtwo}>
                 <Image source={Images.userPic} style={Styles.mainimgtwo} />
-                <Text style={Styles.textiija}>{"Ilja Nikolajev"}</Text>
-                <Text>{"@name.surname"}</Text>
+                <Text style={Styles.textiija}>{`${myProfile?.firstName} ${myProfile?.surName}`}</Text>
+                <Text>{myProfile?.email}</Text>
                 <Text style={Styles.textno}>{'+ 372 5512 3456'}</Text>
                 <Text style={{ color: '#0076CB' }}>{'name.surname@ceibro.com'}</Text>
                 <Text style={Styles.company}>{'Company Ltd'}</Text>
@@ -114,13 +122,14 @@ class Profile extends Component {
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={this.userlogOut}
-                style={Styles.touchableimgarrow}>
+                  style={Styles.touchableimgarrow}>
                   <Image source={Images.rightArrow} style={Styles.imgarrow} />
                 </TouchableOpacity>
               </View>
             </View>
           </SafeAreaView>
         </SafeAreaProvider>
+        {loadingMyProfile ? <Loader /> : null}
       </>
 
     )
@@ -131,11 +140,13 @@ class Profile extends Component {
 const mapStateToProps = (state) => {
   return {
     auth: state.auth,
+    user: state.user,
   };
 };
 const mapDispatchToProps = (dispatch) => {
   return {
     logoutUser: (user) => dispatch(logoutUser(user)),
+    getMyProfile: (user) => dispatch(getMyProfile(user)),
   };
 };
 export default connect(

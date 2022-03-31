@@ -87,6 +87,16 @@ const styles = StyleSheet.create({
     fontFamily: "Inter",
     fontWeight: '500'
   },
+  emailInput1: {
+    marginLeft: hp(1.5),
+    flex: 1,
+  },
+  emailInput1Text: {
+    fontSize: hp(1.7),
+    color: Colors.Black,
+    fontFamily: "Inter",
+    fontWeight: '500'
+  },
   searchStyle: {
     width: hp(1.5),
     height: hp(1.5),

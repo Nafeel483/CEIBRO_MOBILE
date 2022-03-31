@@ -15,7 +15,14 @@ import CheckBox from '@react-native-community/checkbox';
 import Images from '../../../Styles/Images'
 import Styles from './Styles'
 import Colors from '../../../Styles/Colors';
-
+import ProjectModel from '../../../Components/ProjectModel';
+import { connect } from 'react-redux';
+import { showMessage, hideMessage } from "react-native-flash-message";
+import Loader from '../../../Components/Loader';
+import { getAllProjects } from '../../../Redux/Actions/project';
+import { getAllUsers } from '../../../Redux/Actions/users';
+import * as API from '../../../Redux/Selectors/AllApi';
+import moment from 'moment';
 
 class NewChat extends Component {
   constructor(props) {
@@ -25,6 +32,8 @@ class NewChat extends Component {
       chatWith: '',
       chatProject: '',
       listColumn: 1,
+      openProject: false,
+      projectId: '',
       suggestList: [
         {
           name: "Ilja Nikolajev",
@@ -87,6 +96,46 @@ class NewChat extends Component {
       ]
     };
   }
+
+
+  componentDidMount = () => {
+    let accessToken = this.props.auth?.userLogin?.tokens?.access?.token
+    this.props.getAllProjects(accessToken)
+  }
+  openProjectList = () => {
+    this.setState({ openProject: !this.state.openProject })
+  }
+  selectCheckedProject = (item) => {
+    const { chatProject, projectId } = this.state
+    if (projectId == item?.id) {
+      this.setState({
+        chatProject: '',
+        projectId: '',
+        openProject: !this.state.openProject
+      })
+    }
+    else {
+      this.setState({
+        chatProject: item?.title,
+        projectId: item?.id,
+        openProject: !this.state.openProject
+      })
+      this.getProjectMember(item?.id)
+    }
+  }
+  getProjectMember = (projectId) => {
+    let token = this.props.auth?.userLogin?.tokens?.access?.token
+
+    API.getProjectMembers(projectId, token)
+      .then((res) => {
+        console.log("getProjectMember Response api====>", res)
+        this.setState({ allChatList: res })
+      })
+      .catch((error) => {
+        console.log("getProjectMember api error", error)
+      });
+  }
+
   onAddChatPerson = (key) => {
     const { suggestList } = this.state
     let data = this.state.suggestList
@@ -135,7 +184,12 @@ class NewChat extends Component {
   }
 
   render() {
-    const { chatTitle, chatWith, chatProject, listColumn, suggestList, nameBList, nameAList } = this.state
+    const { chatTitle, chatWith, chatProject, listColumn,
+      suggestList, nameBList, nameAList,
+      openProject
+    } = this.state
+
+    let allProjects = this.props.project?.allProjects
     return (
       <>
         <SafeAreaProvider>
@@ -170,25 +224,19 @@ class NewChat extends Component {
               />
             </View>
             {/* Project */}
-            <View style={Styles.emailWrapper}>
+            <TouchableOpacity onPress={this.openProjectList}
+              style={Styles.emailWrapper}>
               <Text style={Styles.tabText}>{"Project"}</Text>
               <View style={Styles.inboxLine} />
-              <TextInput
-                style={Styles.emailInput}
-                value={chatProject}
-                placeholder={"Please select a project"}
-                placeholderTextColor={Colors.textColor}
-                autoCapitalize='none'
-                onChangeText={(value) => {
-                  this.setState({
-                    chatProject: value,
-                  })
-                }}
-              />
+              <View style={Styles.emailInput1}>
+                <Text style={[Styles.emailInput1Text, {
+                  color: chatProject != "" ? Colors.Black : Colors.textColor
+                }]}>{chatProject != "" ? chatProject : "Please select a project"}</Text>
+              </View>
               <TouchableOpacity>
                 <Image source={Images.dropDown} style={Styles.searchStyle} />
               </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
             {/*  */}
             <View style={Styles.emailWrapper}>
               <Text style={Styles.tabText}>{"Chat with"}</Text>
@@ -268,6 +316,19 @@ class NewChat extends Component {
               style={Styles.filterStyle}>
               <Text style={Styles.plusIconText}>{"Start Conversation"}</Text>
             </TouchableOpacity>
+
+
+            {
+              openProject == true ?
+                <ProjectModel
+                  open={openProject}
+                  project={allProjects}
+                  chatProject={chatProject}
+                  selectCheckedProject={this.selectCheckedProject}
+                  close={this.openProjectList}
+                />
+                : null
+            }
           </SafeAreaView>
         </SafeAreaProvider>
       </>
@@ -277,5 +338,22 @@ class NewChat extends Component {
   }
 
 }
+const mapStateToProps = (state) => {
+  return {
+    auth: state.auth,
+    chat: state.chat,
+    user: state.user,
+    project: state.project,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getAllProjects: (user) => dispatch(getAllProjects(user)),
+    getAllUsers: (user) => dispatch(getAllUsers(user)),
 
-export default NewChat;
+  };
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(NewChat);
