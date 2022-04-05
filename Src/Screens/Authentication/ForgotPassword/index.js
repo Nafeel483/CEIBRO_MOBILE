@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
   StatusBar,
+  ScrollView
 } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import SafeAreaView from 'react-native-safe-area-view';
@@ -64,67 +65,69 @@ class ForgotPassword extends Component {
           contentContainerStyle={Styles.fullContainer}>
           <SafeAreaProvider>
             <SafeAreaView style={Styles.safeAreaContainer} forceInset={{ top: 'never' }}>
-              <StatusBar barStyle="light-content" />
-              <View style={Styles.headerContent}>
-                <ImageBackground source={Images.visual} style={Styles.headingBackground} >
-                  <Image source={Images.loginLogo} style={Styles.logoStyle} />
-                  <View style={Styles.innerHeader}>
-                    <Text style={Styles.loginText}>{"Forgot Password"}</Text>
-                  </View>
-                </ImageBackground>
-              </View>
-              <View style={Styles.bottomContent}>
-                <View style={Styles.bottomContainer}>
+              <ScrollView showsVerticalScrollIndicator={false}>
+                <StatusBar barStyle="light-content" />
+                <View style={Styles.headerContent}>
+                  <ImageBackground source={Images.visual} style={Styles.headingBackground} >
+                    <Image source={Images.loginLogo} style={Styles.logoStyle} />
+                    <View style={Styles.innerHeader}>
+                      <Text style={Styles.loginText}>{"Forgot Password"}</Text>
+                    </View>
+                  </ImageBackground>
+                </View>
+                <View style={Styles.bottomContent}>
+                  <View style={Styles.bottomContainer}>
 
-                  <View style={Styles.emailWrapper}>
-                    <TextInput
-                      style={Styles.emailInput}
-                      value={email}
-                      placeholder={"Enter username or email"}
-                      placeholderTextColor={Colors.textColor}
-                      autoCapitalize='none'
-                      onChangeText={(value) => {
-                        this.setState({
-                          email: value,
+                    <View style={Styles.emailWrapper}>
+                      <TextInput
+                        style={Styles.emailInput}
+                        value={email}
+                        placeholder={"Enter username or email"}
+                        placeholderTextColor={Colors.textColor}
+                        autoCapitalize='none'
+                        onChangeText={(value) => {
+                          this.setState({
+                            email: value,
+                          })
+                        }}
+                      />
+                    </View>
+
+
+
+                    <View style={Styles.loginButtonContainer}>
+                      <TouchableOpacity onPress={this.submit}
+                        // onPress={() => {
+                        //   this.props.navigation.navigate('BottomTabView', {
+                        //     screen: 'Dashboard',
+                        //   })
+                        // }}
+                        style={Styles.checkOutButton}>
+                        <Text style={Styles.checkOutText}>{"Reset Password"}</Text>
+                      </TouchableOpacity>
+
+                    </View>
+
+
+
+                  </View>
+                </View>
+                <View style={Styles.bottomContent1}>
+                  <View style={Styles.bottomContainer1}>
+                    <View style={Styles.orderCheckContainer}>
+                      <Text style={Styles.noAccountText}>{"Don't have an account? "}</Text>
+                      <TouchableOpacity onPress={() => {
+                        this.props.navigation.navigate('AuthStack', {
+                          screen: 'Signup',
                         })
-                      }}
-                    />
-                  </View>
-
-
-
-                  <View style={Styles.loginButtonContainer}>
-                    <TouchableOpacity onPress={this.submit}
-                      // onPress={() => {
-                      //   this.props.navigation.navigate('BottomTabView', {
-                      //     screen: 'Dashboard',
-                      //   })
-                      // }}
-                      style={Styles.checkOutButton}>
-                      <Text style={Styles.checkOutText}>{"Reset Password"}</Text>
-                    </TouchableOpacity>
-
-                  </View>
-
-
-
-                </View>
-              </View>
-              <View style={Styles.bottomContent1}>
-                <View style={Styles.bottomContainer1}>
-                  <View style={Styles.orderCheckContainer}>
-                    <Text style={Styles.noAccountText}>{"Don't have an account? "}</Text>
-                    <TouchableOpacity onPress={() => {
-                      this.props.navigation.navigate('AuthStack', {
-                        screen: 'Signup',
-                      })
-                    }}>
-                      <Text style={Styles.signupText}>{"Sign Up!"}</Text>
-                    </TouchableOpacity>
+                      }}>
+                        <Text style={Styles.signupText}>{"Sign Up!"}</Text>
+                      </TouchableOpacity>
+                    </View>
                   </View>
                 </View>
-              </View>
-              {loadingForgot ? <Loader /> : null}
+                {loadingForgot ? <Loader /> : null}
+              </ScrollView>
             </SafeAreaView>
           </SafeAreaProvider>
         </KeyboardAwareScrollView>

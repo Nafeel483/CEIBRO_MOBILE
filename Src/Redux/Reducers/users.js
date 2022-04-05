@@ -30,7 +30,7 @@ const userReducer = (state = initialState, action) => {
 
 
 
-      //  Get All Chats
+    //  Get MY Profile
     case types.GET_MY_PROFILE_REQUEST:
       return {
         ...state,
@@ -48,7 +48,44 @@ const userReducer = (state = initialState, action) => {
         loadingMyProfile: false,
       };
 
-   
+
+
+    //  Update My Profile
+    case types.UPDATE_MY_PROFILE_REQUEST:
+      return {
+        ...state,
+        loadingUpdateProfile: true,
+      };
+    case types.UPDATE_MY_PROFILE_SUCCESS:
+      return {
+        ...state,
+        myUpdateProfile: action.payload,
+        loadingUpdateProfile: false,
+      };
+    case types.UPDATE_MY_PROFILE_FAILURE:
+      return {
+        ...state,
+        loadingUpdateProfile: false,
+      };
+
+
+        //  Update My Profile Pic
+    case types.UPDATE_MY_PROFILE_PIC_REQUEST:
+      return {
+        ...state,
+        loadingUpdateProfilePic: true,
+      };
+    case types.UPDATE_MY_PROFILE_PIC_SUCCESS:
+      return {
+        ...state,
+        myUpdateProfilePic: action.payload,
+        loadingUpdateProfilePic: false,
+      };
+    case types.UPDATE_MY_PROFILE_PIC_FAILURE:
+      return {
+        ...state,
+        loadingUpdateProfilePic: false,
+      };
 
 
     default: {

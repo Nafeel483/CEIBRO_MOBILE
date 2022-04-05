@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     fontFamily: "Inter",
     fontWeight: '500'
   },
-  textFilterHeading:{
+  textFilterHeading: {
     fontSize: hp(2),
     color: Colors.Black,
     fontFamily: "Inter",
@@ -139,6 +139,21 @@ const styles = StyleSheet.create({
     width: hp(4),
     height: hp(4),
     borderRadius: 8,
+  },
+  userProfileWrapper: {
+    width: hp(4),
+    height: hp(4),
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.borderColor
+  },
+  userProfileText: {
+    fontSize: hp(1.5),
+    fontWeight: '500',
+    fontFamily: "Inter",
+    color: Colors.Black
   },
   chatFirstWrapper: {
     flexDirection: 'row',

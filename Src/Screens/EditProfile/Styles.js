@@ -35,8 +35,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#0076CB'
   },
   mainimgtwo: {
-    height: wp('19%'),
-    width: wp('19%')
+    height: wp('25%'),
+    width: wp('25%'),
+    justifyContent: 'flex-end',
+    borderRadius: 8
   },
   mainviewtwo: {
     alignItems: 'center',
@@ -45,7 +47,7 @@ const styles = StyleSheet.create({
   line: {
     borderBottomColor: '#ECF0F1',
     borderBottomWidth: 1.5,
-    marginTop: hp('2%')
+    marginTop: hp('4%')
   },
 
   verticleLine: {
@@ -58,7 +60,6 @@ const styles = StyleSheet.create({
   textone: {
     flexDirection: 'row',
     marginTop: hp('2%'),
-    marginLeft: wp('3%')
 
   },
   emailWrapper: {
@@ -69,9 +70,8 @@ const styles = StyleSheet.create({
     height: hp(6),
     justifyContent: 'center',
     alignItems: 'center',
-    //alignSelf: 'center',
-    marginLeft: '3%',
-    width: widthScreen / 1.2,
+    alignSelf: 'center',
+    width: widthScreen / 1.12,
     marginTop: hp(3)
   },
   emailInput: {
@@ -135,24 +135,33 @@ const styles = StyleSheet.create({
   },
   lefttext: {
     color: '#605C5C',
-    fontSize: 14
+    fontSize: 14,
+    width: hp(8)
   },
   touchDelete: {
     flexDirection: 'row',
-    marginHorizontal: wp('3%'),
     marginTop: wp('12%')
   },
   imageDelete: {
-    height: wp('4%'),
-    width: wp('4%'),
-    marginLeft: wp('2%')
+    height: wp('5%'),
+    width: wp('5%'),
   },
   lastText: {
-    marginLeft: wp('3%')
+    fontSize: hp(1.8),
+    fontWeight: '500',
+    color: Colors.Black,
+    fontFamily: "Inter",
+    marginTop: hp(0.2)
   },
   lastTextone: {
     marginLeft: wp('3%'),
-    color: 'red'
+    fontSize: hp(1.8),
+    fontWeight: '500',
+    color: Colors.Black,
+    fontFamily: "Inter",
+    marginTop: hp(0.2),
+    color: Colors.red,
+    marginLeft: hp(2)
   },
   barist: {
     height: '110%',
@@ -210,11 +219,20 @@ const styles = StyleSheet.create({
   },
   currenttouch: {
     flexDirection: 'row',
-    marginTop: hp('2%')
+    marginTop: hp('4%')
   },
   scrollStyle: {
     marginTop: hp(3),
-    marginBottom: hp(5)
+    marginBottom: hp(5),
+    width: widthScreen / 1.12,
+    alignSelf: 'center'
+  },
+  clickPhoto: {
+    width: hp(3),
+    height: hp(3),
+    alignSelf: 'flex-end',
+    marginBottom: hp(1),
+    marginRight: hp(0.6)
   }
 });
 export default styles;

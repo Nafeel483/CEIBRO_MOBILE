@@ -20,7 +20,10 @@ import Header from '../../Components/Header';
 import MyTask from '../../Components/MyTask';
 import MyProjects from '../../Components/MyProjects';
 import ButtonModel from '../../Components/ButtonModel';
-
+import { connect } from 'react-redux';
+// import { logoutUser } from '../../Redux/Actions/auth';
+// import { getMyProfile } from '../../Redux/Actions/users';
+import Loader from '../../Components/Loader';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -149,13 +152,16 @@ class Dashboard extends Component {
 
   render() {
     const { categoryList, allTaskList, allProjectList, actions, isMenuOpen } = this.state
+
+    let profileUser = this.props.user?.myProfile ? this.props.user?.myProfile : this.props.auth?.userLogin?.user
     return (
       <>
         <SafeAreaProvider>
           <SafeAreaView style={Styles.safeHeadContainer} />
           <SafeAreaView style={Styles.safeAreaContainer} >
             <StatusBar barStyle="dark-content" />
-            <Header navigation={this.props.navigation} />
+            <Header userData={profileUser}
+              navigation={this.props.navigation} />
 
             <ScrollView showsVerticalScrollIndicator={false}>
               <View style={Styles.scrollContent}>
@@ -220,7 +226,7 @@ class Dashboard extends Component {
               </View>
             </ScrollView>
 
-            
+
             {
               isMenuOpen == true ?
                 <ButtonModel
@@ -240,4 +246,18 @@ class Dashboard extends Component {
     );
   }
 }
-export default Dashboard;
+const mapStateToProps = (state) => {
+  return {
+    auth: state.auth,
+    user: state.user,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    // logoutUser: (user) => dispatch(logoutUser(user)),
+  };
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Dashboard);

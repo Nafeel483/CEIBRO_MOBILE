@@ -21,6 +21,7 @@ import { showMessage, hideMessage } from "react-native-flash-message";
 import Loader from '../../../Components/Loader';
 import { getAllProjects } from '../../../Redux/Actions/project';
 import { getAllUsers } from '../../../Redux/Actions/users';
+import { createUserChat } from '../../../Redux/Actions/chat';
 import * as API from '../../../Redux/Selectors/AllApi';
 import moment from 'moment';
 
@@ -34,66 +35,8 @@ class NewChat extends Component {
       listColumn: 1,
       openProject: false,
       projectId: '',
-      suggestList: [
-        {
-          name: "Ilja Nikolajev",
-          pic: Images.charUserpic1,
-          profession: "Electrician",
-          add: false
-        },
-        {
-          name: "Kristo Reinsalu",
-          pic: Images.charUserpic2,
-          profession: "Electrician",
-          add: false
-        },
-        {
-          name: "Jaanus Kütson",
-          pic: Images.charUserpic3,
-          profession: "Electrician",
-          add: false
-        },
-        {
-          name: "Martin Tamm",
-          pic: Images.charUserpic4,
-          profession: "Electrician",
-          add: false
-        },
-        {
-          name: "Indrek Lustik",
-          pic: Images.charUserpic5,
-          profession: "Project manager",
-          add: false
-        },
-      ],
-      nameBList: [
-        {
-          name: "Ben Tamm",
-          pic: Images.charUserpic4,
-          profession: "Electrician",
-          add: false
-        },
-        {
-          name: "Ben Stokes",
-          pic: Images.charUserpic5,
-          profession: "Project manager",
-          add: false
-        },
-      ],
-      nameAList: [
-        {
-          name: "Aaron Finch",
-          pic: Images.charUserpic2,
-          profession: "Electrician",
-          add: false
-        },
-        {
-          name: "Alaster Cock",
-          pic: Images.charUserpic3,
-          profession: "Project Manager",
-          add: false
-        },
-      ]
+      allProjectMembers: [],
+      members: []
     };
   }
 
@@ -129,44 +72,106 @@ class NewChat extends Component {
     API.getProjectMembers(projectId, token)
       .then((res) => {
         console.log("getProjectMember Response api====>", res)
-        this.setState({ allChatList: res })
+        this.setState({ allProjectMembers: res })
       })
       .catch((error) => {
         console.log("getProjectMember api error", error)
       });
   }
 
-  onAddChatPerson = (key) => {
-    const { suggestList } = this.state
-    let data = this.state.suggestList
-    data[key].add = !data[key].add
-    console.log("Nafjsjd____", data)
-    this.setState({ suggestList: data })
+
+  createChat = () => {
+    const { chatTitle, projectId, members } = this.state
+    let token = this.props.auth?.userLogin?.tokens?.access?.token
+
+    if (chatTitle == '') {
+      showMessage({
+        message: "Error Chat Title ",
+        description: "Chat Title Cannot be Empty",
+        type: "default",
+        backgroundColor: "#9c1730", // background color
+        color: "white", // text color
+      });
+    }
+    else if (projectId == '') {
+      showMessage({
+        message: "Error Project Selection",
+        description: "No Project Found Select at-least One Project ",
+        type: "default",
+        backgroundColor: "#9c1730", // background color
+        color: "white", // text color
+      });
+    }
+    else if (members?.length == 0) {
+      showMessage({
+        message: "Members List Empty",
+        description: "Select at-least One Member for Chat",
+        type: "default",
+        backgroundColor: "#9c1730", // background color
+        color: "white", // text color
+      });
+    }
+    else {
+      let data = {
+        name: chatTitle,
+        members: members,
+        projectId: projectId,
+        token: token
+      }
+
+      this.props.createUserChat(data)
+    }
+  }
+
+
+
+  onAddChatPerson = (value) => {
+    const { members } = this.state
+
+    const matched = members.some(o1 => o1 == value?.id)
+    console.log("matched = ", matched)
+    if (matched == true) {
+      const filter = members.filter(o1 => o1 != value?.id)
+      console.log("filter = ", filter)
+      this.setState({ members: filter })
+    }
+    else {
+      this.setState({ members: members.concat(value?.id) })
+    }
   }
 
   addSuggestListList = (item, index) => {
+    const { members } = this.state
+
+    const matched = members.some(o1 => o1 == item?.id)
     return (
       <>
         <View key={index}
           style={Styles.listChatContainer}>
           <TouchableOpacity style={Styles.chatFirstWrapper}>
-            <Image source={item.pic} style={Styles.userPicImage} />
+            {item?.pic ?
+              <Image source={item?.pic} style={Styles.userPicImage} />
+              :
+              <View style={Styles.userProfileWrapper}>
+                <Text style={Styles.userProfileText}>{`${item?.firstName?.[0]?.toUpperCase()}${item?.surName?.[0]?.toUpperCase()}`}</Text>
+              </View>
+            }
             <View style={{
               marginLeft: hp(1)
             }}>
-              <Text style={Styles.userName}>{item.name}</Text>
-              <Text style={Styles.displayMessage}>{`Company . ${item.profession}`}</Text>
+              <Text style={Styles.userName}>{`${item.firstName} ${item.surName}`}</Text>
+              <Text style={Styles.displayMessage}>{`Company . ${item?.profession}`}</Text>
             </View>
           </TouchableOpacity>
           <CheckBox
             disabled={false}
-            value={item.add}
-            onValueChange={() => this.onAddChatPerson(index)}
-            onChange={() => { this.onAddChatPerson(index) }}
+            value={matched == true ? true : false}
+            onValueChange={() => this.onAddChatPerson(item)}
+            onChange={() => { this.onAddChatPerson(item) }}
             boxType='square'
             onCheckColor={Colors.golden}
             onTintColor={Colors.golden}
-            tintColors={item.add == true ? Colors.golden : "#DADFE6"}
+            tintColors={matched == true ? Colors.golden : "#DADFE6"}
             tintColor={'#DADFE6'}
             style={{
               marginTop: hp(0.5),
@@ -185,11 +190,11 @@ class NewChat extends Component {
 
   render() {
     const { chatTitle, chatWith, chatProject, listColumn,
-      suggestList, nameBList, nameAList,
-      openProject
+      allProjectMembers,
+      openProject, members
     } = this.state
-
     let allProjects = this.props.project?.allProjects
+    const { loadingCreateChats } = this.props.chat
     return (
       <>
         <SafeAreaProvider>
@@ -260,22 +265,29 @@ class NewChat extends Component {
 
             <ScrollView showsVerticalScrollIndicator={false}>
               <View style={Styles.scrollContent}>
-                <View style={Styles.listTextHeading}>
-                  <Text style={Styles.textHeading}>{"Suggested users/groups/companies"}</Text>
-                </View>
-                <FlatList
-                  key={listColumn}
-                  horizontal={false}
-                  scrollEnabled={false}
-                  numColumns={listColumn}
-                  data={suggestList}
-                  keyExtractor={(item, index) => index.toString()}
-                  renderItem={({ item, index }) => this.addSuggestListList(item, index)}
-                />
-                <View
-                  style={Styles.seperator}
-                />
-                <View style={Styles.listTextHeading}>
+                {
+                  allProjectMembers?.length > 0 ?
+                    <>
+
+                      <View style={Styles.listTextHeading}>
+                        <Text style={Styles.textHeading}>{"Suggested users/groups/companies"}</Text>
+                      </View>
+                      <FlatList
+                        key={listColumn}
+                        horizontal={false}
+                        scrollEnabled={false}
+                        numColumns={listColumn}
+                        data={allProjectMembers}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={({ item, index }) => this.addSuggestListList(item, index)}
+                      />
+                      <View
+                        style={Styles.seperator}
+                      />
+                    </>
+                    : null
+                }
+                {/* <View style={Styles.listTextHeading}>
                   <Text style={Styles.textFilterHeading}>{"A"}</Text>
                 </View>
                 <FlatList
@@ -289,8 +301,8 @@ class NewChat extends Component {
                 />
                 <View
                   style={Styles.seperator}
-                />
-                <View style={Styles.listTextHeading}>
+                /> */}
+                {/* <View style={Styles.listTextHeading}>
                   <Text style={Styles.textFilterHeading}>{"B"}</Text>
                 </View>
                 <FlatList
@@ -304,15 +316,16 @@ class NewChat extends Component {
                 />
                 <View
                   style={Styles.seperator}
-                />
+                /> */}
               </View>
             </ScrollView>
             <TouchableOpacity
-              onPress={() => {
-                this.props.navigation.navigate('ChatFeature', {
-                  screen: 'ChatView',
-                })
-              }}
+              onPress={this.createChat}
+              // onPress={() => {
+              //   this.props.navigation.navigate('ChatFeature', {
+              //     screen: 'ChatView',
+              //   })
+              // }}
               style={Styles.filterStyle}>
               <Text style={Styles.plusIconText}>{"Start Conversation"}</Text>
             </TouchableOpacity>
@@ -329,6 +342,8 @@ class NewChat extends Component {
                 />
                 : null
             }
+
+            {loadingCreateChats ? <Loader /> : null}
           </SafeAreaView>
         </SafeAreaProvider>
       </>
@@ -350,7 +365,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getAllProjects: (user) => dispatch(getAllProjects(user)),
     getAllUsers: (user) => dispatch(getAllUsers(user)),
-
+    createUserChat: (user) => dispatch(createUserChat(user)),
   };
 };
 export default connect(

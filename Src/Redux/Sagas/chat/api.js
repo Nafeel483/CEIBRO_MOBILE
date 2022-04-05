@@ -26,3 +26,32 @@ export function* getChatsApi(chat) {
   const message = yield response.json();
   return yield ({ status: response.status, message })
 }
+
+
+// createChatApi
+export function* createChatApi(user) {
+  console.log("createChatApi JWT TOKEN", user)
+
+  const data = new URLSearchParams();
+  // data.append('id', user.id)
+  data.append('name', user.name)
+  data.append('members', user.members)
+  data.append('projectId', user.projectId)
+
+
+
+  const opt = {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      "Content-Type": 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer ' + user.token,
+      // token: userToken
+    },
+    body: data,
+    json: true,
+  }
+  const response = yield fetch(`${CONSTANTS.BASE_URL}/chat/rooms`, opt);
+  const message = yield response.json();
+  return yield ({ status: response.status, message })
+}

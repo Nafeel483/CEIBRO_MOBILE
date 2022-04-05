@@ -1,22 +1,78 @@
 import React, { Component } from 'react'
-import { View, Text, Image, TextInput, ScrollView, TouchableOpacity } from 'react-native'
+import {
+  View,
+  Text,
+  Image,
+  TextInput,
+  ScrollView,
+  TouchableOpacity,
+  ImageBackground
+} from 'react-native'
+import CheckBox from '@react-native-community/checkbox';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import PhoneInput from "react-native-phone-number-input";
 import Images from '../../Styles/Images'
 import Colors from '../../Styles/Colors';
-import Styles from './Styles'
+import Styles from './Styles';
+import AsyncStorage from '@react-native-community/async-storage';
+import { connect } from 'react-redux';
+import { updateMyProfile, updateMyProfilePic } from '../../Redux/Actions/users';
+import Loader from '../../Components/Loader';
+import { showMessage, hideMessage } from "react-native-flash-message";
+import { launchImageLibrary } from 'react-native-image-picker';
+import * as API from '../../Redux/Selectors/AllApi';
+import RNFetchBlob from 'rn-fetch-blob';
+import * as CONSTANTS from '../../Constants';
+
 
 
 class EditScreen extends Component {
   constructor(props) {
     super(props);
+    this.phoneInput = React.createRef();
     this.state = {
       password: '',
       repeatPassword: '',
       passwordSeen: false,
       checkBoxValue: false,
-      passwordPepeatSeen: false
+      passwordPepeatSeen: false,
+      firstName: '',
+      workEmail: '',
+      surName: '',
+      email: '',
+      companyName: '',
+      companyVat: '',
+      companyLocation: '',
+      companyPhone: '',
+      phoneNumber: '',
+      phoneFocus: false,
+      formattedValue: '',
+      companyPhoneNumber: ''
     }
   }
+  componentDidMount = async () => {
+    let password = await AsyncStorage.getItem('userPassword')
+    const myProfile = this.props.route?.params?.myProfile
+    console.log("tThe Phone Number:::::", "myProfile =", myProfile)
+    if (myProfile != null && myProfile != undefined) {
+      this.setState({
+        email: myProfile?.email ? myProfile?.email : '',
+        firstName: myProfile?.firstName ? myProfile?.firstName : '',
+        surName: myProfile?.surName ? myProfile?.surName : '',
+        password: password ? password : '',
+        repeatPassword: password ? password : '',
+        formattedValue: myProfile?.phone ? myProfile?.phone : '',
+        companyName: myProfile?.companyName ? myProfile?.companyName : '',
+        companyVat: myProfile?.companyVat ? myProfile?.companyVat : '',
+        companyPhone: myProfile?.companyPhone ? myProfile?.companyPhone : '',
+        companyLocation: myProfile?.companyLocation ? myProfile?.companyLocation : '',
+        workEmail: myProfile?.workEmail ? myProfile?.workEmail : '',
+        checkBoxValue: myProfile?.currentlyRepresenting == true ? myProfile?.currentlyRepresenting : false
+
+      })
+    }
+  }
+
   onChange = () => {
     this.setState({ checkBoxValue: !this.state.checkBoxValue })
   }
@@ -26,10 +82,108 @@ class EditScreen extends Component {
   passwordRepeactShow = () => {
     this.setState({ passwordPepeatSeen: !this.state.passwordPepeatSeen })
   }
+  focusPhone = () => {
+    this.setState({
+      phoneFocus: !this.state.phoneFocus,
+    })
+  }
+
+  async selectPhotoTapped() {
+    const options = {
+      quality: 1.0,
+      maxWidth: 500,
+      maxHeight: 500,
+      storageOptions: {
+        skipBackup: true,
+      },
+    };
+    launchImageLibrary(options, async response => {
+
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled photo picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+
+        const uri = response.uri;
+        const type = response.type;
+        const name = response.fileName;
+
+        const path = response.uri.replace("file://", "");
+        const source = {
+          uri,
+          type,
+          name,
+        }
+
+        const source1 = {
+          name: 'profilePic', type: `image/jpg`, uri
+        }
+
+
+        console.log("The path = ", path,)
+
+        this.uploadProfilePic(source1)
+      }
+
+    });
+  }
+  uploadProfilePic = (source) => {
+    let token = this.props.auth?.userLogin?.tokens?.access?.token
+
+
+
+
+    let data = {
+      file: source,
+      token: token
+    }
+
+
+    console.log(" The Data is==== ", data)
+    this.props.updateMyProfilePic(data)
+  }
+
+  updateProfile = () => {
+    let token = this.props.auth?.userLogin?.tokens?.access?.token
+    let id = this.props.auth?.userLogin?.user?.id
+
+    const { password, checkBoxValue,
+      firstName, workEmail, surName, companyName, companyVat, companyLocation,
+      companyPhone, formattedValue, companyPhoneNumber
+    } = this.state
+
+    const data = {
+      id: id,
+      firstName: firstName,
+      surName: surName,
+      password: password,
+      phone: formattedValue,
+      companyName: companyName,
+      companyVat: companyVat,
+      companyPhone: companyPhone,
+      companyLocation: companyLocation,
+      workEmail: workEmail,
+      currentlyRepresenting: checkBoxValue,
+      token: token
+    }
+    console.log("Update Data:::", data)
+    this.props.updateMyProfile(data)
+  }
+
 
 
   render() {
-    const { password, checkBoxValue, passwordPepeatSeen, passwordSeen, repeatPassword } = this.state
+    const { password, checkBoxValue, passwordPepeatSeen, passwordSeen, repeatPassword,
+      firstName, workEmail, surName, email, companyName, companyVat, companyLocation,
+      companyPhone, phoneNumber, phoneFocus, formattedValue, companyPhoneNumber
+    } = this.state
+
+    const { loadingUpdateProfile, loadingUpdateProfilePic } = this.props.user
     return (
       <>
         <View style={Styles.MainContainer}>
@@ -40,8 +194,8 @@ class EditScreen extends Component {
             <View style={Styles.touchviewone}>
               <Text style={Styles.touchViewprofileOne}>{"Edit Profile"}</Text>
             </View>
-            <TouchableOpacity style={Styles.touchwrite}>
-
+            <TouchableOpacity onPress={this.updateProfile}
+              style={Styles.touchwrite}>
               <Text style={Styles.btn}>{"Update"}</Text>
             </TouchableOpacity>
           </View>
@@ -50,49 +204,107 @@ class EditScreen extends Component {
           />
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={Styles.scrollStyle}>
-              <TouchableOpacity style={Styles.mainviewtwo}>
-                <Image source={Images.User} style={Styles.mainimgtwo} />
-                <Image source={Images.Photo} />
+              <TouchableOpacity onPress={this.selectPhotoTapped.bind(this)}
+                style={Styles.mainviewtwo}>
+                <ImageBackground source={Images.userPic} style={Styles.mainimgtwo} imageStyle={{ borderRadius: 8 }}>
+                  <Image source={Images.Photo} style={Styles.clickPhoto} />
+                </ImageBackground>
               </TouchableOpacity>
               <View
                 style={Styles.line}
               />
-              <View style={Styles.textone}>
-                <Text style={Styles.lefttext}>{"Name"}</Text>
-                <View style={Styles.verticleLine}></View>
-                <Text style={Styles.textstyle}>{"llja"}</Text>
+              {/* Name */}
+              <View style={Styles.emailWrapper}>
+                <Text style={Styles.lefttext}>
+                  {"Name"}
+                </Text>
+                <View style={Styles.vertiLine}></View>
+
+                <TextInput
+                  style={Styles.emailInput}
+                  value={firstName}
+                  placeholder={"Name"}
+                  placeholderTextColor={Colors.textColor}
+                  autoCapitalize='none'
+                  onChangeText={(value) => {
+                    this.setState({
+                      firstName: value,
+                    })
+                  }}
+                />
               </View>
-              <View
-                style={Styles.line}
-              />
-              <View style={Styles.textone}>
-                <Text style={Styles.lefttext}>{"Surname"}</Text>
-                <View style={Styles.barist}></View>
-                <Text style={Styles.textstyle}>{"Nikolajev"}</Text>
+              {/* Surname */}
+              <View style={Styles.emailWrapper}>
+                <Text style={Styles.lefttext}>
+                  {"Surname"}
+                </Text>
+                <View style={Styles.vertiLine}></View>
+
+                <TextInput
+                  style={Styles.emailInput}
+                  value={surName}
+                  placeholder={"Surname"}
+                  placeholderTextColor={Colors.textColor}
+                  autoCapitalize='none'
+                  onChangeText={(value) => {
+                    this.setState({
+                      surName: value,
+                    })
+                  }}
+                />
               </View>
-              <View
-                style={Styles.line}
-              />
-              <View style={Styles.textone}>
-                <Text style={Styles.lefttext}>{"Email"}</Text>
-                <View style={Styles.baremail}></View>
-                <Text style={Styles.textstyle}>{'name.surname@ceibro.com'}</Text>
+              {/* Email */}
+              <View style={Styles.emailWrapper}>
+                <Text style={Styles.lefttext}>
+                  {"Email"}
+                </Text>
+                <View style={Styles.vertiLine}></View>
+
+                <TextInput
+                  style={Styles.emailInput}
+                  value={email}
+                  placeholder={"Email"}
+                  placeholderTextColor={Colors.textColor}
+                  autoCapitalize='none'
+                  editable={false}
+                />
               </View>
-              <View
-                style={Styles.line}
-              />
-              <View style={Styles.textone}>
-                <Text style={Styles.lefttext}>{"Contact"}</Text>
-                <View style={Styles.barcontact}></View>
-                <View style={{ flexDirection: 'row' }}>
-                  <Text style={Styles.three}>{'+372'}</Text>
-                  <Image source={Images.downarrow} style={Styles.dowimage} />
-                  <Text style={Styles.five}>{"5679 7470"}</Text>
-                </View>
+              {/* Contact Number */}
+              <View style={Styles.emailWrapper}>
+                <Text style={Styles.lefttext}>
+                  {"Contact Number"}
+                </Text>
+                <View style={Styles.vertiLine} />
+
+                <PhoneInput
+                  // ref={this.phoneInput}
+                  defaultValue={formattedValue}
+                  defaultCode="RO"
+                  layout="second"
+                  placeholder={"Contact Number"}
+                  onChangeText={(text) => {
+                    this.setState({
+                      phoneNumber: text,
+                      bothEmpty: false,
+                      wrongPassword: false
+                    });
+                  }}
+
+                  onChangeFormattedText={(text) => {
+                    this.setState({ formattedValue: text });
+                  }}
+                  textInputProps={{
+                    onFocus: this.focusPhone
+                  }}
+                  flagButtonStyle={{ marginTop: 15 }}
+                  textContainerStyle={{ backgroundColor: 'transparent', marginTop: Platform.OS == 'ios' ? 0 : 0 }}
+                  textInputStyle={{ width: '60%', backgroundColor: 'transparent', borderColor: "transparent" }}
+                  containerStyle={{ width: '74%', backgroundColor: 'transparent', borderColor: "transparent" }}
+                // withDarkTheme
+                // autoFocus
+                />
               </View>
-              <View
-                style={Styles.line}
-              />
+              {/* Password */}
               <View style={Styles.emailWrapper}>
                 <Text style={Styles.lefttext}>
                   {"Password"}
@@ -118,6 +330,7 @@ class EditScreen extends Component {
                   <Image source={Images.passwordVisible} style={Styles.inputImage} />
                 </TouchableOpacity>
               </View>
+              {/* Repeat password */}
               <View style={Styles.emailWrapper}>
                 <View>
                   <Text style={Styles.lefttext}>{"Repeat"}</Text>
@@ -144,75 +357,158 @@ class EditScreen extends Component {
                   <Image source={Images.passwordVisible} style={Styles.inputImage} />
                 </TouchableOpacity>
               </View>
-              <View style={{ marginTop: hp('3%') }}>
-                <View style={Styles.textone}>
-                  <Text style={Styles.lefttext}>{"Company"}</Text>
-                  <View style={{
-                    height: '110%',
-                    width: 1.5,
-                    backgroundColor: '#DBDBE5',
-                    marginLeft: hp('2.5%')
-                  }}></View>
-                  <Text style={Styles.textstyle}>{"Ceibro LTD"}</Text>
-                </View>
-              </View>
-              <View
-                style={Styles.line}
-              />
-              <View style={Styles.textone}>
-                <Text style={Styles.lefttext}>{"VAT"}</Text>
-                <View style={Styles.vat}></View>
-                <Text style={Styles.textstyle}>{"123456865"}</Text>
-              </View>
-              <View
-                style={Styles.line}
-              />
-              <View style={Styles.textone}>
-                <Text style={Styles.lefttext}>{"Location"}</Text>
-                <View style={Styles.locatbar}></View>
-                <Text style={Styles.textstyle}>{"Vase 12, Tallin, Harjuma 12345"} </Text>
-              </View>
-              <View
-                style={Styles.line}
-              />
+              {/* Company */}
+              <View style={Styles.emailWrapper}>
+                <Text style={Styles.lefttext}>
+                  {"Company"}
+                </Text>
+                <View style={Styles.vertiLine}></View>
 
-              <View style={Styles.textone}>
-                <View>
-                  <Text style={Styles.lefttext}>Work</Text>
-                  <Text style={Styles.lefttext}>Number</Text>
-                </View>
-                <View style={Styles.workbar}></View>
-                <View style={Styles.workview}>
-                  <Text style={Styles.three}>{'+372'}</Text>
-                  <Image source={Images.downarrow} style={Styles.dowimage} />
-                  <Text style={Styles.five}>5679 7470</Text>
-                </View>
+                <TextInput
+                  style={Styles.emailInput}
+                  value={companyName}
+                  placeholder={"Company"}
+                  placeholderTextColor={Colors.textColor}
+                  autoCapitalize='none'
+                  onChangeText={(value) => {
+                    this.setState({
+                      companyName: value,
+                    })
+                  }}
+                />
               </View>
-              <View
-                style={Styles.line}
-              />
-              <View style={Styles.textone}>
-                <Text style={Styles.lefttext}>Email</Text>
-                <View style={Styles.emailview}></View>
-                <Text style={Styles.textstyle}>{'name.surname@ceibro.com'}</Text>
-              </View>
-              <View
-                style={Styles.line}
-              />
+              {/* VAT */}
+              <View style={Styles.emailWrapper}>
+                <Text style={Styles.lefttext}>
+                  {"VAT"}
+                </Text>
+                <View style={Styles.vertiLine}></View>
 
-              <TouchableOpacity style={Styles.currenttouch}>
-                <Image source={Images.downarrow} style={Styles.dowimage} />
-                <Text style={Styles.lastText}>Currently representing company</Text>
-              </TouchableOpacity>
+                <TextInput
+                  style={Styles.emailInput}
+                  value={companyVat}
+                  placeholder={"VAT"}
+                  placeholderTextColor={Colors.textColor}
+                  autoCapitalize='none'
+                  onChangeText={(value) => {
+                    this.setState({
+                      companyVat: value,
+                    })
+                  }}
+                />
+              </View>
+              {/* Location */}
+              <View style={Styles.emailWrapper}>
+                <Text style={Styles.lefttext}>
+                  {"Location"}
+                </Text>
+                <View style={Styles.vertiLine}></View>
+
+                <TextInput
+                  style={Styles.emailInput}
+                  value={companyLocation}
+                  placeholder={"Location"}
+                  placeholderTextColor={Colors.textColor}
+                  autoCapitalize='none'
+                  onChangeText={(value) => {
+                    this.setState({
+                      companyLocation: value,
+                    })
+                  }}
+                />
+              </View>
+
+              {/* Work Number */}
+              <View style={Styles.emailWrapper}>
+                <Text style={Styles.lefttext}>
+                  {"Work Number"}
+                </Text>
+                <View style={Styles.vertiLine}></View>
+
+                <PhoneInput
+                  // ref={this.phoneInput}
+                  defaultValue={companyPhone}
+                  defaultCode="RO"
+                  layout="second"
+                  placeholder={"Contact Number"}
+                  onChangeText={(text) => {
+                    this.setState({
+                      companyPhoneNumber: text,
+
+                    });
+                  }}
+
+                  onChangeFormattedText={(text) => {
+                    this.setState({ companyPhone: text });
+                  }}
+                  textInputProps={{
+                    onFocus: this.focusPhone
+                  }}
+                  flagButtonStyle={{ marginTop: 15 }}
+                  textContainerStyle={{ backgroundColor: 'transparent', marginTop: Platform.OS == 'ios' ? 0 : 0 }}
+                  textInputStyle={{ width: '60%', backgroundColor: 'transparent', borderColor: "transparent" }}
+                  containerStyle={{ width: '74%', backgroundColor: 'transparent', borderColor: "transparent" }}
+                // withDarkTheme
+                // autoFocus
+                />
+
+              </View>
+              {/* E-mail */}
+              <View style={Styles.emailWrapper}>
+                <Text style={Styles.lefttext}>
+                  {"E-mail"}
+                </Text>
+                <View style={Styles.vertiLine}></View>
+
+                <TextInput
+                  style={Styles.emailInput}
+                  value={workEmail}
+                  placeholder={"E-mail"}
+                  placeholderTextColor={Colors.textColor}
+                  autoCapitalize='none'
+                  onChangeText={(value) => {
+                    this.setState({
+                      workEmail: value,
+                    })
+                  }}
+                />
+              </View>
+
+
+
+              <View style={Styles.currenttouch}>
+                <CheckBox
+                  disabled={false}
+                  value={checkBoxValue}
+                  onValueChange={this.onChange}
+                  boxType='square'
+                  tintColors={checkBoxValue == true ? Colors.golden : "#DADFE6"}
+                  onCheckColor={Colors.golden}
+                  onTintColor={Colors.golden}
+                  tintColor={'#DADFE6'}
+                  style={{
+                    // marginTop: 5,
+                    width: hp(2.5),
+                    height: hp(2.5),
+                    borderRadius: 15
+                  }}
+                  onAnimationType={'stroke'}
+                  offAnimationType={'one-stroke'}
+                />
+                <Text style={[Styles.lastText, {
+                  marginLeft: hp(2),
+                }]}>{"Currently representing company"}</Text>
+              </View>
               <TouchableOpacity style={Styles.touchDelete}>
                 <Image source={Images.Delete} style={Styles.imageDelete} />
-                <Text style={Styles.lastTextone}>Delete Account</Text>
+                <Text style={Styles.lastTextone}>{"Delete Account"}</Text>
               </TouchableOpacity>
             </View>
           </ScrollView>
 
 
         </View>
+        {loadingUpdateProfile || loadingUpdateProfilePic ? <Loader /> : null}
 
 
       </>
@@ -220,5 +516,19 @@ class EditScreen extends Component {
   }
 }
 
-
-export default EditScreen
+const mapStateToProps = (state) => {
+  return {
+    auth: state.auth,
+    user: state.user,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    updateMyProfile: (user) => dispatch(updateMyProfile(user)),
+    updateMyProfilePic: (user) => dispatch(updateMyProfilePic(user)),
+  };
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EditScreen);

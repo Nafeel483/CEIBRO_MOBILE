@@ -26,8 +26,24 @@ const chatReducer = (state = initialState, action) => {
         loadingAllChats: false,
       };
 
+    //  Create Chats
+    case types.CREATE_CHATS_REQUEST:
+      return {
+        ...state,
+        loadingCreateChats: true,
+      };
+    case types.CREATE_CHATS_SUCCESS:
+      return {
+        ...state,
+        createChat: action.payload,
+        loadingCreateChats: false,
+      };
+    case types.CREATE_CHATS_FAILURE:
+      return {
+        ...state,
+        loadingCreateChats: false,
+      };
 
-   
 
 
     default: {

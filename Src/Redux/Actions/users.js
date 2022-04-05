@@ -15,3 +15,17 @@ export function getMyProfile(user) {
     payload: user
   };
 }
+
+export function updateMyProfile(user) {
+  return {
+    type: types.UPDATE_MY_PROFILE_REQUEST,
+    payload: user
+  };
+}
+
+export function updateMyProfilePic(user) {
+  return {
+    type: types.UPDATE_MY_PROFILE_PIC_REQUEST,
+    payload: user
+  };
+}

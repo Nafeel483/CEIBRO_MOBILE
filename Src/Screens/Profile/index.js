@@ -12,6 +12,7 @@ import { getMyProfile } from '../../Redux/Actions/users';
 import Loader from '../../Components/Loader';
 import { showMessage, hideMessage } from "react-native-flash-message";
 
+
 class Profile extends Component {
   constructor(props) {
     super(props);
@@ -20,6 +21,10 @@ class Profile extends Component {
   }
 
   componentDidMount = () => {
+    this.focusListener = this.props.navigation.addListener('focus', async () => {
+      let accessToken = this.props.auth?.userLogin?.tokens?.access?.token
+      this.props.getMyProfile(accessToken)
+    })
     let accessToken = this.props.auth?.userLogin?.tokens?.access?.token
     this.props.getMyProfile(accessToken)
   }
@@ -31,10 +36,14 @@ class Profile extends Component {
     this.props.logoutUser(data)
   }
 
+
+
   render() {
 
     const { loadingMyProfile } = this.props.user
     const myProfile = this.props.user?.myProfile
+
+    const profileName = `${this.props.user?.myProfile?.firstName?.[0]}${this.props.user?.myProfile?.surName?.[0]}`
     return (
       <>
         <SafeAreaProvider>
@@ -52,6 +61,9 @@ class Profile extends Component {
                 <TouchableOpacity onPress={() => {
                   this.props.navigation.navigate('ProfileStack', {
                     screen: 'EditProfile',
+                    params: {
+                      myProfile: myProfile,
+                    }
                   })
                 }}>
 
@@ -62,12 +74,18 @@ class Profile extends Component {
                 style={Styles.line}
               />
               <View style={Styles.mainviewtwo}>
-                <Image source={Images.userPic} style={Styles.mainimgtwo} />
+                {myProfile?.profilePic ?
+                  <Image source={{ uri: myProfile?.profilePic }} style={Styles.mainimgtwo} />
+                  :
+                  <View style={Styles.userProfileWrapper}>
+                    <Text style={Styles.userProfileText}>{profileName?.toUpperCase()}</Text>
+                  </View>
+                }
                 <Text style={Styles.textiija}>{`${myProfile?.firstName} ${myProfile?.surName}`}</Text>
                 <Text>{myProfile?.email}</Text>
-                <Text style={Styles.textno}>{'+ 372 5512 3456'}</Text>
-                <Text style={{ color: '#0076CB' }}>{'name.surname@ceibro.com'}</Text>
-                <Text style={Styles.company}>{'Company Ltd'}</Text>
+                <Text style={Styles.textno}>{myProfile?.companyPhone ? myProfile?.companyPhone : ""}</Text>
+                <Text style={{ color: '#0076CB' }}>{myProfile?.workEmail ? myProfile?.workEmail : ""}</Text>
+                <Text style={Styles.company}>{myProfile?.companyName ? myProfile.companyName : ""}</Text>
               </View>
 
               <View
@@ -80,12 +98,12 @@ class Profile extends Component {
                   </TouchableOpacity>
                   <View style={Styles.myconnect}>
                     <Text style={Styles.myconnectionmain}>{"My connections"}</Text>
-                    <View style={Styles.myconnectionContainer}>
+                    {/* <View style={Styles.myconnectionContainer}>
                       <Text style={Styles.myconnectionnumber}>{"123"}</Text>
-                    </View>
-                    <View style={Styles.myConWrapper}>
+                    </View> */}
+                    {/* <View style={Styles.myConWrapper}>
                       <Text style={Styles.mycon}>{"4"}</Text>
-                    </View>
+                    </View> */}
                   </View>
                 </View>
                 <TouchableOpacity style={Styles.touchrightarrow}>

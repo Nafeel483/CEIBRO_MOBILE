@@ -61,18 +61,42 @@ export const getProjectMembers = (projectId, token) => {
   }).then(response => response.data);
 }
 
-// export const employeeByPin = (data, token) => {
+// muteChatApi
+export const muteChatApi = (roomId, token) => {
 
+  return axios({
+    method: 'post',
+    url: `${CONSTANTS.BASE_URL}/chat/room/mute/${roomId}`,
+    headers: {
+      "accept": 'application/json',
+      "Content-Type": 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer ' + token,
+    },
+
+  }).then(response => response.data);
+}
+
+// export const changeProfilePic = (source, token) => {
+//   console.log("The Result = ", source, token)
+
+//   // const data = new FormData();
+//   const data = new URLSearchParams();
+//   data.append("profilePic", {
+//     name: source.fileName,
+//     type: source.type,
+//     uri: source.uri
+//   });
 //   return axios({
-//     method: 'post',
-//     url: `${CONSTANTS.BASE_URL}/mobile/employe-by-pin-store_id`,
+//     method: 'PATCH',
+//     url: `${CONSTANTS.BASE_URL}/users/profile/pic`,
 //     headers: {
-//       'Content-Type': 'application/json',
-//       Authorization: token
-//       // 'Content-Type': 'multipart/form-data',
+//       "accept": 'application/json',
+//       "Content-Type": 'multipart/form-data',
+//       'Authorization': 'Bearer ' + token,
 //       // 'Access-Control-Allow-Origin': '*'
 //     },
-//     data: data
+//     data: data,
 
 //   }).then(response => response.data);
 // }
+

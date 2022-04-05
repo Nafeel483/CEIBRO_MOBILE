@@ -75,7 +75,15 @@ class Login extends Component {
       };
       // console.log("Login User::", user)
       this.props.loginUsers(user);
-
+      this.savePassword(password)
+    }
+  }
+  savePassword = async (password) => {
+    try {
+      //we want to wait for the Promise returned by AsyncStorage.setItem()
+      //to be resolved to the actual value before returning the value
+      await AsyncStorage.setItem('userPassword', password)
+    } catch (error) {
     }
   }
 
@@ -90,6 +98,7 @@ class Login extends Component {
           <SafeAreaProvider>
             <SafeAreaView style={Styles.safeAreaContainer} forceInset={{ top: 'never' }}>
               <StatusBar barStyle="light-content" />
+              <ScrollView showsVerticalScrollIndicator={false}>
               <View style={Styles.headerContent}>
                 <ImageBackground source={Images.visual} style={Styles.headingBackground} >
                   <Image source={Images.loginLogo} style={Styles.logoStyle} />
@@ -194,6 +203,7 @@ class Login extends Component {
                   </View>
                 </View>
               </View>
+              </ScrollView>
             </SafeAreaView>
           </SafeAreaProvider>
         </KeyboardAwareScrollView>

@@ -55,7 +55,24 @@ const styles = StyleSheet.create({
     width: hp(5),
     height: hp(5),
     borderRadius: 8,
+    marginLeft: hp(4),
+    resizeMode : 'stretch'
+  },
+  userProfileWrapper: {
+    width: hp(5),
+    height: hp(5),
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.borderColor,
     marginLeft: hp(4)
-  }
+  },
+  userProfileText: {
+    fontSize: hp(1.8),
+    fontWeight: '500',
+    fontFamily: "Inter",
+    color: Colors.Black
+  },
 });
 export default styles;

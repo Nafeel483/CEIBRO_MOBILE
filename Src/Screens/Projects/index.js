@@ -19,6 +19,7 @@ import Colors from '../../Styles/Colors';
 import Header from '../../Components/Header';
 import MyProjects from '../../Components/MyProjects';
 import ButtonModel from '../../Components/ButtonModel';
+import { connect } from 'react-redux';
 
 
 class Projects extends Component {
@@ -130,13 +131,16 @@ class Projects extends Component {
   }
   render() {
     const { categoryList, allProjectList, listColumn, actions, isMenuOpen } = this.state
+    
+    let profileUser = this.props.user?.myProfile ? this.props.user?.myProfile : this.props.auth?.userLogin?.user
+
     return (
       <>
         <SafeAreaProvider>
           <SafeAreaView style={Styles.safeHeadContainer} />
           <SafeAreaView style={Styles.safeAreaContainer} forceInset={{ bottom: 'never' }}>
             <StatusBar barStyle="dark-content" />
-            <Header navigation={this.props.navigation} />
+            <Header userData={profileUser} navigation={this.props.navigation} />
             <View style={Styles.headerContainer}>
               <View style={Styles.seperator} />
               <View style={Styles.mainContent}>
@@ -194,4 +198,18 @@ class Projects extends Component {
     );
   }
 }
-export default Projects;
+const mapStateToProps = (state) => {
+  return {
+    auth: state.auth,
+    user: state.user,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    // logoutUser: (user) => dispatch(logoutUser(user)),
+  };
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Projects);

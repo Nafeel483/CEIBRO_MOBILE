@@ -90,6 +90,32 @@ class Chats extends Component {
       this.setState({ tabClick: num })
     }
   }
+
+  muteChat = (id) => {
+    let token = this.props.auth?.userLogin?.tokens?.access?.token
+    API.muteChatApi(id, token)
+      .then((res) => {
+        console.log("muteChatApi Response api====>", res)
+        let chatData = {
+          name: "",
+          type: "all",
+          favourite: false,
+          token: token
+        }
+        this.props.getAllChats(chatData)
+        showMessage({
+          message: "Chat Muted Successfully",
+          description: "Chat Muted Successfully",
+          type: "default",
+          backgroundColor: "#009900", // background color
+          color: "white" // text color
+        })
+      })
+      .catch((error) => {
+        console.log("muteChatApi api error====>", error)
+      });
+  }
+
   markUnread = (id) => {
     let token = this.props.auth?.userLogin?.tokens?.access?.token
     const { tabClick } = this.state
@@ -121,6 +147,13 @@ class Chats extends Component {
           token: token
         }
         this.props.getAllChats(chatData)
+        showMessage({
+          message: "Successfully Added to Favourites",
+          description: "Successfully Added to Favourites",
+          type: "default",
+          backgroundColor: "#009900", // background color
+          color: "white" // text color
+        })
       })
       .catch((error) => {
         console.log("Favourite api error", error)
@@ -133,6 +166,7 @@ class Chats extends Component {
     const currentUser = this.props.auth?.userLogin?.user?.id
     var str_Name = item?.name.slice(0, 2)
     let favouriteItem = item?.pinnedBy?.length > 0 ? item?.pinnedBy?.some(o1 => o1 == currentUser) : null
+    let mutedChatStatus = item?.mutedBy?.length > 0 ? item?.mutedBy?.some(o1 => o1 == currentUser) : null
     return (
       <>
         <TouchableOpacity
@@ -226,9 +260,10 @@ class Chats extends Component {
 
                 <View style={Styles.menuDivider} />
                 <MenuOption>
-                  <TouchableOpacity style={Styles.menuOptionStyle}>
+                  <TouchableOpacity onPress={() => this.muteChat(item?._id)}
+                    style={Styles.menuOptionStyle}>
                     <Image source={Images.volume} style={Styles.menuOptionImage} />
-                    <Text style={[Styles.menuOptionText, { color: Colors.blue }]}>{"Mute chat"}</Text>
+                    <Text style={[Styles.menuOptionText, { color: Colors.blue }]}>{mutedChatStatus == true ? "Unmute chat" : "Mute chat"}</Text>
                   </TouchableOpacity>
                 </MenuOption>
 
@@ -261,6 +296,8 @@ class Chats extends Component {
     const { search, tabClick, listColumn, favouriteList } = this.state
     const { loadingAllChats, allChats } = this.props.chat
 
+    let profileUser = this.props.user?.myProfile ? this.props.user?.myProfile : this.props.auth?.userLogin?.user
+
     return (
       <>
         <MenuProvider>
@@ -268,7 +305,7 @@ class Chats extends Component {
             <SafeAreaView style={Styles.safeHeadContainer} />
             <SafeAreaView style={Styles.safeAreaContainer}>
               <StatusBar barStyle="dark-content" />
-              <Header navigation={this.props.navigation} />
+              <Header userData={profileUser} navigation={this.props.navigation} />
               <View style={Styles.mainContent}>
                 <View style={Styles.seperator} />
                 <View style={Styles.emailWrapper}>

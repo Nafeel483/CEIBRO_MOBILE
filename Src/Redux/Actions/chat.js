@@ -7,3 +7,11 @@ export function getAllUserChats(user) {
     payload: user
   };
 }
+
+
+export function createUserChat(user) {
+  return {
+    type: types.CREATE_CHATS_REQUEST,
+    payload: user
+  };
+}

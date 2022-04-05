@@ -45,7 +45,24 @@ const styles = StyleSheet.create({
   },
   mainimgtwo: {
     height: wp('19%'),
-    width: wp('19%')
+    width: wp('19%'),
+    borderRadius: 8,
+  },
+  userProfileWrapper: {
+    height: wp('19%'),
+    width: wp('19%'),
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.borderColor,
+    marginLeft: hp(4)
+  },
+  userProfileText: {
+    fontSize: hp(2),
+    fontWeight: '500',
+    fontFamily: "Inter",
+    color: Colors.Black
   },
   textiija: {
     marginTop: hp('2%'),

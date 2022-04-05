@@ -19,6 +19,9 @@ import Colors from '../../Styles/Colors';
 
 const Header = (props) => {
 
+  const profileName = `${props?.userData?.firstName?.[0]}${props?.userData?.surName?.[0]}`
+
+
   return (
     <>
       <View style={Styles.mainHeader}>
@@ -61,7 +64,15 @@ const Header = (props) => {
                 screen: 'Profile',
               })
             }}>
-              <Image source={Images.userPic} style={Styles.userPicImage} />
+              {
+                props?.userData?.profilePic ?
+
+                  <Image source={{ uri: props?.userData?.profilePic }} style={Styles.userPicImage} />
+                  :
+                  <View style={Styles.userProfileWrapper}>
+                    <Text style={Styles.userProfileText}>{profileName?.toUpperCase()}</Text>
+                  </View>
+              }
             </TouchableOpacity>
 
 

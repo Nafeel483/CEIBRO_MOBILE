@@ -20,6 +20,7 @@ import Header from '../../Components/Header';
 import MyTask from '../../Components/MyTask';
 import SubTask from '../../Components/SubTask';
 import ButtonModel from '../../Components/ButtonModel';
+import { connect } from 'react-redux';
 
 
 class Tasks extends Component {
@@ -156,13 +157,16 @@ class Tasks extends Component {
   render() {
     const { categoryList, allTaskList, listColumn,
       actions, isMenuOpen, tabClick, allSubTaskList } = this.state
+
+    let profileUser = this.props.user?.myProfile ? this.props.user?.myProfile : this.props.auth?.userLogin?.user
+
     return (
       <>
         <SafeAreaProvider>
           <SafeAreaView style={Styles.safeHeadContainer} />
           <SafeAreaView style={Styles.safeAreaContainer} forceInset={{ bottom: 'never' }}>
             <StatusBar barStyle="dark-content" />
-            <Header navigation={this.props.navigation} />
+            <Header userData={profileUser} navigation={this.props.navigation} />
             <View style={Styles.headerContainer}>
               <View style={Styles.seperator} />
               <View style={Styles.mainContent}>
@@ -240,4 +244,18 @@ class Tasks extends Component {
     );
   }
 }
-export default Tasks;
+const mapStateToProps = (state) => {
+  return {
+    auth: state.auth,
+    user: state.user,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    // logoutUser: (user) => dispatch(logoutUser(user)),
+  };
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Tasks);

@@ -133,15 +133,15 @@ class Signup extends Component {
           <SafeAreaProvider>
             <SafeAreaView style={Styles.safeAreaContainer} forceInset={{ top: 'never', bottom: 'never' }}>
               <StatusBar barStyle="light-content" />
-              <View style={Styles.headerContent}>
-                <ImageBackground source={Images.visual} style={Styles.headingBackground} >
-                  <Image source={Images.loginLogo} style={Styles.logoStyle} />
-                  <View style={Styles.innerHeader}>
-                    <Text style={Styles.loginText}>{"Register"}</Text>
-                  </View>
-                </ImageBackground>
-              </View>
               <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={Styles.headerContent}>
+                  <ImageBackground source={Images.visual} style={Styles.headingBackground} >
+                    <Image source={Images.loginLogo} style={Styles.logoStyle} />
+                    <View style={Styles.innerHeader}>
+                      <Text style={Styles.loginText}>{"Register"}</Text>
+                    </View>
+                  </ImageBackground>
+                </View>
                 <View style={Styles.scrollStyle}>
                   <View style={Styles.bottomContent}>
                     <View style={Styles.bottomContainer}>

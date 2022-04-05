@@ -44,6 +44,7 @@ const images = {
   gallery: require('../Assets/Profile/gallery.png'),
   pin: require('../Assets/Profile/pin.png'),
   Decline: require('../Assets/Profile/Decline.png'),
+  Photo: require('../Assets/Profile/Photo.png'),
 
   // Chat Assets
   favourite: require('../Assets/Chat/favourite.png'),
