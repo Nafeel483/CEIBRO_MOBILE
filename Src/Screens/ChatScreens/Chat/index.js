@@ -45,6 +45,16 @@ class Chats extends Component {
   }
 
   componentDidMount = () => {
+    this.focusListener = this.props.navigation.addListener('focus', async () => {
+      let accessToken = this.props.auth?.userLogin?.tokens?.access?.token
+      let chatData = {
+        name: "",
+        type: "all",
+        favourite: false,
+        token: accessToken
+      }
+      this.props.getAllChats(chatData)
+    })
     let accessToken = this.props.auth?.userLogin?.tokens?.access?.token
     let chatData = {
       name: "",
@@ -178,7 +188,8 @@ class Chats extends Component {
                 chatRoomID: item?._id,
                 chatRoomName: item?.name,
                 chatRoomProject: item?.project,
-                chatRoomMembers: item?.members
+                chatRoomMembers: item?.members,
+                groupInfo: item
               }
             })
           }}
@@ -238,7 +249,9 @@ class Chats extends Component {
               <Text style={Styles.displayTime}>{moment(item?.updatedAt).format('ddd')}</Text>
             </View>
             <Menu>
-              <MenuTrigger>
+              <MenuTrigger
+                customStyles={{ triggerTouchable: { underlayColor: Colors.White } }}
+              >
                 <Image source={Images.menu} style={Styles.menuimage} />
               </MenuTrigger>
               <MenuOptions

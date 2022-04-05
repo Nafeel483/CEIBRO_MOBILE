@@ -21,14 +21,22 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
+import { connect } from 'react-redux';
+import { showMessage, hideMessage } from "react-native-flash-message";
+import Loader from '../../../Components/Loader';
+import { getAllUserChats } from '../../../Redux/Actions/chat';
+import moment from 'moment';
+import * as API from '../../../Redux/Selectors/AllApi';
+
 
 class GroupInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      chatTitle: 'Group name',
-      chatProject: 'Vesse-12',
+      chatTitle: '',
+      chatProject: '',
       listColumn: 1,
+      listMediaColumn: 3,
       memberDropDown: false,
       memberTab: [
         "All members",
@@ -38,58 +46,100 @@ class GroupInfo extends Component {
       ],
       clickTab: 0,
       search: '',
-      suggestList: [
-        {
-          name: "Ilja Nikolajev",
-          pic: Images.charUserpic1,
-          profession: "Electrician",
-          add: false
-        },
-        {
-          name: "Kristo Reinsalu",
-          pic: Images.charUserpic2,
-          profession: "Electrician",
-          add: false
-        },
-        {
-          name: "Jaanus Kütson",
-          pic: Images.charUserpic3,
-          profession: "Electrician",
-          add: false
-        },
-        {
-          name: "Martin Tamm",
-          pic: Images.charUserpic4,
-          profession: "Electrician",
-          add: false
-        },
-        {
-          name: "Indrek Lustik",
-          pic: Images.charUserpic5,
-          profession: "Project manager",
-          add: false
-        },
-      ],
+      loadingMedia: false,
+      allMediaData: [],
+      mediaDropDown: false,
+      pinDropDown: false
     };
   }
+
+  componentDidMount = () => {
+    const groupInfo = this.props.route?.params?.groupInfo
+    if (groupInfo) {
+      let token = this.props.auth?.userLogin?.tokens?.access?.token
+      this.setState({ loadingMedia: true })
+      API.getChatRoomAllMedia(groupInfo?._id, token)
+        .then((res) => {
+          this.setState({
+            allMediaData: res,
+            loadingMedia: false,
+          })
+          console.log("getChatRoomAllMedia Response api====>", res)
+        })
+        .catch((error) => {
+          this.setState({ loadingMedia: false })
+          console.log("getChatRoomAllMedia api error", error)
+        });
+
+      this.setState({
+        chatTitle: groupInfo?.name,
+        chatProject: groupInfo?.project == null ? "No Project" : groupInfo?.project
+      })
+    }
+  }
+
   openMemberDrop = () => {
     this.setState({ memberDropDown: !this.state.memberDropDown })
   }
+
+  checkAllMedia = () => {
+    this.setState({ mediaDropDown: !this.state.mediaDropDown })
+  }
+  checkAllPinned = () => {
+    this.setState({ pinDropDown: !this.state.pinDropDown })
+
+  }
+
+  seeAllMediaList = (item, index) => {
+    return (
+      <>
+        <TouchableOpacity key={index} style={Styles.mediaMainWrapper}>
+          <Image source={{ uri: item?.url }} style={Styles.mediaFiles} />
+          <Text style={Styles.mediaFileText}>{item?.fileName}</Text>
+        </TouchableOpacity>
+      </>
+    )
+  }
+
+  seeAllPinnedList = (item, index) => {
+    return (
+      <>
+        <View style={Styles.showPinnedMessage}>
+          <View style={Styles.innerPinnedMessage}>
+            <Text style={Styles.pinnedText}>{item?.message}</Text>
+          </View>
+
+        </View>
+      </>
+    )
+  }
+
   addSuggestListList = (item, index) => {
+    var str_Name = `${item?.firstName?.[0]}${item?.surName?.[0]}`
     return (
       <>
         <TouchableOpacity style={Styles.listChatContainer}>
           <View style={Styles.chatFirstWrapper}>
-            <Image source={item.pic} style={Styles.userPicImage} />
+            {
+              item?.profilePic ?
+                < Image source={{ uri: item?.profilePic }} style={Styles.userPicImage} />
+                :
+                <View style={Styles.userProfileWrapper}>
+                  <Text style={Styles.userProfileText}>{str_Name?.toUpperCase()}</Text>
+                </View>
+            }
+
             <View style={{
               marginLeft: hp(1)
             }}>
-              <Text style={Styles.userName}>{item.name}</Text>
-              <Text style={Styles.displayMessage}>{`Company . ${item.profession}`}</Text>
+              <Text style={Styles.userName}>{`${item?.firstName} ${item?.surName}`}</Text>
+              {/* <Text style={Styles.displayMessage}>{`Company . ${item.profession}`}</Text> */}
             </View>
           </View>
           <Menu>
-            <MenuTrigger>
+            <MenuTrigger
+              customStyles={{ triggerTouchable: { underlayColor: Colors.White } }}
+            >
               <Image source={Images.menu} style={Styles.menuimage} />
             </MenuTrigger>
             <MenuOptions
@@ -97,7 +147,7 @@ class GroupInfo extends Component {
                 optionsContainer: {
                   marginTop: hp(4), borderRadius: 6
                 },
-                
+
               }}>
               <MenuOption>
                 <TouchableOpacity style={Styles.menuOptionStyle}>
@@ -135,8 +185,15 @@ class GroupInfo extends Component {
 
   render() {
     const { listColumn, chatTitle, chatProject, memberDropDown,
-      suggestList,
-      memberTab, clickTab, search } = this.state
+      memberTab, clickTab, search, loadingMedia,
+      allMediaData, mediaDropDown, listMediaColumn,
+      pinDropDown
+    } = this.state
+
+    const groupInfo = this.props.route?.params?.groupInfo
+    const allPinnedChatList = this.props.route?.params?.allPinnedChatList
+
+    console.log("All groupInfo = ", groupInfo, allPinnedChatList)
     return (
       <>
         <MenuProvider>
@@ -148,7 +205,7 @@ class GroupInfo extends Component {
                   <Image source={Images.leftArrow} style={Styles.Setimage} />
                 </TouchableOpacity >
                 <View style={Styles.touchviewone}>
-                  <Text style={Styles.touchViewprofileOne}>{"Group info"}</Text>
+                  <Text style={Styles.touchViewprofileOne}>{groupInfo?.name}</Text>
                 </View>
               </View>
               <View
@@ -156,6 +213,7 @@ class GroupInfo extends Component {
               />
               <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={Styles.scrollContent}>
+
                   <TouchableOpacity style={Styles.profleWrapper}>
                     <Image source={Images.memberPerson} style={Styles.personStyle} />
                     <Image source={Images.camera} style={Styles.cameraStyle} />
@@ -186,25 +244,20 @@ class GroupInfo extends Component {
                   />
 
                   {/* Project */}
-                  <View style={Styles.emailWrapper1}>
+
+                  <TouchableOpacity onPress={this.openProjectList}
+                    style={Styles.emailWrapper1}>
                     <Text style={Styles.tabText}>{"Project"}</Text>
                     <View style={Styles.inboxLine} />
-                    <TextInput
-                      style={Styles.emailInput}
-                      value={chatProject}
-                      placeholder={"Please select a project"}
-                      placeholderTextColor={Colors.textColor}
-                      autoCapitalize='none'
-                      onChangeText={(value) => {
-                        this.setState({
-                          chatProject: value,
-                        })
-                      }}
-                    />
+                    <View style={Styles.emailInput1}>
+                      <Text style={[Styles.emailInput1Text, {
+                        color: chatProject != "" ? Colors.Black : Colors.textColor
+                      }]}>{chatProject != "" ? chatProject : "Please select a project"}</Text>
+                    </View>
                     <TouchableOpacity>
                       <Image source={Images.dropDown} style={Styles.searchStyle} />
                     </TouchableOpacity>
-                  </View>
+                  </TouchableOpacity>
                   <View
                     style={Styles.line}
                   />
@@ -212,28 +265,104 @@ class GroupInfo extends Component {
 
                   <View style={Styles.mediaContainer}>
 
-                    <TouchableOpacity style={Styles.mediaWrapperContainer}>
+                    <TouchableOpacity onPress={this.checkAllMedia}
+                      style={Styles.mediaWrapperContainer}>
                       <View style={{ flexDirection: 'row' }}>
-                        <Image source={Images.gallery} style={Styles.galleryImage} />
+                        <View>
+                          <Image source={Images.gallery} style={Styles.galleryImage} />
+                          {
+                            allMediaData?.length > 0 ?
+                              <View style={Styles.notifTag}>
+                                <Text style={Styles.tagTextStyle}>
+                                  {`${allMediaData?.length}`}
+                                </Text>
+                              </View>
+                              : null
+                          }
+                        </View>
                         <Text style={Styles.mediaText}>{"Media & Files"}</Text>
                       </View>
-                      <Image source={Images.rightArrow} style={Styles.imgrightarrow} />
+                      {
+                        mediaDropDown == true ?
+                          <Image source={Images.dropDown} style={Styles.searchStyle} />
+                          :
+                          <Image source={Images.rightArrow} style={Styles.imgrightarrow} />
+                      }
                     </TouchableOpacity>
-                    <View
-                      style={Styles.line}
-                    />
+                    {
+                      mediaDropDown == true ?
+                        <>
+                          {
+                            allMediaData?.length > 0 ?
+                              <View style={Styles.mediaShowContainer}>
+                                <FlatList
+                                  key={listMediaColumn}
+                                  horizontal={false}
+                                  scrollEnabled={false}
+                                  numColumns={listMediaColumn}
+                                  data={allMediaData}
+                                  keyExtractor={(item, index) => index.toString()}
+                                  renderItem={({ item, index }) => this.seeAllMediaList(item, index)}
+                                />
+                              </View>
+                              : null
+                          }
+                        </>
+                        :
 
-                    <TouchableOpacity style={Styles.mediaWrapperContainer}>
+                        <View
+                          style={Styles.line}
+                        />
+                    }
+                    <TouchableOpacity onPress={this.checkAllPinned}
+                      style={Styles.mediaWrapperContainer}>
                       <View style={{ flexDirection: 'row' }}>
-                        <Image source={Images.pin} style={Styles.galleryImage} />
+                        <View>
+                          <Image source={Images.pin} style={Styles.galleryImage} />
+                          {
+                            allPinnedChatList?.length > 0 ?
+                              <View style={Styles.notifTag}>
+                                <Text style={Styles.tagTextStyle}>
+                                  {`${allPinnedChatList?.length}`}
+                                </Text>
+                              </View>
+                              : null
+                          }
+                        </View>
                         <Text style={Styles.mediaText}>{"Pinned messages"}</Text>
                       </View>
-                      <Image source={Images.rightArrow} style={Styles.imgrightarrow} />
+                      {
+                        pinDropDown == true ?
+                          <Image source={Images.dropDown} style={Styles.searchStyle} />
+                          :
+                          <Image source={Images.rightArrow} style={Styles.imgrightarrow} />
+                      }
                     </TouchableOpacity>
-                    <View
-                      style={Styles.line}
-                    />
+                    {
+                      pinDropDown == true ?
+                        <>
+                          {
+                            allPinnedChatList?.length > 0 ?
+                              <View style={Styles.mediaShowContainer}>
+                                <FlatList
+                                  key={listColumn}
+                                  horizontal={false}
+                                  scrollEnabled={false}
+                                  numColumns={listColumn}
+                                  data={allPinnedChatList}
+                                  keyExtractor={(item, index) => index.toString()}
+                                  renderItem={({ item, index }) => this.seeAllPinnedList(item, index)}
+                                />
+                              </View>
+                              : null
+                          }
+                        </>
+                        :
 
+                        <View
+                          style={Styles.line}
+                        />
+                    }
                     <TouchableOpacity style={Styles.mediaWrapperContainer}>
                       <View style={{ flexDirection: 'row' }}>
                         <Image source={Images.document} style={Styles.galleryImage1} />
@@ -249,7 +378,19 @@ class GroupInfo extends Component {
                     <TouchableOpacity onPress={this.openMemberDrop}
                       style={Styles.mediaWrapperContainer}>
                       <View style={{ flexDirection: 'row' }}>
-                        <Image source={Images.members} style={Styles.galleryImage} />
+                        <View>
+                          <Image source={Images.members} style={Styles.galleryImage} />
+                          {/* Notify Tag */}
+                          {
+                            groupInfo?.members?.length > 0 ?
+                              <View style={Styles.notifTag}>
+                                <Text style={Styles.tagTextStyle}>
+                                  {`${groupInfo?.members?.length}`}
+                                </Text>
+                              </View>
+                              : null
+                          }
+                        </View>
                         <Text style={Styles.mediaText}>{"Chat members"}</Text>
                       </View>
                       {
@@ -262,7 +403,7 @@ class GroupInfo extends Component {
                     {
                       memberDropDown == true ?
                         <>
-                          <View style={Styles.memberDropContainer}>
+                          {/* <View style={Styles.memberDropContainer}>
                             {
                               memberTab.map((val, index) => {
                                 return (
@@ -281,32 +422,37 @@ class GroupInfo extends Component {
                               })
                             }
 
-                          </View>
-                          <View style={Styles.searchWrapper}>
-                            <Image source={Images.search} style={Styles.searchImage} />
-                            <View style={Styles.inboxLine} />
-                            <TextInput
-                              style={Styles.emailInput}
-                              value={search}
-                              placeholder={"Enter @username"}
-                              placeholderTextColor={Colors.textColor}
-                              autoCapitalize='none'
-                              onChangeText={(value) => {
-                                this.setState({
-                                  search: value,
-                                })
-                              }}
-                            />
-                          </View>
-                          <FlatList
-                            key={listColumn}
-                            horizontal={false}
-                            scrollEnabled={false}
-                            numColumns={listColumn}
-                            data={suggestList}
-                            keyExtractor={(item, index) => index.toString()}
-                            renderItem={({ item, index }) => this.addSuggestListList(item, index)}
-                          />
+                          </View> */}
+                          {
+                            groupInfo?.members?.length > 0 ?
+                              <>
+                                <View style={Styles.searchWrapper}>
+                                  <Image source={Images.search} style={Styles.searchImage} />
+                                  <View style={Styles.inboxLine} />
+                                  <TextInput
+                                    style={Styles.emailInput}
+                                    value={search}
+                                    placeholder={"Enter @username"}
+                                    placeholderTextColor={Colors.textColor}
+                                    autoCapitalize='none'
+                                    onChangeText={(value) => {
+                                      this.setState({
+                                        search: value,
+                                      })
+                                    }}
+                                  />
+                                </View>
+                                <FlatList
+                                  key={listColumn}
+                                  horizontal={false}
+                                  scrollEnabled={false}
+                                  numColumns={listColumn}
+                                  data={groupInfo?.members}
+                                  keyExtractor={(item, index) => index.toString()}
+                                  renderItem={({ item, index }) => this.addSuggestListList(item, index)}
+                                />
+                              </> : null
+                          }
                         </>
                         :
                         <View
@@ -318,6 +464,7 @@ class GroupInfo extends Component {
                   </View>
                 </View>
               </ScrollView>
+              {loadingMedia ? <Loader /> : null}
             </SafeAreaView>
           </SafeAreaProvider>
         </MenuProvider>
@@ -328,5 +475,18 @@ class GroupInfo extends Component {
   }
 
 }
-
-export default GroupInfo;
+const mapStateToProps = (state) => {
+  return {
+    auth: state.auth,
+    chat: state.chat
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getAllChats: (user) => dispatch(getAllUserChats(user)),
+  };
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(GroupInfo);

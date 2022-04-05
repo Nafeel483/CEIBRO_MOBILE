@@ -76,6 +76,81 @@ export const muteChatApi = (roomId, token) => {
   }).then(response => response.data);
 }
 
+// getChatMoreMembers
+export const getChatMoreMembers = (projectId, token) => {
+  return axios({
+    method: 'get',
+    url: `${CONSTANTS.BASE_URL}/chat/member/available/${projectId}`,
+    headers: {
+      "accept": 'application/json',
+      "Content-Type": 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer ' + token,
+    },
+
+  }).then(response => response.data);
+}
+
+
+// addMemberInChat
+export const addMemberInChat = (roomId, memberId, temporary, token) => {
+
+  return axios({
+    method: 'post',
+    url: `${CONSTANTS.BASE_URL}/chat/member/${roomId}/${memberId}?temporary=${temporary}`,
+    headers: {
+      "accept": 'application/json',
+      "Content-Type": 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer ' + token,
+    },
+
+  }).then(response => response.data);
+}
+
+// getChatRoomAllMedia
+export const getChatRoomAllMedia = (roomId, token) => {
+  return axios({
+    method: 'get',
+    url: `${CONSTANTS.BASE_URL}/chat/media/${roomId}`,
+    headers: {
+      "accept": 'application/json',
+      "Content-Type": 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer ' + token,
+    },
+
+  }).then(response => response.data);
+}
+
+// pinnedMessageApi
+export const pinnedMessageApi = (messageId, token) => {
+
+  return axios({
+    method: 'post',
+    url: `${CONSTANTS.BASE_URL}/chat/message/favourite/${messageId}`,
+    headers: {
+      "accept": 'application/json',
+      "Content-Type": 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer ' + token,
+    },
+
+  }).then(response => response.data);
+}
+
+
+// getAllPinnedMessageApi
+export const getAllPinnedMessageApi = (roomId, token) => {
+  return axios({
+    method: 'get',
+    url: `${CONSTANTS.BASE_URL}/chat/message/favourite/${roomId}`,
+    headers: {
+      "accept": 'application/json',
+      "Content-Type": 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer ' + token,
+    },
+
+  }).then(response => response.data);
+}
+
+
 // export const changeProfilePic = (source, token) => {
 //   console.log("The Result = ", source, token)
 

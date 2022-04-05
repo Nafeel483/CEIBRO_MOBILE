@@ -17,8 +17,10 @@ import CheckBox from '@react-native-community/checkbox';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 
-const ProjectModel = (props) => {
-  const { open, close, project, selectCheckedProject, chatProject, projectId } = props
+const ChatRoomMembers = (props) => {
+  const { open, close, moreMembersList, chatMemberName,
+    memberId,
+    selectCheckedMembers, submit } = props
 
   return (
     <>
@@ -39,23 +41,26 @@ const ProjectModel = (props) => {
             <TouchableOpacity onPress={close}>
               <Image source={Images.close} style={Styles.Setimage} />
             </TouchableOpacity>
-            <Text style={Styles.touchViewprofileOne}>{"Select a Project"}</Text>
-            <View style={{ width: hp(5) }} />
+            <Text style={Styles.touchViewprofileOne}>{"Add Members"}</Text>
+            <TouchableOpacity onPress={submit}
+              style={Styles.filterStyle}>
+              <Text style={Styles.plusIconText}>{"Add"}</Text>
+            </TouchableOpacity>
           </View>
           <View style={Styles.seperator} />
           {/* Heading Ends*/}
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={Styles.scrollContent}>
               {
-                project?.length > 0 ?
-                  project?.map((val, index) => {
+                moreMembersList?.length > 0 ?
+                  moreMembersList?.map((val, index) => {
                     return (
                       <>
-                        <TouchableOpacity onPress={() => selectCheckedProject(val)}
+                        <TouchableOpacity onPress={() => selectCheckedMembers(val)}
                           style={Styles.headerWrapper}>
-                          <Text style={Styles.userName}>{val.title}</Text>
+                          <Text style={Styles.userName}>{`${val?.firstName} ${val?.surName}`}</Text>
                           {
-                            chatProject != '' && projectId == val?.id ?
+                            chatMemberName != '' && memberId == val?.id ?
                               <Image source={Images.checked} style={Styles.checkStyle} />
                               :
                               <Image source={Images.emptyChecked} style={Styles.checkStyle} />
@@ -75,4 +80,4 @@ const ProjectModel = (props) => {
     </>
   );
 }
-export default ProjectModel;
+export default ChatRoomMembers;

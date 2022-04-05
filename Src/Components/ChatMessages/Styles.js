@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginRight: hp(0.5)
   },
-  mediaSeenFilesName:{
+  mediaSeenFilesName: {
     width: hp(1.65),
     height: hp(1.65),
     borderRadius: 5,
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.borderColor,
     backgroundColor: Colors.borderColor
   },
-  mediaSeenInnerName:{
+  mediaSeenInnerName: {
     fontSize: hp(0.5),
     fontWeight: '500',
     fontFamily: "Inter",
@@ -242,6 +242,12 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     height: hp(0.2),
     backgroundColor: Colors.bottomLine
-  }
+  },
+  galleryImage: {
+    width: hp(2),
+    height: hp(2),
+    marginLeft: hp(2),
+    tintColor: Colors.blue
+  },
 });
 export default styles;

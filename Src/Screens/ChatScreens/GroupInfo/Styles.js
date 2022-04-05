@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     margin: hp(0.5)
   },
   listChatContainer: {
-    marginTop: hp(2),
+    marginTop: hp(2.5),
     width: widthScreen / 1.12,
     alignSelf: 'center',
     flexDirection: 'row',
@@ -198,6 +198,21 @@ const styles = StyleSheet.create({
     height: hp(4),
     borderRadius: 8,
   },
+  userProfileWrapper: {
+    width: hp(4),
+    height: hp(4),
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.borderColor
+  },
+  userProfileText: {
+    fontSize: hp(1.6),
+    fontWeight: '500',
+    fontFamily: "Inter",
+    color: Colors.Black
+  },
   chatFirstWrapper: {
     flexDirection: 'row',
   },
@@ -206,6 +221,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontFamily: "Inter",
     color: Colors.Black,
+    marginTop: hp(1)
   },
   displayMessage: {
     fontSize: hp(1.3),
@@ -245,6 +261,89 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     height: hp(0.2),
     backgroundColor: Colors.bottomLine
+  },
+  notifTag: {
+    height: hp(2.3),
+    width: hp(2.3),
+    position: 'absolute',
+    right: -8,
+    top: -10,
+    borderRadius: hp(2.3),
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.blue,
+  },
+  tagTextStyle: {
+    fontSize: hp(1.1),
+    color: Colors.White,
+    fontWeight: '700',
+    fontFamily: "Inter",
+  },
+  emailInput1: {
+    marginLeft: hp(1.5),
+    flex: 1,
+  },
+  emailInput1Text: {
+    fontSize: hp(1.7),
+    color: Colors.Black,
+    fontFamily: "Inter",
+    fontWeight: '500'
+  },
+  mediaShowContainer: {
+    width: widthScreen / 1.12,
+    alignSelf: 'center',
+    marginTop: hp(2),
+    marginBottom: hp(2)
+  },
+  mediaMainWrapper: {
+    marginRight: hp(1.5),
+    // marginLeft: hp(1.5),
+    marginTop: hp(1),
+  },
+  mediaFiles: {
+    width: hp(4),
+    height: hp(4),
+    borderRadius: 6,
+
+    alignSelf: 'center'
+  },
+  mediaFileText: {
+    marginTop: hp(1),
+    fontSize: hp(1.2),
+    color: Colors.blue,
+    fontWeight: '500',
+    fontFamily: "Inter",
+    textAlign: 'center',
+    width: hp(12)
+  },
+  showPinnedMessage: {
+    width: widthScreen / 1.2,
+    alignSelf: 'center',
+    backgroundColor: "rgba(0,118,200,0.20)",
+    borderRadius: 6,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+
+    elevation: 3,
+    marginTop: hp(0.5),
+    marginBottom: hp(0.5)
+  },
+  innerPinnedMessage: {
+    marginTop: hp(1.5),
+    marginBottom: hp(1.5),
+    width: '90%',
+    alignSelf: 'center'
+  },
+  pinnedText: {
+    fontSize: hp(1.8),
+    fontWeight: '500',
+    color: "#0077C8",
+    fontFamily: "Inter",
   }
 });
 export default styles;

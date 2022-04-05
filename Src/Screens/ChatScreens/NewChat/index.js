@@ -190,7 +190,7 @@ class NewChat extends Component {
 
   render() {
     const { chatTitle, chatWith, chatProject, listColumn,
-      allProjectMembers,
+      allProjectMembers,projectId,
       openProject, members
     } = this.state
     let allProjects = this.props.project?.allProjects
@@ -337,6 +337,7 @@ class NewChat extends Component {
                   open={openProject}
                   project={allProjects}
                   chatProject={chatProject}
+                  projectId={projectId}
                   selectCheckedProject={this.selectCheckedProject}
                   close={this.openProjectList}
                 />

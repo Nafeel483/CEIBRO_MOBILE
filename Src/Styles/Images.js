@@ -43,6 +43,7 @@ const images = {
   leftArrow: require('../Assets/Profile/leftArrow.png'),
   gallery: require('../Assets/Profile/gallery.png'),
   pin: require('../Assets/Profile/pin.png'),
+  filledPin: require('../Assets/Profile/filledPin.png'),
   Decline: require('../Assets/Profile/Decline.png'),
   Photo: require('../Assets/Profile/Photo.png'),
 

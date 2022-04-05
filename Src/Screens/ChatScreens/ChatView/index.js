@@ -26,6 +26,8 @@ import QuestionareModel from '../../../Components/QuestionareModel';
 import CreateQuestionare from '../../../Components/CreateQuestionare';
 import Loader from '../../../Components/Loader';
 import * as API from '../../../Redux/Selectors/AllApi';
+import ChatRoomMembers from '../../../Components/ChatRoomMembers';
+import { showMessage, hideMessage } from "react-native-flash-message";
 
 
 class ChatView extends Component {
@@ -53,16 +55,29 @@ class ChatView extends Component {
       ],
       openModel: false,
       createModel: false,
+      openAddMember: false,
+      moreMembersList: [],
+      chatMemberName: '',
+      memberId: '',
+      temporaryMember: false,
+      allPinnedChatList: []
     };
   }
 
   componentDidMount = () => {
+    this.focusListener = this.props.navigation.addListener('focus', async () => {
+      this.allSingleChatRoomMessage()
+      this.getAllPinnedMessages()
+    })
+
+    this.allSingleChatRoomMessage()
+    this.getAllPinnedMessages()
+  }
+
+  allSingleChatRoomMessage = () => {
     let token = this.props.auth?.userLogin?.tokens?.access?.token
-
     const messageID = this.props.route?.params?.chatRoomID
-
-
-    console.log("Nafeel__ messageID", messageID)
+    // console.log("Nafeel__ messageID", messageID)
     API.getChatRoomMessage(messageID, token)
       .then((res) => {
         console.log("Favourite Response api====>", res)
@@ -73,18 +88,139 @@ class ChatView extends Component {
       });
   }
 
+  getAllPinnedMessages = () => {
+    let token = this.props.auth?.userLogin?.tokens?.access?.token
+    const roomID = this.props.route?.params?.chatRoomID
+
+    API.getAllPinnedMessageApi(roomID, token)
+      .then((res) => {
+        console.log("getAllPinnedMessageApi Response api====>", res)
+        this.setState({ allPinnedChatList: res })
+      })
+      .catch((error) => {
+        console.log("getAllPinnedMessageApi api error", error)
+      });
+  }
+
   questionModelCall = () => {
     this.setState({ openModel: !this.state.openModel })
   }
   createQuestion = () => {
     this.setState({ createModel: !this.state.createModel })
   }
+
+  getMoreMember = (temporaryCheck) => {
+    let token = this.props.auth?.userLogin?.tokens?.access?.token
+
+    const messageID = this.props.route?.params?.chatRoomID
+
+
+    API.getChatMoreMembers(messageID, token)
+      .then((res) => {
+        console.log("getChatMoreMembers Response api====>", res)
+        this.setState({
+          moreMembersList: res,
+          openAddMember: !this.state.openAddMember,
+          temporaryMember: temporaryCheck
+        })
+      })
+      .catch((error) => {
+        console.log("getChatMoreMembers api error", error)
+      });
+  }
+  closeAddMembers = () => {
+    this.setState({ openAddMember: false })
+  }
+
+  selectCheckedMembers = (item) => {
+    const { memberId } = this.state
+    if (memberId == item?.id) {
+      this.setState({
+        chatMemberName: '',
+        memberId: '',
+        // openAddMember: !this.state.openAddMember
+      })
+    }
+    else {
+      this.setState({
+        chatMemberName: item?.title,
+        memberId: item?.id,
+        // openAddMember: !this.state.openAddMember
+      })
+    }
+  }
+  addSubmitMember = () => {
+    const { memberId, temporaryMember } = this.state
+    let token = this.props.auth?.userLogin?.tokens?.access?.token
+
+    const messageID = this.props.route?.params?.chatRoomID
+    const temporary = temporaryMember
+
+    if (memberId == '') {
+      showMessage({
+        message: "Member Not Selected",
+        description: "At-least one Member Should be Selected",
+        type: "default",
+        backgroundColor: "#9c1730", // background color
+        color: "white", // text color
+      });
+
+    } else {
+
+      API.addMemberInChat(messageID, memberId, temporary, token)
+        .then((res) => {
+          console.log("addMemberInChat Response api====>", res)
+          showMessage({
+            message: "Member Successfully Added",
+            description: "Member Successfully Added to In Chat",
+            type: "default",
+            backgroundColor: "#009900", // background color
+            color: "white" // text color
+          })
+          this.setState({
+            openAddMember: !this.state.openAddMember
+          })
+        })
+        .catch((error) => {
+          console.log("addMemberInChat api error", error)
+        });
+    }
+  }
+  pinnedToFavourite = (messageId) => {
+    let token = this.props.auth?.userLogin?.tokens?.access?.token
+
+    API.pinnedMessageApi(messageId, token)
+      .then((res) => {
+        console.log("pinnedMessageApi Response api====>", res)
+        this.allSingleChatRoomMessage()
+        this.getAllPinnedMessages()
+        showMessage({
+          message: "Favourited Update",
+          description: `${res}`,
+          type: "default",
+          backgroundColor: "#009900", // background color
+          color: "white" // text color
+        })
+
+      })
+      .catch((error) => {
+        console.log("pinnedMessageApi api error", error)
+      });
+  }
+
   render() {
     const { chatMessage, allChatList, Opposite, receiverID,
-      senderID, openModel, createModel } = this.state
+      senderID, openModel, createModel, openAddMember, moreMembersList,
+      chatMemberName, memberId, allPinnedChatList
+    } = this.state
+
+
     const chatRoomName = this.props.route?.params?.chatRoomName
     const chatRoomProject = this.props.route?.params?.chatRoomProject
     const chatRoomMembers = this.props.route?.params?.chatRoomMembers
+    const groupInfo = this.props.route?.params?.groupInfo
+
+    const currentUser = this.props.auth?.userLogin?.user?.id
     return (
       <>
         <MenuProvider>
@@ -105,6 +241,10 @@ class ChatView extends Component {
                               <TouchableOpacity onPress={() => {
                                 this.props.navigation.navigate('ChatFeature', {
                                   screen: 'GroupInfo',
+                                  params: {
+                                    groupInfo: groupInfo,
+                                    allPinnedChatList: allPinnedChatList
+                                  }
                                 })
                               }}>
                                 <Text style={Styles.touchViewprofileOne}>{chatRoomName}</Text>
@@ -119,6 +259,10 @@ class ChatView extends Component {
                             <TouchableOpacity onPress={() => {
                               this.props.navigation.navigate('ChatFeature', {
                                 screen: 'GroupInfo',
+                                params: {
+                                  groupInfo: groupInfo,
+                                  allPinnedChatList: allPinnedChatList
+                                }
                               })
                             }}>
                               <Text style={Styles.touchViewprofileOne1}>{chatRoomName}</Text>
@@ -133,8 +277,12 @@ class ChatView extends Component {
                       {/* <TouchableOpacity onPress={() => { this.props.navigation.goBack() }}>
                         <Image source={Images.menu} style={Styles.menuimage} />
                       </TouchableOpacity > */}
-                      <Menu>
-                        <MenuTrigger>
+                      <Menu >
+                        <MenuTrigger
+                          customStyles={{
+                            triggerTouchable: { underlayColor: Colors.White }
+                          }}
+                        >
                           <Image source={Images.menu} style={Styles.menuimage} />
                         </MenuTrigger>
                         <MenuOptions
@@ -146,7 +294,8 @@ class ChatView extends Component {
                             },
                           }}>
                           <MenuOption>
-                            <TouchableOpacity style={Styles.menuOptionStyle}>
+                            <TouchableOpacity onPress={() => this.getMoreMember(false)}
+                              style={Styles.menuOptionStyle}>
                               <Image source={Images.invite} style={Styles.menuOptionImage} />
                               <Text style={[Styles.menuOptionText, { color: Colors.blue }]}>{"Add People"}</Text>
                             </TouchableOpacity>
@@ -177,7 +326,8 @@ class ChatView extends Component {
                     <ShowChatMessages
                       showmessage={showmessage} key={showmessage._id} userId={showmessage._id} oppositeUser={Opposite}
                       receiverID={receiverID} senderID={senderID} questionModelCall={this.questionModelCall}
-                      chatRoomMembers={chatRoomMembers}
+                      chatRoomMembers={chatRoomMembers} addTemporary={this.getMoreMember}
+                      pinnedToFavourite={this.pinnedToFavourite} currentUser={currentUser}
                     />
                   ))}
                 </View>
@@ -235,6 +385,19 @@ class ChatView extends Component {
                   <CreateQuestionare
                     open={createModel}
                     close={this.createQuestion} />
+                  : null
+              }
+              {
+                openAddMember == true ?
+                  <ChatRoomMembers
+                    open={openAddMember}
+                    close={this.closeAddMembers}
+                    moreMembersList={moreMembersList}
+                    chatMemberName={chatMemberName}
+                    memberId={memberId}
+                    selectCheckedMembers={this.selectCheckedMembers}
+                    submit={this.addSubmitMember}
+                  />
                   : null
               }
             </SafeAreaView>
