@@ -11,7 +11,8 @@ const styles = StyleSheet.create({
   },
   Setimage: {
     width: hp(4.5),
-    height: hp(4.5)
+    height: hp(4.5),
+    marginTop: hp(0.6)
   },
   contain: {
     flexDirection: 'row',
@@ -28,6 +29,7 @@ const styles = StyleSheet.create({
     fontSize: hp(2.5),
     fontWeight: '700',
     fontFamily: "Inter",
+    color: Colors.Black
   },
   line: {
     marginTop: hp(0.5),

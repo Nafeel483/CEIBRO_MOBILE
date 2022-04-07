@@ -6,7 +6,8 @@ import {
   TextInput,
   ScrollView,
   TouchableOpacity,
-  ImageBackground
+  ImageBackground,
+  SafeAreaView
 } from 'react-native'
 import CheckBox from '@react-native-community/checkbox';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
@@ -185,21 +186,20 @@ class EditScreen extends Component {
     const { loadingUpdateProfile, loadingUpdateProfilePic } = this.props.user
     return (
       <>
-        <View style={Styles.MainContainer}>
+        <SafeAreaView style={Styles.MainContainer}>
           <View style={Styles.contain} >
-            <TouchableOpacity style={Styles.touchstyles} onPress={() => this.props.navigation.goBack()}>
+            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
               <Image source={Images.close} style={Styles.Setimage} />
             </TouchableOpacity >
-            <View style={Styles.touchviewone}>
-              <Text style={Styles.touchViewprofileOne}>{"Edit Profile"}</Text>
-            </View>
+
+            <Text style={Styles.touchViewprofileOne}>{"Edit Profile"}</Text>
             <TouchableOpacity onPress={this.updateProfile}
               style={Styles.touchwrite}>
               <Text style={Styles.btn}>{"Update"}</Text>
             </TouchableOpacity>
           </View>
           <View
-            style={Styles.line}
+            style={Styles.lineAll}
           />
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={Styles.scrollStyle}>
@@ -506,7 +506,7 @@ class EditScreen extends Component {
           </ScrollView>
 
 
-        </View>
+        </SafeAreaView>
         {loadingUpdateProfile || loadingUpdateProfilePic ? <Loader /> : null}
 
 

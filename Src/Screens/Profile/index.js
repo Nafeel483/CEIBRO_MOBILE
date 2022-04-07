@@ -82,9 +82,9 @@ class Profile extends Component {
                   </View>
                 }
                 <Text style={Styles.textiija}>{`${myProfile?.firstName} ${myProfile?.surName}`}</Text>
-                <Text>{myProfile?.email}</Text>
+                <Text style={Styles.emailText}>{myProfile?.email}</Text>
                 <Text style={Styles.textno}>{myProfile?.companyPhone ? myProfile?.companyPhone : ""}</Text>
-                <Text style={{ color: '#0076CB' }}>{myProfile?.workEmail ? myProfile?.workEmail : ""}</Text>
+                <Text style={[Styles.emailText, { color: '#0076CB' }]}>{myProfile?.workEmail ? myProfile?.workEmail : ""}</Text>
                 <Text style={Styles.company}>{myProfile?.companyName ? myProfile.companyName : ""}</Text>
               </View>
 

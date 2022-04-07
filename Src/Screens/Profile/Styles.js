@@ -67,15 +67,27 @@ const styles = StyleSheet.create({
   textiija: {
     marginTop: hp('2%'),
     fontWeight: '700',
-    fontSize: hp(2)
+    fontSize: hp(2),
+    fontFamily: "Inter",
+    color: Colors.Black,
+  },
+  emailText:{
+    marginTop: hp('1%'),
+    fontWeight: '500',
+    fontFamily: "Inter",
+    color: Colors.Black,
   },
   textno: {
     fontWeight: '500',
-    marginTop: hp('3%')
+    marginTop: hp('3%'),
+    fontFamily: "Inter",
+    color: Colors.Black,
   },
   company: {
     marginTop: hp('1.5%'),
-    fontWeight: '600'
+    fontWeight: '600',
+    fontFamily: "Inter",
+    color: Colors.Black,
   },
   connect: {
     flexDirection: 'row',

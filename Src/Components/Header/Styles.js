@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     height: hp(5),
     borderRadius: 8,
     marginLeft: hp(4),
-    resizeMode : 'stretch'
+    // resizeMode : 'stretch'
   },
   userProfileWrapper: {
     width: hp(5),

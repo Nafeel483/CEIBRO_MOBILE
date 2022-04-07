@@ -11,6 +11,10 @@ const styles = StyleSheet.create({
     width: Metrics.screenWidth,
     height: Metrics.screenHeight
   },
+  fullContainer: {
+    flex: 1,
+    backgroundColor: Colors.White
+  },
   Setimage: {
     width: hp(2.5),
     height: hp(2.5),
@@ -42,7 +46,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: widthScreen / 1.12,
     alignSelf: 'center',
-    marginTop: hp(6.5),
+    marginTop: hp(3.5),
     marginBottom: hp(1.8),
     justifyContent: 'space-between'
   },

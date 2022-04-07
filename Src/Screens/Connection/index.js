@@ -17,14 +17,11 @@ class Connection extends Component {
       <>
         <SafeAreaView style={Styles.MainContainer}>
           <View style={Styles.contain} >
-            <TouchableOpacity style={Styles.touchstyles} onPress={() => this.props.navigation.goBack()}>
+            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
               <Image source={Images.close} style={Styles.Setimage} />
             </TouchableOpacity >
-            <View style={Styles.touchviewone}>
               <Text style={Styles.touchViewprofileOne}>{"Connection"}</Text>
-            </View>
             <TouchableOpacity style={Styles.touchwrite}>
-
               <Text style={Styles.btn}>{"Invite"}</Text>
             </TouchableOpacity>
           </View>
@@ -52,7 +49,7 @@ class Connection extends Component {
                 </View>
                 <View style={Styles.subView}>
                   <Text style={Styles.textSubView}>Kristo Vunukainen</Text>
-                  <Text>Company</Text>
+                  <Text style={Styles.companyName}>{"Company"}</Text>
                 </View>
                 <View style={Styles.viewone}>
 
@@ -76,7 +73,7 @@ class Connection extends Component {
                 </View>
                 <View style={Styles.subView}>
                   <Text style={Styles.textSubView}>Indrek Ilum</Text>
-                  <Text>Company</Text>
+                  <Text style={Styles.companyName}>{"Company"}</Text>
                 </View>
                 <View style={Styles.viewone}>
 
@@ -100,7 +97,7 @@ class Connection extends Component {
                 </View>
                 <View style={Styles.subView}>
                   <Text style={Styles.textSubView}>Mart Kivikas</Text>
-                  <Text>Company</Text>
+                  <Text style={Styles.companyName}>{"Company"}</Text>
                 </View>
                 <View style={Styles.viewone}>
 
@@ -124,7 +121,7 @@ class Connection extends Component {
                 </View>
                 <View style={Styles.subView}>
                   <Text style={Styles.textSubView}>Rene Oruman-Kivist</Text>
-                  <Text>Company</Text>
+                  <Text style={Styles.companyName}>{"Company"}</Text>
                 </View>
                 <View style={Styles.viewone}>
 
@@ -152,10 +149,7 @@ class Connection extends Component {
                 </View>
                 <View style={Styles.subView}>
                   <Text style={Styles.textSubtView}>Andres Kütt</Text>
-                  <View style={{ flexDirection: 'row' }}>
-                    <Text>Company</Text>
-                    <Text> . Electrician</Text>
-                  </View>
+                    <Text style={Styles.companyName}>{"Company . Electrician"}</Text>
                 </View>
               </View>
             </View>
@@ -166,10 +160,7 @@ class Connection extends Component {
                 </View>
                 <View style={Styles.subView}>
                   <Text style={Styles.textSubtView}>Andreas Lustik</Text>
-                  <View style={{ flexDirection: 'row' }}>
-                    <Text>Company</Text>
-                    <Text> . Project Manager</Text>
-                  </View>
+                  <Text style={Styles.companyName}>{"Company . Electrician"}</Text>
                 </View>
               </View>
             </View>
@@ -188,10 +179,7 @@ class Connection extends Component {
                 </View>
                 <View style={Styles.subView}>
                   <Text style={Styles.textSubtView}>Boris Antseferov</Text>
-                  <View style={{ flexDirection: 'row' }}>
-                    <Text>Company</Text>
-                    <Text> . Electrician</Text>
-                  </View>
+                  <Text style={Styles.companyName}>{"Company . Electrician"}</Text>
                 </View>
               </View>
             </View>
@@ -202,10 +190,7 @@ class Connection extends Component {
                 </View>
                 <View style={Styles.subView}>
                   <Text style={Styles.textSubtView}>Andreas Lustik</Text>
-                  <View style={{ flexDirection: 'row' }}>
-                    <Text>Company</Text>
-                    <Text> . Project Manager</Text>
-                  </View>
+                  <Text style={Styles.companyName}>{"Company . Electrician"}</Text>
                 </View>
               </View>
             </View>

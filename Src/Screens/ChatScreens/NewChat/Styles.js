@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
     fontSize: hp(2.5),
     fontWeight: '700',
     fontFamily: "Inter",
+    color: Colors.Black
   },
   line: {
     marginTop: hp(0.5),

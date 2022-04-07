@@ -9,13 +9,15 @@ const styles = StyleSheet.create({
   },
   Setimage: {
     width: wp('5%'),
-    height: wp('5%')
+    height: wp('5%'),
+    marginTop: hp(0.3)
   },
   contain: {
     flexDirection: 'row',
-    marginTop: hp('7%'),
+    marginTop: hp(3),
+    width: widthScreen / 1.12,
+    alignSelf: 'center',
     justifyContent: 'space-between',
-    marginHorizontal: hp('2%')
   },
   touchstyles: {
     width: wp('10%')
@@ -25,14 +27,18 @@ const styles = StyleSheet.create({
   },
   touchViewprofileOne: {
     fontSize: 17,
-    fontWeight: '700'
+    fontWeight: '700',
+    color: Colors.Black,
+    fontFamily: "Inter",
   },
   touchwrite: {
     width: wp('20%'),
     height: wp('7%'),
     borderRadius: 6,
     //alignItems: 'flex-end',
-    backgroundColor: '#0076CB'
+    backgroundColor: '#0076CB',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   mainimgtwo: {
     height: wp('25%'),
@@ -48,6 +54,11 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ECF0F1',
     borderBottomWidth: 1.5,
     marginTop: hp('4%')
+  },
+  lineAll:{
+    borderBottomColor: '#ECF0F1',
+    borderBottomWidth: 1.5,
+    marginTop: hp(2)
   },
 
   verticleLine: {
@@ -131,7 +142,6 @@ const styles = StyleSheet.create({
   btn: {
     color: '#FFFFFF',
     textAlign: 'center',
-    marginTop: 5
   },
   lefttext: {
     color: '#605C5C',

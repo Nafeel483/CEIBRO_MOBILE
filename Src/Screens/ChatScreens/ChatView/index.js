@@ -478,7 +478,7 @@ class ChatView extends Component {
                       </View>
                     </View>
                     <View style={Styles.myconnect}>
-                      <TouchableOpacity onPress={() => { this.props.navigation.goBack() }}>
+                      <TouchableOpacity>
                         <Image source={Images.search} style={Styles.Setimage} />
                       </TouchableOpacity >
                       {/* <TouchableOpacity onPress={() => { this.props.navigation.goBack() }}>
