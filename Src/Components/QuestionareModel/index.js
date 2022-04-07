@@ -93,7 +93,8 @@ const QuestionareModel = (props) => {
     console.log("_____Nafeel____", limitMember)
     return (
       <>
-        <View style={Styles.itemQuestionWrapper}>
+        <View key={index}
+        style={Styles.itemQuestionWrapper}>
           <View style={{ flexDirection: 'row' }}>
             <CheckBox
               disabled={false}
@@ -118,10 +119,10 @@ const QuestionareModel = (props) => {
               <Text style={Styles.itemQuestionText}>{item.message}</Text>
               <View style={{ flexDirection: 'row', marginTop: hp(1) }}>
                 {
-                  limitMember?.length > 0 && limitMember?.map((val) => {
+                  limitMember?.length > 0 && limitMember?.map((val, index) => {
                     return (
                       <>
-                        <TouchableOpacity>
+                        <TouchableOpacity key={index}>
                           <Image source={val?.pic} style={Styles.answerUser} />
                         </TouchableOpacity>
                       </>

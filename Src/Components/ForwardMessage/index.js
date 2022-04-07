@@ -17,10 +17,9 @@ import CheckBox from '@react-native-community/checkbox';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 
-const ChatRoomMembers = (props) => {
-  const { open, close, moreMembersList, chatMemberName,
-    memberId,
-    selectCheckedMembers, submit } = props
+const ForwardMessage = (props) => {
+  const { open, close, allChats, forwardChatID,
+    selectSendChat, submit } = props
 
   return (
     <>
@@ -41,10 +40,10 @@ const ChatRoomMembers = (props) => {
             <TouchableOpacity onPress={close}>
               <Image source={Images.close} style={Styles.Setimage} />
             </TouchableOpacity>
-            <Text style={Styles.touchViewprofileOne}>{"Add Members"}</Text>
+            <Text style={Styles.touchViewprofileOne}>{"Forward to Chat"}</Text>
             <TouchableOpacity onPress={submit}
               style={Styles.filterStyle}>
-              <Text style={Styles.plusIconText}>{"Add"}</Text>
+              <Text style={Styles.plusIconText}>{"Send"}</Text>
             </TouchableOpacity>
           </View>
           <View style={Styles.seperator} />
@@ -52,19 +51,23 @@ const ChatRoomMembers = (props) => {
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={Styles.scrollContent}>
               {
-                moreMembersList?.length > 0 ?
-                  moreMembersList?.map((val, index) => {
+                allChats?.length > 0 ?
+                  allChats?.map((val, index) => {
                     return (
                       <>
                         <TouchableOpacity key={index}
-                        onPress={() => selectCheckedMembers(val)}
+                          onPress={() => selectSendChat(val)}
                           style={Styles.headerWrapper}>
-                          <Text style={Styles.userName}>{`${val?.firstName} ${val?.surName}`}</Text>
+                          <Text style={Styles.userName}>{`${val?.name}`}</Text>
                           {
-                            chatMemberName != '' && memberId == val?.id ?
-                              <Image source={Images.checked} style={Styles.checkStyle} />
+                            forwardChatID?.some(o1 => o1 == val?._id) == true ?
+                              <TouchableOpacity onPress={() => selectSendChat(val)}>
+                                <Image source={Images.checked} style={Styles.checkStyle} />
+                              </TouchableOpacity>
                               :
-                              <Image source={Images.emptyChecked} style={Styles.checkStyle} />
+                              <TouchableOpacity onPress={() => selectSendChat(val)}>
+                                <Image source={Images.emptyChecked} style={Styles.checkStyle} />
+                              </TouchableOpacity>
                           }
                         </TouchableOpacity>
                         <View style={Styles.seperator} />
@@ -81,4 +84,4 @@ const ChatRoomMembers = (props) => {
     </>
   );
 }
-export default ChatRoomMembers;
+export default ForwardMessage;

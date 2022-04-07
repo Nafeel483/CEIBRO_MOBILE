@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 import {
   View,
   Text,
@@ -28,11 +28,18 @@ import Loader from '../../../Components/Loader';
 import * as API from '../../../Redux/Selectors/AllApi';
 import ChatRoomMembers from '../../../Components/ChatRoomMembers';
 import { showMessage, hideMessage } from "react-native-flash-message";
+import io from "socket.io-client";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
+import ForwardMessage from '../../../Components/ForwardMessage';
+import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
+
+let SERVER = Platform.OS == 'android' ? 'http://shielded-plateau-81277.herokuapp.com' : 'https://shielded-plateau-81277.herokuapp.com'
 
 
 class ChatView extends Component {
   constructor(props) {
     super(props);
+    this.firstInput = createRef();
     this.state = {
       chatMessage: '',
       allChatList: [],
@@ -60,7 +67,12 @@ class ChatView extends Component {
       chatMemberName: '',
       memberId: '',
       temporaryMember: false,
-      allPinnedChatList: []
+      allPinnedChatList: [],
+      userReplyData: null,
+      forwardOpen: false,
+      forwardMessageData: null,
+      forwardChatID: [],
+      uploadFilesData: []
     };
   }
 
@@ -68,10 +80,43 @@ class ChatView extends Component {
     this.focusListener = this.props.navigation.addListener('focus', async () => {
       this.allSingleChatRoomMessage()
       this.getAllPinnedMessages()
+      this.connectSocket()
+      this.markUnread()
     })
 
     this.allSingleChatRoomMessage()
     this.getAllPinnedMessages()
+    this.connectSocket()
+    this.markUnread()
+  }
+  connectSocket = () => {
+    let token = this.props.auth?.userLogin?.tokens?.access?.token
+
+    this.socket = io(SERVER, {
+      // secure: true,
+      transports: ['websocket'],
+      query: {
+        token
+      }
+    })
+
+    this.socket.emit('USER_CONNECTED', data => {
+      console.log('USER_CONNECTED', data)
+    })
+    console.log('connectSocket this.socket', this.socket)
+  };
+  markUnread = () => {
+    let token = this.props.auth?.userLogin?.tokens?.access?.token
+    const roomId = this.props.route?.params?.chatRoomID
+
+    API.markUnreadChatRoomMessage(roomId, token)
+      .then((res) => {
+        console.log("markUnreadChatRoomMessage Response api====>", res)
+
+      })
+      .catch((error) => {
+        console.log("markUnreadChatRoomMessage api error====>", error)
+      });
   }
 
   allSingleChatRoomMessage = () => {
@@ -100,6 +145,18 @@ class ChatView extends Component {
       .catch((error) => {
         console.log("getAllPinnedMessageApi api error", error)
       });
+  }
+
+  uploadMedia = async () => {
+    const { uploadFilesData } = this.state
+    let options = {
+      selectedAssets: uploadFilesData,
+      isExportThumbnail: true,
+      maxVideo: 3,
+      usedCameraButton: false,
+    }
+    const response = await MultipleImagePicker.openPicker(options)
+    console.log("-------All Media File Response------- = ", response)
   }
 
   questionModelCall = () => {
@@ -207,13 +264,161 @@ class ChatView extends Component {
         console.log("pinnedMessageApi api error", error)
       });
   }
+  againRelod = () => {
+
+    setTimeout(() => {
+      if (!this.moved) {
+        this.allSingleChatRoomMessage()
+      }
+    }, 500);
+  }
+  componentDidUpdate(prevProps) {
+
+    const token = this.props.auth?.userLogin?.tokens?.access?.token
+    const PreviousToken = prevProps.auth?.userLogin?.tokens?.access?.token
+    if (token == PreviousToken) {
+      console.log('RECEIVE_MESSAGE Start')
+      // const engine = this.socket.io.engine;
+      // engine.on("RECEIVE_MESSAGE", ({ type, data }) => {
+      //   console.log('RECEIVE_MESSAGE', type, data)
+      // });
+      // this.socket.on("RECEIVE_MESSAGE", data => {
+      //   console.log('RECEIVE_MESSAGE', data)
+      // })
+
+      this.socket.on("RECEIVE_MESSAGE", (id) => {
+        console.log('RECEIVE_MESSAGE', id, this.socket)
+        this.againRelod()
+      });
+      // this.socket.on('RECEIVE_MESSAGE', { from: user?._id })
+    }
+
+  }
+
+  sendTextMessage = () => {
+    const { chatMessage, userReplyData } = this.state
+    let token = this.props.auth?.userLogin?.tokens?.access?.token
+    const roomID = this.props.route?.params?.chatRoomID
+
+    if (chatMessage == '') {
+
+    } else {
+      if (userReplyData != null) {
+        const data = {
+          message: chatMessage,
+          chat: roomID,
+          messageId: userReplyData?._id,
+          type: "message"
+        }
+        API.sendMessageReplyApi(data, token)
+          .then((res) => {
+            console.log("sendMessageReplyApi Response api====>", res)
+            this.allSingleChatRoomMessage()
+            this.setState({ chatMessage: '', userReplyData: null })
+
+          })
+          .catch((error) => {
+            console.log("sendMessageReplyApi api error", error)
+          });
+      } else {
+        const data = {
+          message: chatMessage,
+          chat: roomID,
+          // messageId: "",
+          type: "message"
+        }
+        API.sendChatMessageApi(data, token)
+          .then((res) => {
+            console.log("sendChatMessageApi Response api====>", res)
+            this.allSingleChatRoomMessage()
+            this.setState({ chatMessage: '' })
+
+          })
+          .catch((error) => {
+            console.log("sendChatMessageApi api error", error)
+          });
+      }
+    }
+  }
+
+  onEndEditing = () => {
+    const { chatMessage } = this.state
+    if (chatMessage != '') {
+      this.firstInput.current?.focus();
+      this.sendTextMessage()
+    } else {
+      this.firstInput.current?.focus();
+    }
+  }
+  typeMessage = (value) => {
+    this.setState({ chatMessage: value })
+    // this.socket.on('TYPING_START', data => {
+    //   console.log('TYPING_START', data)
+    // })
+  }
+  forwarToChat = (data) => {
+    this.setState({ forwardMessageData: data, forwardOpen: true })
+  }
+  closeForwarChat = () => {
+    this.setState({ forwardMessageData: null, forwardOpen: false })
+  }
+  selectSendChat = (item) => {
+    const { forwardChatID } = this.state
+    const matched = forwardChatID?.some(o1 => o1 == item?._id)
+    if (matched == true) {
+      const filter = forwardChatID?.filter(o1 => o1 != item?._id)
+      console.log("filter Forward Chat = ", filter)
+      this.setState({ forwardChatID: filter })
+    } else {
+      this.setState({ forwardChatID: forwardChatID.concat(item?._id) })
+    }
+  }
+
+  submitForward = () => {
+    let token = this.props.auth?.userLogin?.tokens?.access?.token
+    const { forwardChatID, forwardMessageData } = this.state
+    const data = {
+      messageId: forwardMessageData?._id,
+      chatIds: forwardChatID
+    }
+    API.sendForwardMessageApi(data, token)
+      .then((res) => {
+        console.log("sendForwardMessageApi Response api====>", res)
+        this.setState({
+          forwardChatID: [],
+          forwardMessageData: null,
+          forwardOpen: false
+        })
+        showMessage({
+          message: "Forward Successfully",
+          description: "Message Forward Successfully",
+          type: "default",
+          backgroundColor: "#009900", // background color
+          color: "white" // text color
+        })
+
+      })
+      .catch((error) => {
+        console.log("sendForwardMessageApi api error", error)
+      });
+  }
+
+  replyToUser = (data) => {
+    this.setState({ userReplyData: data })
+  }
+  closeReply = () => {
+    this.setState({ userReplyData: null })
+  }
 
   render() {
     const { chatMessage, allChatList, Opposite, receiverID,
       senderID, openModel, createModel, openAddMember, moreMembersList,
-      chatMemberName, memberId, allPinnedChatList
+      chatMemberName, memberId, allPinnedChatList, userReplyData,
+      forwardOpen, forwardChatID
     } = this.state
 
+
+    const { allChats } = this.props.chat
 
     const chatRoomName = this.props.route?.params?.chatRoomName
     const chatRoomProject = this.props.route?.params?.chatRoomProject
@@ -221,11 +426,13 @@ class ChatView extends Component {
     const groupInfo = this.props.route?.params?.groupInfo
 
     const currentUser = this.props.auth?.userLogin?.user?.id
+
     return (
       <>
         <MenuProvider>
-          <SafeAreaProvider>
-            <SafeAreaView style={Styles.MainContainer}>
+          <KeyboardAwareScrollView showsVerticalScrollIndicator={false}
+            contentContainerStyle={Styles.fullContainer}>
+            <View style={Styles.MainContainer}>
               {/* Header */}
               <View style={Styles.headerContainer}>
                 <View style={Styles.headerWrapper}>
@@ -293,19 +500,19 @@ class ChatView extends Component {
                             optionWrapper: {
                             },
                           }}>
-                          <MenuOption>
-                            <TouchableOpacity onPress={() => this.getMoreMember(false)}
+                          <MenuOption onSelect={() => this.getMoreMember(false)}>
+                            <View
                               style={Styles.menuOptionStyle}>
                               <Image source={Images.invite} style={Styles.menuOptionImage} />
                               <Text style={[Styles.menuOptionText, { color: Colors.blue }]}>{"Add People"}</Text>
-                            </TouchableOpacity>
+                            </View>
                           </MenuOption>
                           <View style={Styles.menuDivider} />
                           <MenuOption>
-                            <TouchableOpacity style={Styles.menuOptionStyle}>
+                            <View style={Styles.menuOptionStyle}>
                               <Image source={Images.Delete} style={Styles.menuOptionImage} />
                               <Text style={[Styles.menuOptionText, { color: Colors.red }]}>{"Delete Conversation"}</Text>
-                            </TouchableOpacity>
+                            </View>
                           </MenuOption>
                         </MenuOptions>
                       </Menu>
@@ -328,25 +535,44 @@ class ChatView extends Component {
                       receiverID={receiverID} senderID={senderID} questionModelCall={this.questionModelCall}
                       chatRoomMembers={chatRoomMembers} addTemporary={this.getMoreMember}
                       pinnedToFavourite={this.pinnedToFavourite} currentUser={currentUser}
+                      replyToUser={this.replyToUser} forwarToChat={this.forwarToChat}
                     />
                   ))}
                 </View>
               </ScrollView>
               <View style={Styles.bottomWrapper}>
                 <View style={Styles.seperator} />
+                {
+                  userReplyData != null ?
+                    <>
+                      <View style={Styles.replyToContainer}>
+                        <View style={Styles.replyInnerContainer}>
+                          <View>
+                            <Text style={Styles.replyUserHeader}>{userReplyData?.sender?.firstName}</Text>
+                            <Text style={Styles.replyTextMessage}>{userReplyData?.message}</Text>
+                          </View>
+                          <TouchableOpacity onPress={this.closeReply}>
+                            <Image source={Images.close} style={Styles.replyClose} />
+                          </TouchableOpacity >
+                        </View>
+                      </View>
+                    </>
+                    : null
+                }
                 <View style={Styles.emailWrapper}>
 
                   <TextInput
+                    ref={this.firstInput}
                     style={Styles.emailInput}
                     value={chatMessage}
                     placeholder={"Type a message"}
                     placeholderTextColor={Colors.textColor}
                     autoCapitalize='none'
-                    onChangeText={(value) => {
-                      this.setState({
-                        chatMessage: value,
-                      })
-                    }}
+                    onSubmitEditing={this.onEndEditing}
+                    blurOnSubmit={false}
+                    onChangeText={(value) =>
+                      this.typeMessage(value)
+                    }
                   />
                   <Image source={Images.mic} style={Styles.micStyle} />
                 </View>
@@ -355,10 +581,10 @@ class ChatView extends Component {
                   <TouchableOpacity>
                     <Image source={Images.emoji} style={Styles.iconBottom} />
                   </TouchableOpacity>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={this.uploadMedia}>
                     <Image source={Images.fileUpload} style={Styles.iconBottom1} />
                   </TouchableOpacity>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={this.uploadMedia}>
                     <Image source={Images.camera} style={Styles.iconBottom1} />
                   </TouchableOpacity>
                   <View style={Styles.inboxLine} />
@@ -400,8 +626,20 @@ class ChatView extends Component {
                   />
                   : null
               }
-            </SafeAreaView>
-          </SafeAreaProvider>
+              {
+                forwardOpen == true ?
+                  <ForwardMessage
+                    open={forwardOpen}
+                    allChats={allChats}
+                    forwardChatID={forwardChatID}
+                    selectSendChat={this.selectSendChat}
+                    close={this.closeForwarChat}
+                    submit={this.submitForward}
+                  />
+                  : null
+              }
+            </View>
+          </KeyboardAwareScrollView>
         </MenuProvider>
       </>
 
@@ -418,7 +656,7 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    getAllChats: (user) => dispatch(getAllUserChats(user)),
+    // getAllChats: (user) => dispatch(getAllUserChats(user)),
   };
 };
 export default connect(

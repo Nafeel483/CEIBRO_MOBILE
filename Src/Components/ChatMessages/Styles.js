@@ -88,26 +88,27 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   userName: {
-    fontSize: hp(1.8),
+    fontSize: hp(1.7),
     fontWeight: '600',
     fontFamily: "Inter",
     color: Colors.Black,
     width: hp(18)
   },
   displayMessage: {
-    fontSize: hp(1.5),
+    fontSize: hp(1.3),
     fontWeight: '500',
     fontFamily: "Inter",
     color: Colors.mediumGrey,
     marginTop: hp(0.5)
   },
   DateWrapper1: {
-    fontSize: hp(1.5),
+    fontSize: hp(1.2),
     fontWeight: '500',
     fontFamily: "Inter",
     color: Colors.mediumGrey,
-    marginLeft: hp(1),
-    marginTop: hp(0.3)
+    marginLeft: hp(0.6),
+    marginTop: hp(0.3),
+    width: hp(9)
   },
   questionContainer: {
     marginTop: hp(2),
@@ -246,8 +247,40 @@ const styles = StyleSheet.create({
   galleryImage: {
     width: hp(2),
     height: hp(2),
-    marginLeft: hp(2),
+    marginLeft: hp(1.3),
     tintColor: Colors.blue
   },
+  replyContainer: {
+    width: '100%',
+    alignSelf: 'center',
+    backgroundColor: Colors.lightGrey,
+    justifyContent: 'center',
+    marginBottom: hp(1.5),
+    // borderRadius: 8
+  },
+  replyContainerInner: {
+    width: '85%',
+    alignSelf: 'center',
+    marginTop: hp(1.5),
+    marginBottom: hp(1.5),
+  },
+  lineReply: {
+    height: hp(5),
+    width: hp(0.6),
+    backgroundColor: Colors.blue
+  },
+  replyMessageText: {
+    fontSize: hp(1.65),
+    fontWeight: '500',
+    fontFamily: "Inter",
+    color: Colors.Black,
+    // marginTop: hp(1.5),
+  },
+  userNameReply:{
+    fontSize: hp(1.7),
+    fontWeight: '600',
+    fontFamily: "Inter",
+    color: Colors.Black,
+  }
 });
 export default styles;

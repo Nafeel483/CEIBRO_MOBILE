@@ -151,27 +151,66 @@ export const getAllPinnedMessageApi = (roomId, token) => {
 }
 
 
-// export const changeProfilePic = (source, token) => {
-//   console.log("The Result = ", source, token)
+export const sendChatMessageApi = (messageData, token) => {
+  console.log("The sendChatMessageApi = ", messageData, token)
 
-//   // const data = new FormData();
-//   const data = new URLSearchParams();
-//   data.append("profilePic", {
-//     name: source.fileName,
-//     type: source.type,
-//     uri: source.uri
-//   });
-//   return axios({
-//     method: 'PATCH',
-//     url: `${CONSTANTS.BASE_URL}/users/profile/pic`,
-//     headers: {
-//       "accept": 'application/json',
-//       "Content-Type": 'multipart/form-data',
-//       'Authorization': 'Bearer ' + token,
-//       // 'Access-Control-Allow-Origin': '*'
-//     },
-//     data: data,
+  // const data = new FormData();
+  const data = new URLSearchParams();
+  data.append("message", messageData.message);
+  data.append("chat", messageData.chat);
+  data.append("type", messageData.type);
 
-//   }).then(response => response.data);
-// }
+  return axios({
+    method: 'post',
+    url: `${CONSTANTS.BASE_URL}/chat/message/reply`,
+    headers: {
+      "accept": 'application/json',
+      "Content-Type": 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer ' + token,
+    },
+    data: data.toString(),
 
+  }).then(response => response.data);
+}
+
+
+export const sendMessageReplyApi = (messageData, token) => {
+  console.log("The sendMessageReplyApi = ", messageData, token)
+
+  // const data = new FormData();
+  const data = new URLSearchParams();
+  data.append("message", messageData.message);
+  data.append("chat", messageData.chat);
+  data.append("messageId", messageData.messageId);
+  data.append("type", messageData.type);
+
+  return axios({
+    method: 'post',
+    url: `${CONSTANTS.BASE_URL}/chat/message/reply`,
+    headers: {
+      "accept": 'application/json',
+      "Content-Type": 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer ' + token,
+    },
+    data: data.toString(),
+
+  }).then(response => response.data);
+}
+
+
+// sendForwardMessageApi
+export const sendForwardMessageApi = (messageData, token) => {
+  console.log("The sendForwardMessageApi = ", messageData, token)
+
+  return axios({
+    method: 'post',
+    url: `${CONSTANTS.BASE_URL}/chat/message/forward`,
+    headers: {
+      "accept": 'application/json',
+      "Content-Type": 'application/json',
+      'Authorization': 'Bearer ' + token,
+    },
+    data: messageData,
+
+  }).then(response => response.data);
+}

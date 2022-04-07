@@ -21,7 +21,6 @@ import Loader from '../../Components/Loader';
 import { showMessage, hideMessage } from "react-native-flash-message";
 import { launchImageLibrary } from 'react-native-image-picker';
 import * as API from '../../Redux/Selectors/AllApi';
-import RNFetchBlob from 'rn-fetch-blob';
 import * as CONSTANTS from '../../Constants';
 
 

@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: Colors.borderColor,
-    marginLeft: hp(4)
+    // marginLeft: hp(4)
   },
   userProfileText: {
     fontSize: hp(2),

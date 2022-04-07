@@ -21,12 +21,13 @@ import {
 } from 'react-native-popup-menu';
 
 export const ShowChatMessages = ({ key, showmessage, userId, chatRoomMembers,
-  questionModelCall, addTemporary, pinnedToFavourite, currentUser
+  questionModelCall, addTemporary, pinnedToFavourite, currentUser, replyToUser,
+  forwarToChat
 }) => {
   const { sender, createdAt, receiverName, receiverProfession, receiverPic,
-    myMessage, time, message,
+    myMessage, time, message
   } = showmessage;
-  var str_Name = showmessage?.sender?.firstName ? `${showmessage?.sender?.firstName?.[0]} ${showmessage?.sender?.surName?.[0]}` : ""
+  var str_Name = showmessage?.sender?.firstName ? `${showmessage?.sender?.firstName?.[0]}${showmessage?.sender?.surName?.[0]}` : ""
   var date = new Date()
   const recieved = userId != 2;
 
@@ -34,7 +35,7 @@ export const ShowChatMessages = ({ key, showmessage, userId, chatRoomMembers,
 
   let checkPin = showmessage?.pinnedBy?.length > 0 ? showmessage?.pinnedBy?.some(o1 => o1 == currentUser) : null
 
-  console.log("All___Seen Members:::::", checkPin)
+  // console.log("All___Seen Members:::::", checkPin)
   const mediaList = (item, index) => {
     return (
       <>
@@ -49,11 +50,11 @@ export const ShowChatMessages = ({ key, showmessage, userId, chatRoomMembers,
       <>
         {
           item?.profilePic ?
-            <TouchableOpacity>
+            <TouchableOpacity key={index}>
               <Image source={{ uri: item?.profilePic }} style={styles.mediaSeenFiles} />
             </TouchableOpacity> :
 
-            <TouchableOpacity style={styles.mediaSeenFilesName}>
+            <TouchableOpacity key={index} style={styles.mediaSeenFilesName}>
               <Text style={styles.mediaSeenInnerName}>{`${item?.firstName?.[0]} ${item?.surName?.[0]}`}</Text>
             </TouchableOpacity>
         }
@@ -94,85 +95,160 @@ export const ShowChatMessages = ({ key, showmessage, userId, chatRoomMembers,
                 customStyles={{
                   triggerTouchable: { underlayColor: Colors.White }
                 }}>
-                <View style={styles.chatMessageHeaderText}>
-                  <View style={styles.innerView}>
-                    <View style={styles.messageHeader}>
-                      {
-                        showmessage?.sender?.profilePic ?
-                          <Image source={{ uri: showmessage?.sender?.profilePic }} style={styles.userPicImage} />
-                          :
-                          <View style={styles.userProfileWrapper}>
-                            <Text style={styles.userProfileText}>{str_Name?.toUpperCase()}</Text>
-                          </View>
-                      }
-                      <View style={{
-                        marginLeft: hp(2)
-                      }}>
-                        <View style={styles.messageHeader}>
-                          <Text style={styles.userName}>{`${showmessage?.sender?.firstName} ${showmessage?.sender?.surName}`}</Text>
-                          <Text style={styles.DateWrapper1}>{time}</Text>
-                          <TouchableOpacity onPress={() => { pinnedToFavourite(showmessage?._id) }}>
-                            {
-                              checkPin == true ?
-                                <Image source={Images.filledPin} style={styles.galleryImage} />
-                                :
-                                <Image source={Images.pin} style={styles.galleryImage} />
-                            }
-                          </TouchableOpacity>
-                        </View>
-                        {
-                          showmessage?.sender?.companyName ?
-                            <Text style={styles.displayMessage}>{`Company . ${showmessage?.sender?.companyName}`}</Text>
-                            : null
-                        }
-
-                        {
-                          showmessage?.questions?.length > 0 ?
-                            <TouchableOpacity onPress={questionModelCall}
-                              style={styles.questionContainer}>
-                              <Text style={styles.questionText}>{"Questionarie name"}</Text>
-                              <Image source={Images.document} style={styles.questionDoc} />
+                {
+                  showmessage?.replyOf ?
+                    <>
+                      <View style={styles.chatMessageHeaderText}>
+                        <View style={styles.innerView}>
+                          {/* Reply */}
+                          <View style={{ flexDirection: 'row' }}>
+                            <View style={styles.lineReply} />
+                            <TouchableOpacity style={styles.replyContainer}>
+                              <View style={styles.replyContainerInner}>
+                                {/* <Text style={styles.userNameReply}>{`${showmessage?.replyOf?.sender?.firstName} ${showmessage?.replyOf?.sender?.surName}`}</Text> */}
+                                <Text style={styles.replyMessageText}>{showmessage?.replyOf?.message}</Text>
+                              </View>
                             </TouchableOpacity>
-                            :
-                            <Text style={styles.messageText}>{message}</Text>
-                        }
-                        {
-                          showmessage?.files?.length > 0 ?
-                            <View style={styles.documentWrapper}>
-                              <View style={styles.documentInnerWrapper}>
-                                <View style={styles.mediaFilesWrapper}>
-                                  <FlatList
-                                    key={4}
-                                    horizontal={false}
-                                    scrollEnabled={false}
-                                    numColumns={4}
-                                    data={showmessage?.files}
-                                    keyExtractor={(item, index) => index.toString()}
-                                    renderItem={({ item, index }) => mediaList(item, index)}
-                                  />
-                                  {/* <TouchableOpacity>
-                                    <Image source={Images.media1} style={styles.mediaFiles} />
-                                  </TouchableOpacity>
-                                  <TouchableOpacity>
-                                    <Image source={Images.media2} style={styles.mediaFiles} />
-                                  </TouchableOpacity>
-                                  <TouchableOpacity>
-                                    <Image source={Images.media3} style={styles.mediaFiles} />
-                                  </TouchableOpacity> */}
+                          </View>
+                          <View style={styles.messageHeader}>
+                            {
+                              showmessage?.sender?.profilePic ?
+                                <Image source={{ uri: showmessage?.sender?.profilePic }} style={styles.userPicImage} />
+                                :
+                                <View style={styles.userProfileWrapper}>
+                                  <Text style={styles.userProfileText}>{str_Name?.toUpperCase()}</Text>
                                 </View>
-                                <TouchableOpacity style={styles.menuContainer}>
-                                  <Image source={Images.menu} style={styles.menuimage} />
+                            }
+                            <View style={{
+                              marginLeft: hp(2)
+                            }}>
+                              <View style={styles.messageHeader}>
+                                <Text style={styles.userName}>{`${showmessage?.sender?.firstName} ${showmessage?.sender?.surName}`}</Text>
+                                <Text style={styles.DateWrapper1}>{time}</Text>
+                                <TouchableOpacity onPress={() => { pinnedToFavourite(showmessage?._id) }}>
+                                  {
+                                    checkPin == true ?
+                                      <Image source={Images.filledPin} style={styles.galleryImage} />
+                                      :
+                                      <Image source={Images.pin} style={styles.galleryImage} />
+                                  }
                                 </TouchableOpacity>
                               </View>
+                              {
+                                showmessage?.sender?.companyName ?
+                                  <Text style={styles.displayMessage}>{`Company . ${showmessage?.sender?.companyName}`}</Text>
+                                  : null
+                              }
+
+                              {
+                                showmessage?.questions?.length > 0 ?
+                                  <TouchableOpacity onPress={questionModelCall}
+                                    style={styles.questionContainer}>
+                                    <Text style={styles.questionText}>{"Questionarie"}</Text>
+                                    <Image source={Images.document} style={styles.questionDoc} />
+                                  </TouchableOpacity>
+                                  :
+                                  <Text style={styles.messageText}>{message}</Text>
+                              }
+                              {
+                                showmessage?.files?.length > 0 ?
+                                  <View style={styles.documentWrapper}>
+                                    <View style={styles.documentInnerWrapper}>
+                                      <View style={styles.mediaFilesWrapper}>
+                                        <FlatList
+                                          key={4}
+                                          horizontal={false}
+                                          scrollEnabled={false}
+                                          numColumns={4}
+                                          data={showmessage?.files}
+                                          keyExtractor={(item, index) => index.toString()}
+                                          renderItem={({ item, index }) => mediaList(item, index)}
+                                        />
+                                      </View>
+                                      <TouchableOpacity style={styles.menuContainer}>
+                                        <Image source={Images.menu} style={styles.menuimage} />
+                                      </TouchableOpacity>
+                                    </View>
+                                  </View>
+                                  : null
+                              }
                             </View>
-                            : null
-                        }
+                          </View>
+                        </View>
+                      </View>
+                    </>
+                    :
+
+                    <View style={styles.chatMessageHeaderText}>
+                      <View style={styles.innerView}>
+                        <View style={styles.messageHeader}>
+                          {
+                            showmessage?.sender?.profilePic ?
+                              <Image source={{ uri: showmessage?.sender?.profilePic }} style={styles.userPicImage} />
+                              :
+                              <View style={styles.userProfileWrapper}>
+                                <Text style={styles.userProfileText}>{str_Name?.toUpperCase()}</Text>
+                              </View>
+                          }
+                          <View style={{
+                            marginLeft: hp(2)
+                          }}>
+                            <View style={styles.messageHeader}>
+                              <Text style={styles.userName}>{`${showmessage?.sender?.firstName} ${showmessage?.sender?.surName}`}</Text>
+                              <Text style={styles.DateWrapper1}>{time}</Text>
+                              <TouchableOpacity onPress={() => { pinnedToFavourite(showmessage?._id) }}>
+                                {
+                                  checkPin == true ?
+                                    <Image source={Images.filledPin} style={styles.galleryImage} />
+                                    :
+                                    <Image source={Images.pin} style={styles.galleryImage} />
+                                }
+                              </TouchableOpacity>
+                            </View>
+                            {
+                              showmessage?.sender?.companyName ?
+                                <Text style={styles.displayMessage}>{`Company . ${showmessage?.sender?.companyName}`}</Text>
+                                : null
+                            }
+
+                            {
+                              showmessage?.questions?.length > 0 ?
+                                <TouchableOpacity onPress={questionModelCall}
+                                  style={styles.questionContainer}>
+                                  <Text style={styles.questionText}>{"Questionarie name"}</Text>
+                                  <Image source={Images.document} style={styles.questionDoc} />
+                                </TouchableOpacity>
+                                :
+                                <Text style={styles.messageText}>{message}</Text>
+                            }
+                            {
+                              showmessage?.files?.length > 0 ?
+                                <View style={styles.documentWrapper}>
+                                  <View style={styles.documentInnerWrapper}>
+                                    <View style={styles.mediaFilesWrapper}>
+                                      <FlatList
+                                        key={4}
+                                        horizontal={false}
+                                        scrollEnabled={false}
+                                        numColumns={4}
+                                        data={showmessage?.files}
+                                        keyExtractor={(item, index) => index.toString()}
+                                        renderItem={({ item, index }) => mediaList(item, index)}
+                                      />
+                                    </View>
+                                    <TouchableOpacity style={styles.menuContainer}>
+                                      <Image source={Images.menu} style={styles.menuimage} />
+                                    </TouchableOpacity>
+                                  </View>
+                                </View>
+                                : null
+                            }
+                          </View>
+                        </View>
                       </View>
                     </View>
-                  </View>
-                </View>
 
-
+                }
               </MenuTrigger>
               <MenuOptions
                 customStyles={{
@@ -183,18 +259,19 @@ export const ShowChatMessages = ({ key, showmessage, userId, chatRoomMembers,
                   optionWrapper: {
                   },
                 }}>
-                <MenuOption>
-                  <TouchableOpacity style={styles.menuOptionStyle}>
+                <MenuOption onSelect={() => replyToUser(showmessage)}>
+                  <View
+                    style={styles.menuOptionStyle}>
                     <Image source={Images.replyMessage} style={styles.menuOptionImage} />
                     <Text style={[styles.menuOptionText, { color: Colors.blue }]}>{"Reply to message"}</Text>
-                  </TouchableOpacity>
+                  </View>
                 </MenuOption>
                 <View style={styles.menuDivider} />
-                <MenuOption>
-                  <TouchableOpacity style={styles.menuOptionStyle}>
+                <MenuOption onSelect={() => forwarToChat(showmessage)}>
+                  <View style={styles.menuOptionStyle}>
                     <Image source={Images.forwardMessage} style={styles.menuOptionImage} />
                     <Text style={[styles.menuOptionText, { color: Colors.blue }]}>{"Forward message"}</Text>
-                  </TouchableOpacity>
+                  </View>
                 </MenuOption>
                 <View style={styles.menuDivider} />
                 <MenuOption>
@@ -211,12 +288,12 @@ export const ShowChatMessages = ({ key, showmessage, userId, chatRoomMembers,
                   </TouchableOpacity>
                 </MenuOption>
                 <View style={styles.menuDivider} /> */}
-                <MenuOption>
-                  <TouchableOpacity onPress={() => addTemporary(true)}
+                <MenuOption onSelect={() => addTemporary(true)}>
+                  <View
                     style={styles.menuOptionStyle}>
                     <Image source={Images.invite} style={styles.menuOptionImage} />
                     <Text style={[styles.menuOptionText, { color: Colors.blue }]}>{"Add temporary member"}</Text>
-                  </TouchableOpacity>
+                  </View>
                 </MenuOption>
               </MenuOptions>
             </Menu>
@@ -245,101 +322,188 @@ export const ShowChatMessages = ({ key, showmessage, userId, chatRoomMembers,
           </>
           :
           <>
+            {/* MY All Messeges Portion */}
             <Menu>
               <MenuTrigger
                 customStyles={{
                   triggerTouchable: { underlayColor: Colors.White }
                 }}>
-                <View style={styles.chatMessageHeaderText1}>
-                  <View style={styles.innerView}>
-                    <View style={styles.messageHeader}>
-                      {
-                        showmessage?.sender?.profilePic ?
-                          <Image source={{ uri: showmessage?.sender?.profilePic }} style={styles.userPicImage} />
-                          :
-                          <View style={styles.userProfileWrapper}>
-                            <Text style={styles.userProfileText}>{str_Name?.toUpperCase()}</Text>
-                          </View>
-                      }
-                      <View style={{
-                        marginLeft: hp(2)
-                      }}>
-                        <View style={styles.messageHeader}>
-                          <Text style={styles.userName}>{`${showmessage?.sender?.firstName} ${showmessage?.sender?.surName}`}</Text>
-                          <Text style={styles.DateWrapper1}>{time}</Text>
-                          <TouchableOpacity onPress={() => { pinnedToFavourite(showmessage?._id) }}>
-                            {
-                              checkPin == true ?
-                                <Image source={Images.filledPin} style={styles.galleryImage} />
-                                :
-                                <Image source={Images.pin} style={styles.galleryImage} />
-                            }
-                          </TouchableOpacity>
-                        </View>
-                        {
-                          showmessage?.sender?.companyName ?
-                            <Text style={styles.displayMessage}>{`Company . ${showmessage?.sender?.companyName}`}</Text>
-                            : null
-                        }
-                        {
-                          showmessage?.questions?.length > 0 ?
-                            <TouchableOpacity onPress={questionModelCall}
-                              style={styles.questionContainer}>
-                              <Text style={styles.questionText}>{"Questionarie name"}</Text>
-                              <Image source={Images.document} style={styles.questionDoc} />
+                {
+                  showmessage?.replyOf ?
+                    <>
+                      <View style={styles.chatMessageHeaderText1}>
+                        <View style={styles.innerView}>
+                          {/* Reply */}
+                          <View style={{ flexDirection: 'row' }}>
+                            <View style={styles.lineReply} />
+                            <TouchableOpacity style={styles.replyContainer}>
+                              <View style={styles.replyContainerInner}>
+                                {/* <Text style={styles.userNameReply}>{`${showmessage?.replyOf?.sender?.firstName} ${showmessage?.replyOf?.sender?.surName}`}</Text> */}
+                                <Text style={styles.replyMessageText}>{showmessage?.replyOf?.message}</Text>
+                              </View>
                             </TouchableOpacity>
-                            :
-                            <Text style={styles.messageText}>{message}</Text>
-                        }
-
-                        {
-                          showmessage?.files?.length > 0 ?
-                            <View style={styles.documentWrapper}>
-                              <View style={styles.documentInnerWrapper}>
-                                <View style={styles.mediaFilesWrapper}>
-                                  <FlatList
-                                    key={4}
-                                    horizontal={false}
-                                    scrollEnabled={false}
-                                    numColumns={4}
-                                    data={showmessage?.files}
-                                    keyExtractor={(item, index) => index.toString()}
-                                    renderItem={({ item, index }) => mediaList(item, index)}
-                                  />
+                          </View>
+                          <View style={styles.messageHeader}>
+                            {
+                              showmessage?.sender?.profilePic ?
+                                <Image source={{ uri: showmessage?.sender?.profilePic }} style={styles.userPicImage} />
+                                :
+                                <View style={styles.userProfileWrapper}>
+                                  <Text style={styles.userProfileText}>{str_Name?.toUpperCase()}</Text>
                                 </View>
-                                <TouchableOpacity style={styles.menuContainer}>
-                                  <Image source={Images.menu} style={styles.menuimage} />
+                            }
+                            <View style={{
+                              marginLeft: hp(2)
+                            }}>
+                              <View style={styles.messageHeader}>
+                                <Text style={styles.userName}>{`${showmessage?.sender?.firstName} ${showmessage?.sender?.surName}`}</Text>
+                                <Text style={styles.DateWrapper1}>{time}</Text>
+                                <TouchableOpacity onPress={() => { pinnedToFavourite(showmessage?._id) }}>
+                                  {
+                                    checkPin == true ?
+                                      <Image source={Images.filledPin} style={styles.galleryImage} />
+                                      :
+                                      <Image source={Images.pin} style={styles.galleryImage} />
+                                  }
                                 </TouchableOpacity>
                               </View>
+                              {
+                                showmessage?.sender?.companyName ?
+                                  <Text style={styles.displayMessage}>{`Company . ${showmessage?.sender?.companyName}`}</Text>
+                                  : null
+                              }
+                              {
+                                showmessage?.questions?.length > 0 ?
+                                  <TouchableOpacity onPress={questionModelCall}
+                                    style={styles.questionContainer}>
+                                    <Text style={styles.questionText}>{"Questionarie name"}</Text>
+                                    <Image source={Images.document} style={styles.questionDoc} />
+                                  </TouchableOpacity>
+                                  :
+                                  <Text style={styles.messageText}>{message}</Text>
+                              }
+
+                              {
+                                showmessage?.files?.length > 0 ?
+                                  <View style={styles.documentWrapper}>
+                                    <View style={styles.documentInnerWrapper}>
+                                      <View style={styles.mediaFilesWrapper}>
+                                        <FlatList
+                                          key={4}
+                                          horizontal={false}
+                                          scrollEnabled={false}
+                                          numColumns={4}
+                                          data={showmessage?.files}
+                                          keyExtractor={(item, index) => index.toString()}
+                                          renderItem={({ item, index }) => mediaList(item, index)}
+                                        />
+                                      </View>
+                                      <TouchableOpacity style={styles.menuContainer}>
+                                        <Image source={Images.menu} style={styles.menuimage} />
+                                      </TouchableOpacity>
+                                    </View>
+                                  </View>
+                                  : null
+                              }
                             </View>
-                            : null
-                        }
+                          </View>
+                        </View>
+                      </View>
+                    </>
+                    :
+
+                    <View style={styles.chatMessageHeaderText1}>
+                      <View style={styles.innerView}>
+                        <View style={styles.messageHeader}>
+                          {
+                            showmessage?.sender?.profilePic ?
+                              <Image source={{ uri: showmessage?.sender?.profilePic }} style={styles.userPicImage} />
+                              :
+                              <View style={styles.userProfileWrapper}>
+                                <Text style={styles.userProfileText}>{str_Name?.toUpperCase()}</Text>
+                              </View>
+                          }
+                          <View style={{
+                            marginLeft: hp(2)
+                          }}>
+                            <View style={styles.messageHeader}>
+                              <Text style={styles.userName}>{`${showmessage?.sender?.firstName} ${showmessage?.sender?.surName}`}</Text>
+                              <Text style={styles.DateWrapper1}>{time}</Text>
+                              <TouchableOpacity onPress={() => { pinnedToFavourite(showmessage?._id) }}>
+                                {
+                                  checkPin == true ?
+                                    <Image source={Images.filledPin} style={styles.galleryImage} />
+                                    :
+                                    <Image source={Images.pin} style={styles.galleryImage} />
+                                }
+                              </TouchableOpacity>
+                            </View>
+                            {
+                              showmessage?.sender?.companyName ?
+                                <Text style={styles.displayMessage}>{`Company . ${showmessage?.sender?.companyName}`}</Text>
+                                : null
+                            }
+                            {
+                              showmessage?.questions?.length > 0 ?
+                                <TouchableOpacity onPress={questionModelCall}
+                                  style={styles.questionContainer}>
+                                  <Text style={styles.questionText}>{"Questionarie"}</Text>
+                                  <Image source={Images.document} style={styles.questionDoc} />
+                                </TouchableOpacity>
+                                :
+                                <Text style={styles.messageText}>{message}</Text>
+                            }
+
+                            {
+                              showmessage?.files?.length > 0 ?
+                                <View style={styles.documentWrapper}>
+                                  <View style={styles.documentInnerWrapper}>
+                                    <View style={styles.mediaFilesWrapper}>
+                                      <FlatList
+                                        key={4}
+                                        horizontal={false}
+                                        scrollEnabled={false}
+                                        numColumns={4}
+                                        data={showmessage?.files}
+                                        keyExtractor={(item, index) => index.toString()}
+                                        renderItem={({ item, index }) => mediaList(item, index)}
+                                      />
+                                    </View>
+                                    <TouchableOpacity style={styles.menuContainer}>
+                                      <Image source={Images.menu} style={styles.menuimage} />
+                                    </TouchableOpacity>
+                                  </View>
+                                </View>
+                                : null
+                            }
+                          </View>
+                        </View>
                       </View>
                     </View>
-                  </View>
-                </View>
+                }
               </MenuTrigger>
               <MenuOptions
                 customStyles={{
                   optionsContainer: {
-                    marginTop: hp(2.2), borderRadius: 6, marginLeft: hp(4),
+                    borderRadius: 6, marginLeft: hp(4),
                     width: hp(35),
                   },
                   optionWrapper: {
                   },
                 }}>
-                <MenuOption>
-                  <TouchableOpacity style={styles.menuOptionStyle}>
+                <MenuOption onSelect={() => replyToUser(showmessage)}>
+                  <View
+                    style={styles.menuOptionStyle}>
                     <Image source={Images.replyMessage} style={styles.menuOptionImage} />
                     <Text style={[styles.menuOptionText, { color: Colors.blue }]}>{"Reply to message"}</Text>
-                  </TouchableOpacity>
+                  </View>
                 </MenuOption>
                 <View style={styles.menuDivider} />
-                <MenuOption>
-                  <TouchableOpacity style={styles.menuOptionStyle}>
+                <MenuOption onSelect={() => forwarToChat(showmessage)}>
+                  <View style={styles.menuOptionStyle}>
                     <Image source={Images.forwardMessage} style={styles.menuOptionImage} />
                     <Text style={[styles.menuOptionText, { color: Colors.blue }]}>{"Forward message"}</Text>
-                  </TouchableOpacity>
+                  </View>
                 </MenuOption>
                 <View style={styles.menuDivider} />
                 <MenuOption>
@@ -356,12 +520,12 @@ export const ShowChatMessages = ({ key, showmessage, userId, chatRoomMembers,
                   </TouchableOpacity>
                 </MenuOption> 
                 <View style={styles.menuDivider} /> */}
-                <MenuOption>
-                  <TouchableOpacity onPress={() => addTemporary(true)}
+                <MenuOption onSelect={() => addTemporary(true)}>
+                  <View
                     style={styles.menuOptionStyle}>
                     <Image source={Images.invite} style={styles.menuOptionImage} />
                     <Text style={[styles.menuOptionText, { color: Colors.blue }]}>{"Add temporary member"}</Text>
-                  </TouchableOpacity>
+                  </View>
                 </MenuOption>
               </MenuOptions>
             </Menu>

@@ -1,12 +1,15 @@
 import { StyleSheet, Dimensions, Platform } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import Colors from '../../../Styles/Colors';
+import Metrics from '../../../Styles/Metrices';
 
 const widthScreen = Dimensions.get('window').width;
 const styles = StyleSheet.create({
   MainContainer: {
     flex: 1,
-    backgroundColor: Colors.White
+    backgroundColor: Colors.White,
+    width: Metrics.screenWidth,
+    height: Metrics.screenHeight
   },
   Setimage: {
     width: hp(2.5),
@@ -39,7 +42,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: widthScreen / 1.12,
     alignSelf: 'center',
-    marginTop: hp(1.5),
+    marginTop: hp(6.5),
     marginBottom: hp(1.8),
     justifyContent: 'space-between'
   },
@@ -81,6 +84,37 @@ const styles = StyleSheet.create({
     height: hp(0.2),
     width: widthScreen,
     alignSelf: 'center'
+  },
+  replyToContainer: {
+    alignSelf: 'center',
+    width: widthScreen,
+    backgroundColor: Colors.lightGrey,
+  },
+  replyInnerContainer: {
+    alignSelf: 'center',
+    width: widthScreen / 1.23,
+    marginBottom: hp(1.5),
+    marginTop: hp(1.5),
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  replyUserHeader: {
+    fontSize: hp(2),
+    fontWeight: '600',
+    color: Colors.blue,
+    fontFamily: "Inter",
+  },
+  replyTextMessage: {
+    fontSize: hp(1.7),
+    color: Colors.Black,
+    fontFamily: "Inter",
+    fontWeight: '500',
+    marginTop: hp(1)
+  },
+  replyClose: {
+    width: hp(2),
+    height: hp(2),
+    marginTop: hp(1)
   },
   emailWrapper: {
     flexDirection: 'row',

@@ -32,15 +32,21 @@ const WorkStack = createStackNavigator();
 
 export const dashboardStack = () => {
   return (
-    <DashboardStack.Navigator headerMode="none" initialRouteName="Dashboard">
-      <DashboardStack.Screen headerMode="none" name="Dashboard" component={Dashboard} />
+    <DashboardStack.Navigator initialRouteName="Dashboard"
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <DashboardStack.Screen name="Dashboard" component={Dashboard} />
     </DashboardStack.Navigator>
   );
 }
 
 export const chatStack = () => {
   return (
-    <ChatStack.Navigator headerMode="none" initialRouteName="Chat">
+    <ChatStack.Navigator initialRouteName="Chat"
+      screenOptions={{
+        headerShown: false,
+      }}>
       <ChatStack.Screen name="Chat" component={Chat} />
     </ChatStack.Navigator>
   );
@@ -48,7 +54,10 @@ export const chatStack = () => {
 
 export const taskStack = () => {
   return (
-    <TaskStack.Navigator headerMode="none" initialRouteName="Tasks">
+    <TaskStack.Navigator initialRouteName="Tasks"
+      screenOptions={{
+        headerShown: false,
+      }}>
       <TaskStack.Screen name="Tasks" component={Tasks} />
     </TaskStack.Navigator>
   );
@@ -56,7 +65,10 @@ export const taskStack = () => {
 
 export const projectStack = () => {
   return (
-    <ProjectStack.Navigator headerMode="none" initialRouteName="Projects">
+    <ProjectStack.Navigator initialRouteName="Projects"
+      screenOptions={{
+        headerShown: false,
+      }}>
       <ProjectStack.Screen name="Projects" component={Projects} />
 
     </ProjectStack.Navigator>
@@ -64,7 +76,10 @@ export const projectStack = () => {
 }
 export const workStack = () => {
   return (
-    <WorkStack.Navigator headerMode="none" initialRouteName="Works">
+    <WorkStack.Navigator initialRouteName="Works"
+      screenOptions={{
+        headerShown: false,
+      }}>
       <WorkStack.Screen name="Works" component={Works} />
 
     </WorkStack.Navigator>
@@ -74,6 +89,7 @@ export const BottomTabView = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
+        headerShown: false,
         tabBarIcon: ({ focused }) => {
           let image
           if (route.name === 'Dashboard') {
@@ -119,7 +135,7 @@ export const BottomTabView = () => {
         inactiveTintColor: Colors.blue,
       }}
     >
-      <Tab.Screen headerMode="none" name="Dashboard" component={dashboardStack} />
+      <Tab.Screen name="Dashboard" component={dashboardStack} />
       <Tab.Screen name="Chat" component={chatStack} />
       <Tab.Screen name="Tasks" component={taskStack} />
       <Tab.Screen name="Projects" component={projectStack} />

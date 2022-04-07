@@ -39,8 +39,9 @@ export function navigate(name, params) {
 export default function RootNavigator() {
   return (
     <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator headerMode="none"
+      <Stack.Navigator 
         screenOptions={{
+          headerShown: false,
           transitionConfig: () => ({
             containerStyle: {
               backgroundColor: 'transparent'
@@ -60,7 +61,7 @@ export default function RootNavigator() {
 
 export const AuthStack = () => {
   return (
-    <Stack.Navigator headerMode="none" initialRouteName="Login"
+    <Stack.Navigator  initialRouteName="Login"
       screenOptions={{
         headerShown: false,
         cardStyle: { backgroundColor: 'transparent' },
@@ -81,7 +82,7 @@ export const AuthStack = () => {
           },
         }),
       }}
-      mode="modal"
+      presentation="modal"
     >
       <Stack.Screen name='Login' component={Login} options={() => options}
         sharedElementsConfig={(props) => [
@@ -110,7 +111,7 @@ export const AuthStack = () => {
 
 export const ProfileStack = () => {
   return (
-    <Stack.Navigator headerMode="none" initialRouteName="Profile"
+    <Stack.Navigator  initialRouteName="Profile"
       screenOptions={{
         headerShown: false,
         cardStyle: { backgroundColor: 'transparent' },
@@ -131,7 +132,7 @@ export const ProfileStack = () => {
           },
         }),
       }}
-      mode="modal"
+      presentation="modal"
     >
       <Stack.Screen name='Profile' component={Profile} options={() => options}
         sharedElementsConfig={(props) => [
@@ -160,7 +161,7 @@ export const ProfileStack = () => {
 
 export const ChatFeature = () => {
   return (
-    <Stack.Navigator headerMode="none" initialRouteName="NewChat"
+    <Stack.Navigator  initialRouteName="NewChat"
       screenOptions={{
         headerShown: false,
         cardStyle: { backgroundColor: 'transparent' },
@@ -181,7 +182,7 @@ export const ChatFeature = () => {
           },
         }),
       }}
-      mode="modal"
+      presentation="modal"
     >
       <Stack.Screen name='NewChat' component={NewChat} options={() => options}
         sharedElementsConfig={(props) => [
