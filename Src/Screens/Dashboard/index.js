@@ -21,8 +21,7 @@ import MyTask from '../../Components/MyTask';
 import MyProjects from '../../Components/MyProjects';
 import ButtonModel from '../../Components/ButtonModel';
 import { connect } from 'react-redux';
-// import { logoutUser } from '../../Redux/Actions/auth';
-// import { getMyProfile } from '../../Redux/Actions/users';
+import { getMyAllInvites, getMyAllConnections, getMyInviteCount, getMyConnectionsCount } from '../../Redux/Actions/users';
 import Loader from '../../Components/Loader';
 
 class Dashboard extends Component {
@@ -112,6 +111,17 @@ class Dashboard extends Component {
 
     };
   }
+
+  componentDidMount = () => {
+    this.focusListener = this.props.navigation.addListener('focus', async () => {
+      let accessToken = this.props.auth?.userLogin?.tokens?.access?.token
+      this.props.getMyInviteCount(accessToken)
+      this.props.getMyConnectionsCount(accessToken)
+      this.props.getMyAllInvites(accessToken)
+      this.props.getMyAllConnections(accessToken)
+    })
+  }
+
   handleMenuToggle = () => {
     this.setState({ isMenuOpen: !this.state.isMenuOpen })
   }
@@ -154,6 +164,10 @@ class Dashboard extends Component {
     const { categoryList, allTaskList, allProjectList, actions, isMenuOpen } = this.state
 
     let profileUser = this.props.user?.myProfile ? this.props.user?.myProfile : this.props.auth?.userLogin?.user
+
+    const { loadingGetInvites, loadingGetConnections } = this.props.user
+
+    let inviteCount = this.props.user?.inviteCount ? this.props.user?.inviteCount : null
     return (
       <>
         <SafeAreaProvider>
@@ -161,6 +175,7 @@ class Dashboard extends Component {
           <SafeAreaView style={Styles.safeAreaContainer} >
             <StatusBar barStyle="dark-content" />
             <Header userData={profileUser}
+              inviteCount={inviteCount}
               navigation={this.props.navigation} />
 
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -238,7 +253,9 @@ class Dashboard extends Component {
                   <Image source={Images.plus} style={Styles.filterStyle} />
                 </TouchableOpacity>
             }
-
+            {
+              loadingGetInvites || loadingGetConnections ? <Loader /> : null
+            }
           </SafeAreaView>
         </SafeAreaProvider>
 
@@ -254,7 +271,10 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    // logoutUser: (user) => dispatch(logoutUser(user)),
+    getMyAllInvites: (user) => dispatch(getMyAllInvites(user)),
+    getMyAllConnections: (user) => dispatch(getMyAllConnections(user)),
+    getMyConnectionsCount: (user) => dispatch(getMyConnectionsCount(user)),
+    getMyInviteCount: (user) => dispatch(getMyInviteCount(user)),
   };
 };
 export default connect(

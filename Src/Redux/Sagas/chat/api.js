@@ -14,7 +14,7 @@ export function* getChatsApi(chat) {
 
 
   const opt = {
-    method: 'get',
+    method: 'GET',
     headers: {
       Accept: 'application/json',
       'Authorization': 'Bearer ' + chat?.token,
@@ -22,7 +22,7 @@ export function* getChatsApi(chat) {
     },
     
   }
-  const response = yield fetch(`${CONSTANTS.BASE_URL}/chat/rooms?name=${chat.name}&type=${chat.type}&favourite=${chat.favourite}`, opt);
+  const response = yield fetch(`${CONSTANTS.BASE_URL}/chat/rooms?name=${chat?.name}&type=${chat?.type}&favourite=${chat?.favourite}`, opt);
   const message = yield response.json();
   return yield ({ status: response.status, message })
 }

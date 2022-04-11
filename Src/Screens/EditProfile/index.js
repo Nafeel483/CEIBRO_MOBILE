@@ -47,29 +47,35 @@ class EditScreen extends Component {
       phoneNumber: '',
       phoneFocus: false,
       formattedValue: '',
-      companyPhoneNumber: ''
+      companyPhoneNumber: '',
+      userPic: ''
     }
   }
   componentDidMount = async () => {
     let password = await AsyncStorage.getItem('userPassword')
     const myProfile = this.props.route?.params?.myProfile
-    console.log("tThe Phone Number:::::", "myProfile =", myProfile)
     if (myProfile != null && myProfile != undefined) {
+      const myPhone = myProfile?.phone != '' ? myProfile?.phone.substring(3) : ''
+      const companyPhone = myProfile?.companyPhone != '' ? myProfile?.companyPhone.substring(3) : ''
+      // const myPhoneString = myPhone != '' ? `+${myPhone}` : ''
+      // const companyPhoneString = companyPhone != '' ? `+${companyPhone}` : ''
+
       this.setState({
         email: myProfile?.email ? myProfile?.email : '',
         firstName: myProfile?.firstName ? myProfile?.firstName : '',
         surName: myProfile?.surName ? myProfile?.surName : '',
         password: password ? password : '',
         repeatPassword: password ? password : '',
-        formattedValue: myProfile?.phone ? myProfile?.phone : '',
+        phoneNumber: myProfile?.phone ? myPhone : '',
         companyName: myProfile?.companyName ? myProfile?.companyName : '',
         companyVat: myProfile?.companyVat ? myProfile?.companyVat : '',
-        companyPhone: myProfile?.companyPhone ? myProfile?.companyPhone : '',
+        companyPhoneNumber: myProfile?.companyPhone ? companyPhone : '',
         companyLocation: myProfile?.companyLocation ? myProfile?.companyLocation : '',
         workEmail: myProfile?.workEmail ? myProfile?.workEmail : '',
-        checkBoxValue: myProfile?.currentlyRepresenting == true ? myProfile?.currentlyRepresenting : false
-
+        checkBoxValue: myProfile?.currentlyRepresenting == true ? myProfile?.currentlyRepresenting : false,
+        userPic: myProfile?.profilePic ? myProfile?.profilePic : ''
       })
+
     }
   }
 
@@ -126,6 +132,7 @@ class EditScreen extends Component {
 
 
         console.log("The path = ", path,)
+        this.setState({ userPic: uri })
 
         this.uploadProfilePic(source1)
       }
@@ -134,16 +141,10 @@ class EditScreen extends Component {
   }
   uploadProfilePic = (source) => {
     let token = this.props.auth?.userLogin?.tokens?.access?.token
-
-
-
-
     let data = {
       file: source,
       token: token
     }
-
-
     console.log(" The Data is==== ", data)
     this.props.updateMyProfilePic(data)
   }
@@ -180,9 +181,10 @@ class EditScreen extends Component {
   render() {
     const { password, checkBoxValue, passwordPepeatSeen, passwordSeen, repeatPassword,
       firstName, workEmail, surName, email, companyName, companyVat, companyLocation,
-      companyPhone, phoneNumber, phoneFocus, formattedValue, companyPhoneNumber
+      companyPhone, phoneNumber, phoneFocus, formattedValue, companyPhoneNumber,
+      userPic
     } = this.state
-
+    console.log("formattedValue::", phoneNumber, "myProfile =", companyPhone)
     const { loadingUpdateProfile, loadingUpdateProfilePic } = this.props.user
     return (
       <>
@@ -205,7 +207,7 @@ class EditScreen extends Component {
             <View style={Styles.scrollStyle}>
               <TouchableOpacity onPress={this.selectPhotoTapped.bind(this)}
                 style={Styles.mainviewtwo}>
-                <ImageBackground source={Images.userPic} style={Styles.mainimgtwo} imageStyle={{ borderRadius: 8 }}>
+                <ImageBackground source={userPic != "" ? { uri: userPic } : Images.userPic} style={Styles.mainimgtwo} imageStyle={{ borderRadius: 8 }}>
                   <Image source={Images.Photo} style={Styles.clickPhoto} />
                 </ImageBackground>
               </TouchableOpacity>
@@ -277,15 +279,15 @@ class EditScreen extends Component {
 
                 <PhoneInput
                   // ref={this.phoneInput}
-                  defaultValue={formattedValue}
+                  // ref={(ref) => {this.phoneInput = ref}}
+                  defaultValue={phoneNumber}
+                  value={phoneNumber}
                   defaultCode="RO"
                   layout="second"
-                  placeholder={"Contact Number"}
+                  placeholder={phoneNumber != "" ? phoneNumber : "Contact Number"}
                   onChangeText={(text) => {
                     this.setState({
                       phoneNumber: text,
-                      bothEmpty: false,
-                      wrongPassword: false
                     });
                   }}
 
@@ -293,12 +295,14 @@ class EditScreen extends Component {
                     this.setState({ formattedValue: text });
                   }}
                   textInputProps={{
-                    onFocus: this.focusPhone
+                    onFocus: this.focusPhone,
+                    placeholderTextColor: Colors.Black
                   }}
                   flagButtonStyle={{ marginTop: 15 }}
                   textContainerStyle={{ backgroundColor: 'transparent', marginTop: Platform.OS == 'ios' ? 0 : 0 }}
                   textInputStyle={{ width: '60%', backgroundColor: 'transparent', borderColor: "transparent" }}
                   containerStyle={{ width: '74%', backgroundColor: 'transparent', borderColor: "transparent" }}
+                 
                 // withDarkTheme
                 // autoFocus
                 />
@@ -426,10 +430,12 @@ class EditScreen extends Component {
 
                 <PhoneInput
                   // ref={this.phoneInput}
-                  defaultValue={companyPhone}
+                  defaultValue={companyPhoneNumber}
+                  value={companyPhoneNumber}
                   defaultCode="RO"
                   layout="second"
-                  placeholder={"Contact Number"}
+                  placeholder={companyPhoneNumber != "" ? companyPhoneNumber : "Contact Number"}
+                  placeholderTextColor={Colors.Black}
                   onChangeText={(text) => {
                     this.setState({
                       companyPhoneNumber: text,
@@ -441,7 +447,8 @@ class EditScreen extends Component {
                     this.setState({ companyPhone: text });
                   }}
                   textInputProps={{
-                    onFocus: this.focusPhone
+                    onFocus: this.focusPhone,
+                    placeholderTextColor: Colors.Black
                   }}
                   flagButtonStyle={{ marginTop: 15 }}
                   textContainerStyle={{ backgroundColor: 'transparent', marginTop: Platform.OS == 'ios' ? 0 : 0 }}

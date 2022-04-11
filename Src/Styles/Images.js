@@ -80,7 +80,7 @@ const images = {
   Download: require('../Assets/Chat/Download.png'),
   calender: require('../Assets/Chat/calender.png'),
   setAdmin: require('../Assets/Chat/setAdmin.png'),
-
+  closeMedia: require('../Assets/Chat/closeMedia.png'),
 
 };
 export default images;

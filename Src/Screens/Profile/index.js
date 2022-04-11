@@ -8,7 +8,10 @@ import Styles from './Styles'
 import Colors from '../../Styles/Colors';
 import { connect } from 'react-redux';
 import { logoutUser } from '../../Redux/Actions/auth';
-import { getMyProfile } from '../../Redux/Actions/users';
+import {
+  getMyProfile, getMyAllInvites, getMyAllConnections,
+  getMyInviteCount, getMyConnectionsCount
+} from '../../Redux/Actions/users';
 import Loader from '../../Components/Loader';
 import { showMessage, hideMessage } from "react-native-flash-message";
 
@@ -24,9 +27,13 @@ class Profile extends Component {
     this.focusListener = this.props.navigation.addListener('focus', async () => {
       let accessToken = this.props.auth?.userLogin?.tokens?.access?.token
       this.props.getMyProfile(accessToken)
+      this.props.getMyInviteCount(accessToken)
+      this.props.getMyConnectionsCount(accessToken)
+      this.props.getMyAllInvites(accessToken)
+      this.props.getMyAllConnections(accessToken)
     })
-    let accessToken = this.props.auth?.userLogin?.tokens?.access?.token
-    this.props.getMyProfile(accessToken)
+    // let accessToken = this.props.auth?.userLogin?.tokens?.access?.token
+    // this.props.getMyProfile(accessToken)
   }
 
   userlogOut = () => {
@@ -44,6 +51,9 @@ class Profile extends Component {
     const myProfile = this.props.user?.myProfile
 
     const profileName = `${this.props.user?.myProfile?.firstName?.[0]}${this.props.user?.myProfile?.surName?.[0]}`
+
+    let inviteCount = this.props.user?.inviteCount ? this.props.user?.inviteCount : null
+    let connectionCount = this.props.user?.connectionCount ? this.props.user?.connectionCount : null
     return (
       <>
         <SafeAreaProvider>
@@ -91,26 +101,38 @@ class Profile extends Component {
               <View
                 style={Styles.line}
               />
-              <View style={Styles.connect}>
+              <TouchableOpacity onPress={() => {
+                this.props.navigation.navigate('ProfileStack', {
+                  screen: 'Connection',
+                })
+              }}
+                style={Styles.connect}>
                 <View style={Styles.myconnect}>
                   <TouchableOpacity>
                     <Image source={Images.contacts} style={Styles.imgtouch} />
                   </TouchableOpacity>
                   <View style={Styles.myconnect}>
                     <Text style={Styles.myconnectionmain}>{"My connections"}</Text>
-                    {/* <View style={Styles.myconnectionContainer}>
-                      <Text style={Styles.myconnectionnumber}>{"123"}</Text>
-                    </View> */}
-                    {/* <View style={Styles.myConWrapper}>
-                      <Text style={Styles.mycon}>{"4"}</Text>
-                    </View> */}
+                    {
+                      connectionCount != null ?
+                        <View style={Styles.myconnectionContainer}>
+                          <Text style={Styles.myconnectionnumber}>{`${connectionCount?.toString()}`}</Text>
+                        </View>
+                        : null
+                    }
+
+                    {
+                      inviteCount != null && inviteCount != 0 ?
+                        < View style={Styles.myConWrapper}>
+                          <Text style={Styles.mycon}>{`${inviteCount?.toString()}`}</Text>
+                        </View> : null}
                   </View>
                 </View>
                 <TouchableOpacity style={Styles.touchrightarrow}>
                   <Image source={Images.rightArrow} style={Styles.imgrightarrow} />
                 </TouchableOpacity>
 
-              </View>
+              </TouchableOpacity>
               <View
                 style={Styles.line}
               />
@@ -146,8 +168,9 @@ class Profile extends Component {
               </View>
             </View>
           </SafeAreaView>
-        </SafeAreaProvider>
-        {loadingMyProfile ? <Loader /> : null}
+        </SafeAreaProvider >
+        {loadingMyProfile ? <Loader /> : null
+        }
       </>
 
     )
@@ -165,6 +188,10 @@ const mapDispatchToProps = (dispatch) => {
   return {
     logoutUser: (user) => dispatch(logoutUser(user)),
     getMyProfile: (user) => dispatch(getMyProfile(user)),
+    getMyAllInvites: (user) => dispatch(getMyAllInvites(user)),
+    getMyAllConnections: (user) => dispatch(getMyAllConnections(user)),
+    getMyConnectionsCount: (user) => dispatch(getMyConnectionsCount(user)),
+    getMyInviteCount: (user) => dispatch(getMyInviteCount(user)),
   };
 };
 export default connect(

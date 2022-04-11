@@ -160,15 +160,24 @@ export const sendChatMessageApi = (messageData, token) => {
   data.append("chat", messageData.chat);
   data.append("type", messageData.type);
 
+  if (messageData?.products && Object.values(messageData?.products)?.length > 0) {
+    console.log("files are", messageData?.products);
+    for (const key of Object.keys(messageData?.products)) {
+      data.append("products", messageData?.products[key])
+    }
+  }
+
   return axios({
     method: 'post',
     url: `${CONSTANTS.BASE_URL}/chat/message/reply`,
     headers: {
       "accept": 'application/json',
-      "Content-Type": 'application/x-www-form-urlencoded',
+      "Content-Type": 'application/x-www-form-urlencoded;  boundary=----WebKitFormBoundarypBxBqTJYwLPuGTse',
+      // "Content-Type": "multipart/form-data; boundary=----WebKitFormBoundarypBxBqTJYwLPuGTse",
       'Authorization': 'Bearer ' + token,
     },
     data: data.toString(),
+    json: true,
 
   }).then(response => response.data);
 }
@@ -183,13 +192,20 @@ export const sendMessageReplyApi = (messageData, token) => {
   data.append("chat", messageData.chat);
   data.append("messageId", messageData.messageId);
   data.append("type", messageData.type);
+  if (messageData?.products && Object.values(messageData?.products)?.length > 0) {
+    console.log("files are", messageData?.products);
+    messageData?.products.forEach((item, i) => {
+      data.append("products", item);
+    });
+  }
 
   return axios({
     method: 'post',
     url: `${CONSTANTS.BASE_URL}/chat/message/reply`,
     headers: {
       "accept": 'application/json',
-      "Content-Type": 'application/x-www-form-urlencoded',
+      "Content-Type": 'application/x-www-form-urlencoded;  boundary=----WebKitFormBoundarypBxBqTJYwLPuGTse',
+      // "Content-Type": "multipart/form-data; boundary=----WebKitFormBoundarypBxBqTJYwLPuGTse",
       'Authorization': 'Bearer ' + token,
     },
     data: data.toString(),
@@ -211,6 +227,55 @@ export const sendForwardMessageApi = (messageData, token) => {
       'Authorization': 'Bearer ' + token,
     },
     data: messageData,
+
+  }).then(response => response.data);
+}
+
+
+
+// acceptRejectApi
+export const acceptRejectApi = (inviteId, accepted, token) => {
+
+  return axios({
+    method: 'post',
+    url: `${CONSTANTS.BASE_URL}/users/invite/accept/${accepted}/${inviteId}`,
+    headers: {
+      "accept": 'application/json',
+      "Content-Type": 'application/json',
+      'Authorization': 'Bearer ' + token,
+    },
+
+  }).then(response => response.data);
+}
+
+// allAcceptRejectApi
+export const allAcceptRejectApi = (accepted, token) => {
+
+  return axios({
+    method: 'post',
+    url: `${CONSTANTS.BASE_URL}/users/invite/accept-all/${accepted}`,
+    headers: {
+      "accept": 'application/json',
+      "Content-Type": 'application/json',
+      'Authorization': 'Bearer ' + token,
+    },
+
+  }).then(response => response.data);
+}
+
+
+// InviteUserApi
+export const InviteUserApi = (invite, token) => {
+
+  return axios({
+    method: 'post',
+    url: `${CONSTANTS.BASE_URL}/users/invite`,
+    headers: {
+      "accept": 'application/json',
+      "Content-Type": 'application/json',
+      'Authorization': 'Bearer ' + token,
+    },
+    data: invite,
 
   }).then(response => response.data);
 }

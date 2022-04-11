@@ -9,14 +9,14 @@ import { navigate } from '../../../Navigation/AppNavigation';
 // getAllUserChats
 function* getAllUserChats(action) {
   try {
-    const result = yield getChatsApi(action.payload);
+    const result = yield getChatsApi(action?.payload);
     console.log('Chat result Response', result)
-    if (result.status === 200) {
-      yield put({ type: types.GET_ALL_CHATS_SUCCESS, payload: result.message });
+    if (result?.status == 200) {
+      yield put({ type: types.GET_ALL_CHATS_SUCCESS, payload: result?.message });
     }
     else {
-      yield put({ type: types.GET_ALL_CHATS_FAILURE, payload: result.message });
-      if (result.message?.error) {
+      yield put({ type: types.GET_ALL_CHATS_FAILURE, payload: result?.message });
+      if (result?.message?.error) {
       }
       else {
       }

@@ -5,7 +5,9 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  TextInput
+  TextInput,
+  ImageBackground,
+  FlatList
 } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import SafeAreaView from 'react-native-safe-area-view';
@@ -72,7 +74,9 @@ class ChatView extends Component {
       forwardOpen: false,
       forwardMessageData: null,
       forwardChatID: [],
-      uploadFilesData: []
+      uploadFilesData: [],
+      uploadMediaFiles: [],
+      listColumn: 4
     };
   }
 
@@ -148,7 +152,7 @@ class ChatView extends Component {
   }
 
   uploadMedia = async () => {
-    const { uploadFilesData } = this.state
+    const { uploadFilesData, uploadMediaFiles } = this.state
     let options = {
       selectedAssets: uploadFilesData,
       isExportThumbnail: true,
@@ -156,7 +160,18 @@ class ChatView extends Component {
       usedCameraButton: false,
     }
     const response = await MultipleImagePicker.openPicker(options)
-    console.log("-------All Media File Response------- = ", response)
+    let upload = []
+    if (response.length > 0) {
+      response?.map((val) => {
+        let data = {
+          name: 'products', type: val?.mime, uri: val?.path
+        }
+        upload.push(data)
+      })
+    }
+    console.log("-------All Media File Response------- = ", response, upload)
+    this.setState({ uploadMediaFiles: uploadMediaFiles.concat(upload) })
+
   }
 
   questionModelCall = () => {
@@ -296,7 +311,7 @@ class ChatView extends Component {
   }
 
   sendTextMessage = () => {
-    const { chatMessage, userReplyData } = this.state
+    const { chatMessage, userReplyData, uploadMediaFiles } = this.state
     let token = this.props.auth?.userLogin?.tokens?.access?.token
     const roomID = this.props.route?.params?.chatRoomID
 
@@ -304,11 +319,23 @@ class ChatView extends Component {
 
     } else {
       if (userReplyData != null) {
-        const data = {
-          message: chatMessage,
-          chat: roomID,
-          messageId: userReplyData?._id,
-          type: "message"
+        let data
+        if (uploadMediaFiles.length > 0) {
+          data = {
+            message: chatMessage,
+            chat: roomID,
+            messageId: userReplyData?._id,
+            products: uploadMediaFiles,
+            type: "message"
+          }
+
+        } else {
+          data = {
+            message: chatMessage,
+            chat: roomID,
+            messageId: userReplyData?._id,
+            type: "message"
+          }
         }
         API.sendMessageReplyApi(data, token)
           .then((res) => {
@@ -321,17 +348,27 @@ class ChatView extends Component {
             console.log("sendMessageReplyApi api error", error)
           });
       } else {
-        const data = {
-          message: chatMessage,
-          chat: roomID,
-          // messageId: "",
-          type: "message"
+        let data
+        if (uploadMediaFiles.length > 0) {
+          data = {
+            message: chatMessage,
+            chat: roomID,
+            products: uploadMediaFiles,
+            type: "message"
+          }
+        } else {
+          data = {
+            message: chatMessage,
+            chat: roomID,
+            // messageId: "",
+            type: "message"
+          }
         }
         API.sendChatMessageApi(data, token)
           .then((res) => {
             console.log("sendChatMessageApi Response api====>", res)
             this.allSingleChatRoomMessage()
-            this.setState({ chatMessage: '' })
+            this.setState({ chatMessage: '', uploadMediaFiles: [] })
 
           })
           .catch((error) => {
@@ -410,11 +447,32 @@ class ChatView extends Component {
     this.setState({ userReplyData: null })
   }
 
+  removeMedia = (key) => {
+    const { uploadMediaFiles } = this.state
+    let data = uploadMediaFiles.filter((o1, index) => index != key)
+    // console.log("Filter------", data)
+    this.setState({ uploadMediaFiles: data })
+  }
+  chatMediaList = (item, index) => {
+    return (
+      <>
+        <View key={index} style={Styles.mediaMainWrapper}>
+          <ImageBackground source={{ uri: item?.uri }} style={Styles.mediaFiles} imageStyle={{ borderRadius: 6 }}>
+            <TouchableOpacity onPress={() => { this.removeMedia(index) }}>
+              <Image source={Images.closeMedia} style={Styles.styleClose} />
+            </TouchableOpacity>
+          </ImageBackground>
+        </View>
+      </>
+    )
+  }
+
   render() {
     const { chatMessage, allChatList, Opposite, receiverID,
       senderID, openModel, createModel, openAddMember, moreMembersList,
       chatMemberName, memberId, allPinnedChatList, userReplyData,
-      forwardOpen, forwardChatID
+      forwardOpen, forwardChatID, uploadMediaFiles,
+      listColumn
     } = this.state
 
 
@@ -426,15 +484,16 @@ class ChatView extends Component {
     const groupInfo = this.props.route?.params?.groupInfo
 
     const currentUser = this.props.auth?.userLogin?.user?.id
-
+    // console.log("uploadMediaFiles===== ", uploadMediaFiles)
     return (
       <>
         <MenuProvider>
           <KeyboardAwareScrollView showsVerticalScrollIndicator={false}
             contentContainerStyle={Styles.fullContainer}>
-            <View style={Styles.MainContainer}>
-              {/* Header */}
-              <View style={Styles.headerContainer}>
+            <SafeAreaView style={Styles.MainContainer}>
+              <View style={Styles.MainContainer}>
+                {/* Header */}
+                {/* <View style={Styles.headerContainer}> */}
                 <View style={Styles.headerWrapper}>
                   <View style={Styles.contain}>
                     <View style={Styles.myconnect}>
@@ -442,7 +501,7 @@ class ChatView extends Component {
                         <Image source={Images.close} style={Styles.Setimage} />
                       </TouchableOpacity >
                       <View style={Styles.touchviewone}>
-                        {
+                        {/* {
                           chatRoomProject != null ?
                             <>
                               <TouchableOpacity onPress={() => {
@@ -462,19 +521,19 @@ class ChatView extends Component {
                                 <Text style={Styles.nameProject}>{"Vesse-12"}</Text>
                               </Text>
                             </>
-                            :
-                            <TouchableOpacity onPress={() => {
-                              this.props.navigation.navigate('ChatFeature', {
-                                screen: 'GroupInfo',
-                                params: {
-                                  groupInfo: groupInfo,
-                                  allPinnedChatList: allPinnedChatList
-                                }
-                              })
-                            }}>
-                              <Text style={Styles.touchViewprofileOne1}>{chatRoomName}</Text>
-                            </TouchableOpacity>
-                        }
+                            : */}
+                        <TouchableOpacity onPress={() => {
+                          this.props.navigation.navigate('ChatFeature', {
+                            screen: 'GroupInfo',
+                            params: {
+                              groupInfo: groupInfo,
+                              allPinnedChatList: allPinnedChatList
+                            }
+                          })
+                        }}>
+                          <Text style={Styles.touchViewprofileOne1}>{chatRoomName}</Text>
+                        </TouchableOpacity>
+                        {/* } */}
                       </View>
                     </View>
                     <View style={Styles.myconnect}>
@@ -519,126 +578,142 @@ class ChatView extends Component {
                     </View>
                   </View>
                 </View>
-              </View>
-              {/* Header Ends */}
-              <ScrollView
-                ref={ref => { this.scrollView = ref }}
-                onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}
-              // keyboardShouldPersistTaps='always'
-              >
-                <View style={{
-                  marginTop: 20, marginBottom: 20, width: '95%', alignSelf: 'center'
-                }}>
-                  {allChatList?.length > 0 && allChatList?.map((showmessage) => (
-                    <ShowChatMessages
-                      showmessage={showmessage} key={showmessage._id} userId={showmessage._id} oppositeUser={Opposite}
-                      receiverID={receiverID} senderID={senderID} questionModelCall={this.questionModelCall}
-                      chatRoomMembers={chatRoomMembers} addTemporary={this.getMoreMember}
-                      pinnedToFavourite={this.pinnedToFavourite} currentUser={currentUser}
-                      replyToUser={this.replyToUser} forwarToChat={this.forwarToChat}
-                    />
-                  ))}
-                </View>
-              </ScrollView>
-              <View style={Styles.bottomWrapper}>
-                <View style={Styles.seperator} />
-                {
-                  userReplyData != null ?
-                    <>
-                      <View style={Styles.replyToContainer}>
-                        <View style={Styles.replyInnerContainer}>
-                          <View>
-                            <Text style={Styles.replyUserHeader}>{userReplyData?.sender?.firstName}</Text>
-                            <Text style={Styles.replyTextMessage}>{userReplyData?.message}</Text>
+                {/* </View> */}
+                {/* Header Ends */}
+                <ScrollView
+                  ref={ref => { this.scrollView = ref }}
+                  onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}
+                // keyboardShouldPersistTaps='always'
+                >
+                  <View style={{
+                    marginTop: 20, marginBottom: 20, width: '95%', alignSelf: 'center'
+                  }}>
+                    {allChatList?.length > 0 && allChatList?.map((showmessage) => (
+                      <ShowChatMessages
+                        showmessage={showmessage} key={showmessage._id} userId={showmessage._id} oppositeUser={Opposite}
+                        receiverID={receiverID} senderID={senderID} questionModelCall={this.questionModelCall}
+                        chatRoomMembers={chatRoomMembers} addTemporary={this.getMoreMember}
+                        pinnedToFavourite={this.pinnedToFavourite} currentUser={currentUser}
+                        replyToUser={this.replyToUser} forwarToChat={this.forwarToChat}
+                      />
+                    ))}
+                  </View>
+                </ScrollView>
+                <View style={Styles.bottomWrapper}>
+                  <View style={Styles.seperator} />
+                  {
+                    userReplyData != null ?
+                      <>
+                        <View style={Styles.replyToContainer}>
+                          <View style={Styles.replyInnerContainer}>
+                            <View>
+                              <Text style={Styles.replyUserHeader}>{userReplyData?.sender?.firstName}</Text>
+                              <Text style={Styles.replyTextMessage}>{userReplyData?.message}</Text>
+                            </View>
+                            <TouchableOpacity onPress={this.closeReply}>
+                              <Image source={Images.close} style={Styles.replyClose} />
+                            </TouchableOpacity >
                           </View>
-                          <TouchableOpacity onPress={this.closeReply}>
-                            <Image source={Images.close} style={Styles.replyClose} />
-                          </TouchableOpacity >
                         </View>
+                      </>
+                      : null
+                  }
+                  {
+                    uploadMediaFiles?.length > 0 ?
+                      <View style={Styles.mediaToContainer}>
+                        <FlatList
+                          key={listColumn}
+                          horizontal={false}
+                          scrollEnabled={false}
+                          numColumns={listColumn}
+                          data={uploadMediaFiles}
+                          keyExtractor={(item, index) => index.toString()}
+                          renderItem={({ item, index }) => this.chatMediaList(item, index)}
+                        />
                       </View>
-                    </>
+                      : null
+                  }
+                  <View style={Styles.emailWrapper}>
+
+                    <TextInput
+                      ref={this.firstInput}
+                      style={Styles.emailInput}
+                      value={chatMessage}
+                      placeholder={"Type a message"}
+                      placeholderTextColor={Colors.textColor}
+                      autoCapitalize='none'
+                      onSubmitEditing={this.onEndEditing}
+                      blurOnSubmit={false}
+                      onChangeText={(value) =>
+                        this.typeMessage(value)
+                      }
+                    />
+                    <Image source={Images.mic} style={Styles.micStyle} />
+                  </View>
+                  <View style={Styles.seperator} />
+                  <View style={Styles.bottomIconsWrapper}>
+                    <TouchableOpacity>
+                      <Image source={Images.emoji} style={Styles.iconBottom} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={this.uploadMedia}>
+                      <Image source={Images.fileUpload} style={Styles.iconBottom1} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={this.uploadMedia}>
+                      <Image source={Images.camera} style={Styles.iconBottom1} />
+                    </TouchableOpacity>
+                    <View style={Styles.inboxLine} />
+                    <TouchableOpacity>
+                      <Image source={Images.Nudge} style={Styles.iconBottom1} />
+                    </TouchableOpacity>
+                    <View style={Styles.inboxLine} />
+                    <TouchableOpacity onPress={this.createQuestion}>
+                      <Image source={Images.document} style={Styles.iconBottom2} />
+                    </TouchableOpacity>
+
+                  </View>
+                </View>
+
+                {
+                  openModel == true ?
+                    <QuestionareModel
+                      open={openModel}
+                      close={this.questionModelCall} />
                     : null
                 }
-                <View style={Styles.emailWrapper}>
-
-                  <TextInput
-                    ref={this.firstInput}
-                    style={Styles.emailInput}
-                    value={chatMessage}
-                    placeholder={"Type a message"}
-                    placeholderTextColor={Colors.textColor}
-                    autoCapitalize='none'
-                    onSubmitEditing={this.onEndEditing}
-                    blurOnSubmit={false}
-                    onChangeText={(value) =>
-                      this.typeMessage(value)
-                    }
-                  />
-                  <Image source={Images.mic} style={Styles.micStyle} />
-                </View>
-                <View style={Styles.seperator} />
-                <View style={Styles.bottomIconsWrapper}>
-                  <TouchableOpacity>
-                    <Image source={Images.emoji} style={Styles.iconBottom} />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={this.uploadMedia}>
-                    <Image source={Images.fileUpload} style={Styles.iconBottom1} />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={this.uploadMedia}>
-                    <Image source={Images.camera} style={Styles.iconBottom1} />
-                  </TouchableOpacity>
-                  <View style={Styles.inboxLine} />
-                  <TouchableOpacity>
-                    <Image source={Images.Nudge} style={Styles.iconBottom1} />
-                  </TouchableOpacity>
-                  <View style={Styles.inboxLine} />
-                  <TouchableOpacity onPress={this.createQuestion}>
-                    <Image source={Images.document} style={Styles.iconBottom2} />
-                  </TouchableOpacity>
-
-                </View>
+                {
+                  createModel == true ?
+                    <CreateQuestionare
+                      open={createModel}
+                      close={this.createQuestion} />
+                    : null
+                }
+                {
+                  openAddMember == true ?
+                    <ChatRoomMembers
+                      open={openAddMember}
+                      close={this.closeAddMembers}
+                      moreMembersList={moreMembersList}
+                      chatMemberName={chatMemberName}
+                      memberId={memberId}
+                      selectCheckedMembers={this.selectCheckedMembers}
+                      submit={this.addSubmitMember}
+                    />
+                    : null
+                }
+                {
+                  forwardOpen == true ?
+                    <ForwardMessage
+                      open={forwardOpen}
+                      allChats={allChats}
+                      forwardChatID={forwardChatID}
+                      selectSendChat={this.selectSendChat}
+                      close={this.closeForwarChat}
+                      submit={this.submitForward}
+                    />
+                    : null
+                }
               </View>
-
-              {
-                openModel == true ?
-                  <QuestionareModel
-                    open={openModel}
-                    close={this.questionModelCall} />
-                  : null
-              }
-              {
-                createModel == true ?
-                  <CreateQuestionare
-                    open={createModel}
-                    close={this.createQuestion} />
-                  : null
-              }
-              {
-                openAddMember == true ?
-                  <ChatRoomMembers
-                    open={openAddMember}
-                    close={this.closeAddMembers}
-                    moreMembersList={moreMembersList}
-                    chatMemberName={chatMemberName}
-                    memberId={memberId}
-                    selectCheckedMembers={this.selectCheckedMembers}
-                    submit={this.addSubmitMember}
-                  />
-                  : null
-              }
-              {
-                forwardOpen == true ?
-                  <ForwardMessage
-                    open={forwardOpen}
-                    allChats={allChats}
-                    forwardChatID={forwardChatID}
-                    selectSendChat={this.selectSendChat}
-                    close={this.closeForwarChat}
-                    submit={this.submitForward}
-                  />
-                  : null
-              }
-            </View>
+            </SafeAreaView>
           </KeyboardAwareScrollView>
         </MenuProvider>
       </>

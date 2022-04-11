@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: widthScreen / 1.12,
     alignSelf: 'center',
-    marginTop: hp(3.5),
+    marginTop: hp(1.5),
     marginBottom: hp(1.8),
     justifyContent: 'space-between'
   },
@@ -93,6 +93,11 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: widthScreen,
     backgroundColor: Colors.lightGrey,
+  },
+  mediaToContainer: {
+    alignSelf: 'center',
+    width: widthScreen / 1.12,
+    marginBottom: hp(1.5),
   },
   replyInnerContainer: {
     alignSelf: 'center',
@@ -146,7 +151,7 @@ const styles = StyleSheet.create({
     height: hp(2.4),
   },
   bottomWrapper: {
-    marginBottom: Platform.OS == 'android' ? hp(2) : hp(3.5)
+    marginBottom: Platform.OS == 'android' ? hp(0.2) : hp(0.2)
   },
   bottomIconsWrapper: {
     marginTop: hp(1.5),
@@ -196,6 +201,26 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     height: hp(0.2),
     backgroundColor: Colors.bottomLine
+  },
+  mediaMainWrapper: {
+    marginRight: hp(1.5),
+    // marginLeft: hp(1.5),
+    marginTop: hp(1),
+  },
+  mediaFiles: {
+    width: hp(5),
+    height: hp(5),
+    borderRadius: 6,
+
+  },
+  styleClose: {
+    width: hp(3),
+    height: hp(3),
+    alignSelf: 'flex-end',
+    tintColor: Colors.golden,
+    position: 'absolute',
+    top: -8,
+    right: -8
   }
 });
 export default styles;

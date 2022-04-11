@@ -40,11 +40,15 @@ const Header = (props) => {
               <View style={Styles.notificationWrapper}>
                 <Image source={Images.members} style={Styles.notificationImage} />
               </View>
-              <View style={Styles.notifTag}>
-                <Text style={Styles.tagTextStyle}>
-                  {'4'}
-                </Text>
-              </View>
+              {
+                props?.inviteCount != null && props?.inviteCount != 0 ?
+                  <View style={Styles.notifTag}>
+                    <Text style={Styles.tagTextStyle}>
+                      {`${props?.inviteCount?.toString()}`}
+                    </Text>
+                  </View>
+                  : null
+              }
             </TouchableOpacity>
             {/* Notification Tag */}
             <TouchableOpacity style={{ marginTop: hp(1.5), marginLeft: hp(4) }}>
@@ -52,11 +56,11 @@ const Header = (props) => {
               <View style={Styles.notificationWrapper}>
                 <Image source={Images.notification} style={Styles.notificationImage} />
               </View>
-              <View style={Styles.notifTag}>
+              {/* <View style={Styles.notifTag}>
                 <Text style={Styles.tagTextStyle}>
                   {'5'}
                 </Text>
-              </View>
+              </View> */}
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => {

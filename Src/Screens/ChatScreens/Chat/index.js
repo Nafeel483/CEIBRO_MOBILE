@@ -28,6 +28,10 @@ import { connect } from 'react-redux';
 import { showMessage, hideMessage } from "react-native-flash-message";
 import Loader from '../../../Components/Loader';
 import { getAllUserChats } from '../../../Redux/Actions/chat';
+import {
+  getMyAllInvites, getMyAllConnections,
+  getMyInviteCount, getMyConnectionsCount
+} from '../../../Redux/Actions/users';
 import moment from 'moment';
 import * as API from '../../../Redux/Selectors/AllApi';
 
@@ -54,15 +58,11 @@ class Chats extends Component {
         token: accessToken
       }
       this.props.getAllChats(chatData)
+      this.props.getMyInviteCount(accessToken)
+      this.props.getMyConnectionsCount(accessToken)
+      this.props.getMyAllInvites(accessToken)
+      this.props.getMyAllConnections(accessToken)
     })
-    let accessToken = this.props.auth?.userLogin?.tokens?.access?.token
-    let chatData = {
-      name: "",
-      type: "all",
-      favourite: false,
-      token: accessToken
-    }
-    this.props.getAllChats(chatData)
 
   }
 
@@ -180,7 +180,6 @@ class Chats extends Component {
     return (
       <>
         <TouchableOpacity
-          key={index}
           onPress={() => {
             this.props.navigation.navigate('ChatFeature', {
               screen: 'ChatView',
@@ -195,14 +194,14 @@ class Chats extends Component {
           }}
           style={Styles.listChatContainer}>
           <View style={Styles.chatFirstWrapper}>
-            {
+            {/* {
               item?.image ?
                 <Image source={Images.userPic} style={Styles.userPicImage} />
-                :
-                <View style={Styles.userProfileWrapper}>
-                  <Text style={Styles.userProfileText}>{str_Name?.toUpperCase()}</Text>
-                </View>
-            }
+                : */}
+            <View style={Styles.userProfileWrapper}>
+              <Text style={Styles.userProfileText}>{str_Name?.toUpperCase()}</Text>
+            </View>
+            {/* } */}
             <View style={{
               marginLeft: hp(2.5)
             }}>
@@ -213,7 +212,7 @@ class Chats extends Component {
                 item?.project != null ?
                   <Text style={Styles.mergeMessage}>
                     <Text style={Styles.displayProject}>{"Project:  "}</Text>
-                    <Text style={Styles.nameProject}>{item?.project}</Text>
+                    <Text style={Styles.nameProject}>{item?.project?.title}</Text>
                   </Text>
                   : null
               }
@@ -307,9 +306,10 @@ class Chats extends Component {
 
   render() {
     const { search, tabClick, listColumn, favouriteList } = this.state
-    const { loadingAllChats, allChats } = this.props.chat
-
+    const { loadingAllChats } = this.props.chat
+    const allChats = this.props.chat?.allChats?.length > 0 ? this.props.chat?.allChats : []
     let profileUser = this.props.user?.myProfile ? this.props.user?.myProfile : this.props.auth?.userLogin?.user
+    let inviteCount = this.props.user?.inviteCount ? this.props.user?.inviteCount : null
 
     return (
       <>
@@ -318,7 +318,9 @@ class Chats extends Component {
             <SafeAreaView style={Styles.safeHeadContainer} />
             <SafeAreaView style={Styles.safeAreaContainer}>
               <StatusBar barStyle="dark-content" />
-              <Header userData={profileUser} navigation={this.props.navigation} />
+              <Header userData={profileUser} 
+              inviteCount={inviteCount}
+              navigation={this.props.navigation} />
               <View style={Styles.mainContent}>
                 <View style={Styles.seperator} />
                 <View style={Styles.emailWrapper}>
@@ -364,7 +366,7 @@ class Chats extends Component {
                   <View>
                     {
                       tabClick == 1 ?
-                        allChats?.length > 0 ?
+                        allChats.length > 0 ?
                           <FlatList
                             key={listColumn}
                             horizontal={false}
@@ -376,7 +378,7 @@ class Chats extends Component {
                           /> : null
                         :
                         tabClick == 2 ?
-                          allChats?.length > 0 ?
+                          allChats.length > 0 ?
                             <FlatList
                               key={listColumn}
                               horizontal={false}
@@ -388,7 +390,7 @@ class Chats extends Component {
                             /> :
                             null
                           :
-                          allChats?.length > 0 ?
+                          allChats.length > 0 ?
                             <FlatList
                               key={listColumn}
                               horizontal={false}
@@ -430,6 +432,10 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getAllChats: (user) => dispatch(getAllUserChats(user)),
+    getMyConnectionsCount: (user) => dispatch(getMyConnectionsCount(user)),
+    getMyInviteCount: (user) => dispatch(getMyInviteCount(user)),
+    getMyAllInvites: (user) => dispatch(getMyAllInvites(user)),
+    getMyAllConnections: (user) => dispatch(getMyAllConnections(user)),
   };
 };
 export default connect(

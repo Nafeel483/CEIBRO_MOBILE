@@ -69,7 +69,7 @@ const userReducer = (state = initialState, action) => {
       };
 
 
-        //  Update My Profile Pic
+    //  Update My Profile Pic
     case types.UPDATE_MY_PROFILE_PIC_REQUEST:
       return {
         ...state,
@@ -86,6 +86,85 @@ const userReducer = (state = initialState, action) => {
         ...state,
         loadingUpdateProfilePic: false,
       };
+
+
+
+    // Get All Invites
+    case types.GET_ALL_INVITES_REQUEST:
+      return {
+        ...state,
+        loadingGetInvites: true,
+      };
+    case types.GET_ALL_INVITES_SUCCESS:
+      return {
+        ...state,
+        allInvites: action.payload,
+        loadingGetInvites: false,
+      };
+    case types.GET_ALL_INVITES_FAILURE:
+      return {
+        ...state,
+        loadingGetInvites: false,
+      };
+
+
+    // Get All Connections
+    case types.GET_ALL_CONNECTIONS_REQUEST:
+      return {
+        ...state,
+        loadingGetConnections: true,
+      };
+    case types.GET_ALL_CONNECTIONS_SUCCESS:
+      return {
+        ...state,
+        allConnections: action.payload,
+        loadingGetConnections: false,
+      };
+    case types.GET_ALL_CONNECTIONS_FAILURE:
+      return {
+        ...state,
+        loadingGetConnections: false,
+      };
+
+
+
+    // Get Invite Count
+    case types.GET_MY_INVITE_COUNT_REQUEST:
+      return {
+        ...state,
+        loadingInviteCount: true,
+      };
+    case types.GET_MY_INVITE_COUNT_SUCCESS:
+      return {
+        ...state,
+        inviteCount: action.payload,
+        loadingInviteCount: false,
+      };
+    case types.GET_MY_INVITE_COUNT_FAILURE:
+      return {
+        ...state,
+        loadingInviteCount: false,
+      };
+
+
+       // Get Connection Count
+    case types.GET_MY_CONNECTIONS_COUNT_REQUEST:
+      return {
+        ...state,
+        loadingInviteCount: true,
+      };
+    case types.GET_MY_CONNECTIONS_COUNT_SUCCESS:
+      return {
+        ...state,
+        connectionCount: action.payload,
+        loadingInviteCount: false,
+      };
+    case types.GET_MY_CONNECTIONS_COUNT_FAILURE:
+      return {
+        ...state,
+        loadingInviteCount: false,
+      };
+
 
 
     default: {

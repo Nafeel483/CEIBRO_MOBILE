@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   line: {
     borderBottomColor: '#ECF0F1',
     borderBottomWidth: 1.5,
-    marginTop: hp('2%')
+    marginTop: hp(1)
   },
   btn: {
     color: '#FFFFFF',
@@ -85,8 +85,10 @@ const styles = StyleSheet.create({
   },
   viewMain: {
     flexDirection: 'row',
-    marginTop: hp('3%'),
-    marginHorizontal: hp('2%')
+    marginTop: hp(2),
+    width: widthScreen / 1.12,
+    alignSelf: 'center',
+    justifyContent: 'space-between'
   },
   viewMainA: {
     flexDirection: 'row',
@@ -95,17 +97,17 @@ const styles = StyleSheet.create({
   },
   imgstyle: {
     height: wp('13%'),
-    width: wp('13%')
+    width: wp('13%'),
+    borderRadius: 8
   },
   subView: {
     marginLeft: wp('1.5%'),
-    marginTop: wp('0.5%'),
-    width: wp('38%')
+    marginTop: hp(1),
   },
   textSubView: {
     color: '#0076C8',
     fontWeight: 'bold',
-    fontSize: 15
+    fontSize: hp(1.5)
   },
   textSubtView: {
     fontWeight: 'bold',
@@ -114,16 +116,15 @@ const styles = StyleSheet.create({
     fontFamily: "Inter",
   },
   companyName: {
-    fontSize: hp(1.4),
+    fontSize: hp(1.3),
     color: Colors.mediumGrey,
     fontFamily: "Inter",
     fontWeight: '500',
     marginTop: hp(0.4)
   },
   viewone: {
-    width: wp('50%'),
     flexDirection: 'row',
-    marginTop: hp('0.5')
+    marginTop: hp(1)
   },
   touchtwo: {
     width: wp('20%'),
@@ -152,7 +153,23 @@ const styles = StyleSheet.create({
     marginBottom: hp(5),
     // width: widthScreen / 1.12,
     // alignSelf: 'center'
-  }
+  },
+  userProfileWrapper: {
+    height: wp('13%'),
+    width: wp('13%'),
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.borderColor,
+    // marginLeft: hp(4)
+  },
+  userProfileText: {
+    fontSize: hp(1.5),
+    fontWeight: '500',
+    fontFamily: "Inter",
+    color: Colors.Black
+  },
 
 });
 export default styles;

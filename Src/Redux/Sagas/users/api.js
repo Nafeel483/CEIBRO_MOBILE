@@ -66,7 +66,7 @@ export function* updateMyProfileApi(user) {
       'Authorization': 'Bearer ' + user.token,
       // token: userToken
     },
-    body: data,
+    body: data.toString(),
     json: true,
   }
   const response = yield fetch(`${CONSTANTS.BASE_URL}/users/profile`, opt);
@@ -96,5 +96,77 @@ export function* updateMyProfilePicApi(user) {
   const response = yield fetch(`${CONSTANTS.BASE_URL}/users/profile/pic`, opt);
   const message = yield response;
 
+  return yield ({ status: response.status, message })
+}
+
+
+// getMyAllInvitesApi
+export function* getMyAllInvitesApi(token) {
+
+  const opt = {
+    method: 'get',
+    headers: {
+      Accept: 'application/json',
+      'Authorization': 'Bearer ' + token,
+      // token: userToken
+    },
+
+  }
+  const response = yield fetch(`${CONSTANTS.BASE_URL}/users/invite`, opt);
+  const message = yield response.json();
+  return yield ({ status: response.status, message })
+}
+
+
+// getMyAllConnectionsApi
+export function* getMyAllConnectionsApi(token) {
+
+  const opt = {
+    method: 'get',
+    headers: {
+      Accept: 'application/json',
+      'Authorization': 'Bearer ' + token,
+      // token: userToken
+    },
+
+  }
+  const response = yield fetch(`${CONSTANTS.BASE_URL}/users/connections`, opt);
+  const message = yield response.json();
+  return yield ({ status: response.status, message })
+}
+
+
+// getMyInviteCountAPI
+export function* getMyInviteCountAPI(token) {
+
+  const opt = {
+    method: 'get',
+    headers: {
+      Accept: 'application/json',
+      'Authorization': 'Bearer ' + token,
+      // token: userToken
+    },
+
+  }
+  const response = yield fetch(`${CONSTANTS.BASE_URL}/users/invite/count`, opt);
+  const message = yield response.json();
+  return yield ({ status: response.status, message })
+}
+
+
+// getMyConnectionsCountAPI
+export function* getMyConnectionsCountAPI(token) {
+
+  const opt = {
+    method: 'get',
+    headers: {
+      Accept: 'application/json',
+      'Authorization': 'Bearer ' + token,
+      // token: userToken
+    },
+
+  }
+  const response = yield fetch(`${CONSTANTS.BASE_URL}/users/connections/count`, opt);
+  const message = yield response.json();
   return yield ({ status: response.status, message })
 }

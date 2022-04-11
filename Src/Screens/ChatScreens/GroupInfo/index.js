@@ -34,7 +34,7 @@ class GroupInfo extends Component {
     super(props);
     this.state = {
       chatTitle: '',
-      chatProject: '',
+      chatProject: null,
       listColumn: 1,
       listMediaColumn: 3,
       memberDropDown: false,
@@ -251,8 +251,8 @@ class GroupInfo extends Component {
                     <View style={Styles.inboxLine} />
                     <View style={Styles.emailInput1}>
                       <Text style={[Styles.emailInput1Text, {
-                        color: chatProject != "" ? Colors.Black : Colors.textColor
-                      }]}>{chatProject != "" ? chatProject : "Please select a project"}</Text>
+                        color: chatProject != null ? Colors.Black : Colors.textColor
+                      }]}>{chatProject != null ? "In Future" : "Please select a project"}</Text>
                     </View>
                     <TouchableOpacity>
                       <Image source={Images.dropDown} style={Styles.searchStyle} />
@@ -295,7 +295,7 @@ class GroupInfo extends Component {
                           {
                             allMediaData?.length > 0 ?
                               <View style={Styles.mediaShowContainer}>
-                                <FlatList
+                                {/* <FlatList
                                   key={listMediaColumn}
                                   horizontal={false}
                                   scrollEnabled={false}
@@ -303,7 +303,7 @@ class GroupInfo extends Component {
                                   data={allMediaData}
                                   keyExtractor={(item, index) => index.toString()}
                                   renderItem={({ item, index }) => this.seeAllMediaList(item, index)}
-                                />
+                                /> */}
                               </View>
                               : null
                           }
@@ -344,7 +344,7 @@ class GroupInfo extends Component {
                           {
                             allPinnedChatList?.length > 0 ?
                               <View style={Styles.mediaShowContainer}>
-                                <FlatList
+                                {/* <FlatList
                                   key={listColumn}
                                   horizontal={false}
                                   scrollEnabled={false}
@@ -352,7 +352,7 @@ class GroupInfo extends Component {
                                   data={allPinnedChatList}
                                   keyExtractor={(item, index) => index.toString()}
                                   renderItem={({ item, index }) => this.seeAllPinnedList(item, index)}
-                                />
+                                /> */}
                               </View>
                               : null
                           }
@@ -442,7 +442,7 @@ class GroupInfo extends Component {
                                     }}
                                   />
                                 </View>
-                                <FlatList
+                                {/* <FlatList
                                   key={listColumn}
                                   horizontal={false}
                                   scrollEnabled={false}
@@ -450,7 +450,7 @@ class GroupInfo extends Component {
                                   data={groupInfo?.members}
                                   keyExtractor={(item, index) => index.toString()}
                                   renderItem={({ item, index }) => this.addSuggestListList(item, index)}
-                                />
+                                /> */}
                               </> : null
                           }
                         </>

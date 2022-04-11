@@ -29,3 +29,33 @@ export function updateMyProfilePic(user) {
     payload: user
   };
 }
+
+
+export function getMyAllInvites(user) {
+  return {
+    type: types.GET_ALL_INVITES_REQUEST,
+    payload: user
+  };
+}
+
+export function getMyAllConnections(user) {
+  return {
+    type: types.GET_ALL_CONNECTIONS_REQUEST,
+    payload: user
+  };
+}
+
+
+export function getMyInviteCount(user) {
+  return {
+    type: types.GET_MY_INVITE_COUNT_REQUEST,
+    payload: user
+  };
+}
+
+export function getMyConnectionsCount(user) {
+  return {
+    type: types.GET_MY_CONNECTIONS_COUNT_REQUEST,
+    payload: user
+  };
+}

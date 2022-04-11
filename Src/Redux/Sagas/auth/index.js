@@ -62,12 +62,18 @@ function* registerUser(action) {
   try {
     const result = yield registerUserApi(action.payload);
     console.log('Register Email Response', result)
-    if (result.status === 200) {
+    if (result?.status === 201) {
       yield put({ type: types.REGISTER_USER_SUCCESS, payload: result.message });
-      // saveLoginData(result.message)     
-      // navigate('BottomTabView', {
-      //   screen: 'Dashboard',
-      // });
+      showMessage({
+        message: "Register Successfully",
+        description: "Check Email to Verify Account",
+        type: "default",
+        backgroundColor: "#009900", // background color
+        color: "white" // text color
+      })
+      navigate('AuthStack', {
+        screen: 'Login',
+      });
     }
     else {
       yield put({ type: types.REGISTER_USER_FAILURE, payload: result.message });

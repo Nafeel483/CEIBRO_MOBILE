@@ -28,6 +28,7 @@ export function* loginWithEmailApi(user) {
 
 // registerUserApi
 export function* registerUserApi(user) {
+  console.log(' Email Response', user)
   const data = new URLSearchParams();
   data.append('firstName', user.firstName)
   data.append('surName', user.surName)
@@ -44,7 +45,8 @@ export function* registerUserApi(user) {
     json: true,
   }
   const response = yield fetch(`${CONSTANTS.BASE_URL}/auth/register`, opt);
-  const message = yield response.json();
+  const message = yield response
+
   return yield ({ status: response.status, message })
 }
 
