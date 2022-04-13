@@ -175,6 +175,7 @@ class Tasks extends Component {
       actions, isMenuOpen, tabClick, allSubTaskList } = this.state
 
     let profileUser = this.props.user?.myProfile ? this.props.user?.myProfile : this.props.auth?.userLogin?.user
+    
     let inviteCount = this.props.user?.inviteCount ? this.props.user?.inviteCount : null
 
     return (

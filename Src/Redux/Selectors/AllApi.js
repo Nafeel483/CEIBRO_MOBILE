@@ -152,7 +152,7 @@ export const getAllPinnedMessageApi = (roomId, token) => {
 
 
 export const sendChatMessageApi = (messageData, token) => {
-  console.log("The sendChatMessageApi = ", messageData, token)
+  console.log("The First sendChatMessageApi = ", messageData, token)
 
   // const data = new FormData();
   const data = new URLSearchParams();
@@ -160,19 +160,18 @@ export const sendChatMessageApi = (messageData, token) => {
   data.append("chat", messageData.chat);
   data.append("type", messageData.type);
 
-  if (messageData?.products && Object.values(messageData?.products)?.length > 0) {
-    console.log("files are", messageData?.products);
-    for (const key of Object.keys(messageData?.products)) {
-      data.append("products", messageData?.products[key])
-    }
-  }
-
+  // if (messageData?.products && Object.values(messageData?.products)?.length > 0) {
+  //   messageData?.products.forEach((item, i) => {
+  //     console.log("files are", item);
+  //     data.append("products", { originalName: item.originalName, uri: item.uri, type: item.type });
+  //   });
+  // }
   return axios({
     method: 'post',
     url: `${CONSTANTS.BASE_URL}/chat/message/reply`,
     headers: {
       "accept": 'application/json',
-      "Content-Type": 'application/x-www-form-urlencoded;  boundary=----WebKitFormBoundarypBxBqTJYwLPuGTse',
+      "Content-Type": 'application/x-www-form-urlencoded',
       // "Content-Type": "multipart/form-data; boundary=----WebKitFormBoundarypBxBqTJYwLPuGTse",
       'Authorization': 'Bearer ' + token,
     },
@@ -180,6 +179,7 @@ export const sendChatMessageApi = (messageData, token) => {
     json: true,
 
   }).then(response => response.data);
+
 }
 
 
@@ -192,23 +192,24 @@ export const sendMessageReplyApi = (messageData, token) => {
   data.append("chat", messageData.chat);
   data.append("messageId", messageData.messageId);
   data.append("type", messageData.type);
-  if (messageData?.products && Object.values(messageData?.products)?.length > 0) {
-    console.log("files are", messageData?.products);
-    messageData?.products.forEach((item, i) => {
-      data.append("products", item);
-    });
-  }
+  // if (messageData?.products && Object.values(messageData?.products)?.length > 0) {
+  //   messageData?.products.forEach((item, i) => {
+  //     console.log("files are", item);
+  //     data.append("products", { originalName: item.originalName, uri: item.uri, type: item.type });
+  //   });
+  // }
 
   return axios({
     method: 'post',
     url: `${CONSTANTS.BASE_URL}/chat/message/reply`,
     headers: {
       "accept": 'application/json',
-      "Content-Type": 'application/x-www-form-urlencoded;  boundary=----WebKitFormBoundarypBxBqTJYwLPuGTse',
+      "Content-Type": 'application/x-www-form-urlencoded',
       // "Content-Type": "multipart/form-data; boundary=----WebKitFormBoundarypBxBqTJYwLPuGTse",
       'Authorization': 'Bearer ' + token,
     },
     data: data.toString(),
+    json: true,
 
   }).then(response => response.data);
 }

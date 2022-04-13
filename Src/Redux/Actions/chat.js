@@ -15,3 +15,10 @@ export function createUserChat(user) {
     payload: user
   };
 }
+
+export function chatMessageSend(user) {
+  return {
+    type: types.SEND_CHATS_REQUEST,
+    payload: user
+  };
+}

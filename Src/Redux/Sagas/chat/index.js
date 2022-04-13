@@ -1,7 +1,7 @@
 import { Alert } from 'react-native';
 import { put, takeEvery } from 'redux-saga/effects';
 import { types } from '../../Types/chat';
-import { getChatsApi, createChatApi } from './api';
+import { getChatsApi, createChatApi, chatMessageSendApi } from './api';
 import AsyncStorage from '@react-native-community/async-storage';
 import { showMessage, hideMessage } from "react-native-flash-message";
 import { navigate } from '../../../Navigation/AppNavigation';
@@ -50,8 +50,34 @@ function* createUserChat(action) {
   }
 }
 
+
+
+
+// chatMessageSend
+function* chatMessageSend(action) {
+  try {
+    const result = yield chatMessageSendApi(action.payload);
+    console.log('chatMessageSendApi result Response', result)
+    if (result.status === 200) {
+      yield put({ type: types.SEND_CHATS_SUCCESS, payload: result.message });
+    }
+    else {
+      yield put({ type: types.SEND_CHATS_FAILURE, payload: result.message });
+      if (result.message?.error) {
+      }
+      else {
+      }
+    }
+  } catch (error) {
+    yield put({ type: types.SEND_CHATS_FAILURE, payload: error });
+    console.log("The Error", error);
+  }
+}
+
 export function* chatWatcher() {
   yield takeEvery(types.GET_ALL_CHATS_REQUEST, getAllUserChats);
   yield takeEvery(types.CREATE_CHATS_REQUEST, createUserChat);
+  yield takeEvery(types.SEND_CHATS_REQUEST, chatMessageSend);
+
 
 }

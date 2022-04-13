@@ -7,7 +7,8 @@ import {
   ScrollView,
   TextInput,
   ImageBackground,
-  FlatList
+  FlatList,
+  Platform
 } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import SafeAreaView from 'react-native-safe-area-view';
@@ -34,6 +35,7 @@ import io from "socket.io-client";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 import ForwardMessage from '../../../Components/ForwardMessage';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
+import { chatMessageSend } from '../../../Redux/Actions/chat';
 
 let SERVER = Platform.OS == 'android' ? 'http://shielded-plateau-81277.herokuapp.com' : 'https://shielded-plateau-81277.herokuapp.com'
 
@@ -105,9 +107,9 @@ class ChatView extends Component {
     })
 
     this.socket.emit('USER_CONNECTED', data => {
-      console.log('USER_CONNECTED', data)
+      // console.log('USER_CONNECTED', data)
     })
-    console.log('connectSocket this.socket', this.socket)
+    // console.log('connectSocket this.socket', this.socket)
   };
   markUnread = () => {
     let token = this.props.auth?.userLogin?.tokens?.access?.token
@@ -115,11 +117,11 @@ class ChatView extends Component {
 
     API.markUnreadChatRoomMessage(roomId, token)
       .then((res) => {
-        console.log("markUnreadChatRoomMessage Response api====>", res)
+        // console.log("markUnreadChatRoomMessage Response api====>", res)
 
       })
       .catch((error) => {
-        console.log("markUnreadChatRoomMessage api error====>", error)
+        // console.log("markUnreadChatRoomMessage api error====>", error)
       });
   }
 
@@ -129,11 +131,11 @@ class ChatView extends Component {
     // console.log("Nafeel__ messageID", messageID)
     API.getChatRoomMessage(messageID, token)
       .then((res) => {
-        console.log("Favourite Response api====>", res)
+        console.log("allSingleChatRoomMessage Response api====>", res)
         this.setState({ allChatList: res })
       })
       .catch((error) => {
-        console.log("Favourite api error", error)
+        console.log("allSingleChatRoomMessage api error", error)
       });
   }
 
@@ -143,11 +145,11 @@ class ChatView extends Component {
 
     API.getAllPinnedMessageApi(roomID, token)
       .then((res) => {
-        console.log("getAllPinnedMessageApi Response api====>", res)
+        // console.log("getAllPinnedMessageApi Response api====>", res)
         this.setState({ allPinnedChatList: res })
       })
       .catch((error) => {
-        console.log("getAllPinnedMessageApi api error", error)
+        // console.log("getAllPinnedMessageApi api error", error)
       });
   }
 
@@ -162,12 +164,20 @@ class ChatView extends Component {
     const response = await MultipleImagePicker.openPicker(options)
     let upload = []
     if (response.length > 0) {
-      response?.map((val) => {
+
+      response.forEach((val) => {
         let data = {
-          name: 'products', type: val?.mime, uri: val?.path
+          name: val.fileName, type: val.type,
+          uri:
+            Platform.OS === 'android'
+              ? val?.path
+              : val?.path.replace('file://', ''),
+
         }
+        // originalName: item.fileName, uri: item.uri, type: item.uri 
         upload.push(data)
       })
+
     }
     console.log("-------All Media File Response------- = ", response, upload)
     this.setState({ uploadMediaFiles: uploadMediaFiles.concat(upload) })
@@ -189,7 +199,7 @@ class ChatView extends Component {
 
     API.getChatMoreMembers(messageID, token)
       .then((res) => {
-        console.log("getChatMoreMembers Response api====>", res)
+        // console.log("getChatMoreMembers Response api====>", res)
         this.setState({
           moreMembersList: res,
           openAddMember: !this.state.openAddMember,
@@ -197,7 +207,7 @@ class ChatView extends Component {
         })
       })
       .catch((error) => {
-        console.log("getChatMoreMembers api error", error)
+        // console.log("getChatMoreMembers api error", error)
       });
   }
   closeAddMembers = () => {
@@ -292,7 +302,7 @@ class ChatView extends Component {
     const token = this.props.auth?.userLogin?.tokens?.access?.token
     const PreviousToken = prevProps.auth?.userLogin?.tokens?.access?.token
     if (token == PreviousToken) {
-      console.log('RECEIVE_MESSAGE Start')
+      // console.log('RECEIVE_MESSAGE Start')
       // const engine = this.socket.io.engine;
       // engine.on("RECEIVE_MESSAGE", ({ type, data }) => {
       //   console.log('RECEIVE_MESSAGE', type, data)
@@ -302,7 +312,7 @@ class ChatView extends Component {
       // })
 
       this.socket.on("RECEIVE_MESSAGE", (id) => {
-        console.log('RECEIVE_MESSAGE', id, this.socket)
+        // console.log('RECEIVE_MESSAGE', id, this.socket)
         this.againRelod()
       });
       // this.socket.on('RECEIVE_MESSAGE', { from: user?._id })
@@ -319,61 +329,75 @@ class ChatView extends Component {
 
     } else {
       if (userReplyData != null) {
-        let data
         if (uploadMediaFiles.length > 0) {
-          data = {
+          const data = {
             message: chatMessage,
             chat: roomID,
             messageId: userReplyData?._id,
             products: uploadMediaFiles,
-            type: "message"
+            type: "message",
+            token: token
           }
-
+          this.props.chatMessageSend(data)
+          setTimeout(() => {
+            if (!this.moved) {
+              this.setState({ chatMessage: '', userReplyData: null, uploadMediaFiles: [] })
+            }
+          }, 700);
         } else {
-          data = {
+          const data = {
             message: chatMessage,
             chat: roomID,
             messageId: userReplyData?._id,
             type: "message"
           }
+
+          API.sendMessageReplyApi(data, token)
+            .then((res) => {
+              console.log("sendMessageReplyApi Response api====>", res)
+              this.allSingleChatRoomMessage()
+              this.setState({ chatMessage: '', userReplyData: null })
+
+            })
+            .catch((error) => {
+              console.log("sendMessageReplyApi api error", error)
+            });
         }
-        API.sendMessageReplyApi(data, token)
-          .then((res) => {
-            console.log("sendMessageReplyApi Response api====>", res)
-            this.allSingleChatRoomMessage()
-            this.setState({ chatMessage: '', userReplyData: null })
-
-          })
-          .catch((error) => {
-            console.log("sendMessageReplyApi api error", error)
-          });
       } else {
-        let data
         if (uploadMediaFiles.length > 0) {
-          data = {
+          const data = {
             message: chatMessage,
             chat: roomID,
             products: uploadMediaFiles,
-            type: "message"
+            messageId: null,
+            type: "message",
+            token: token
           }
+          this.props.chatMessageSend(data)
+          setTimeout(() => {
+            if (!this.moved) {
+              this.setState({ chatMessage: '', uploadMediaFiles: [] })
+            }
+          }, 700);
         } else {
-          data = {
+          const data = {
             message: chatMessage,
             chat: roomID,
             // messageId: "",
             type: "message"
           }
-        }
-        API.sendChatMessageApi(data, token)
-          .then((res) => {
-            console.log("sendChatMessageApi Response api====>", res)
-            this.allSingleChatRoomMessage()
-            this.setState({ chatMessage: '', uploadMediaFiles: [] })
 
-          })
-          .catch((error) => {
-            console.log("sendChatMessageApi api error", error)
-          });
+          API.sendChatMessageApi(data, token)
+            .then((res) => {
+              console.log("sendChatMessageApi Response api====>", res)
+              this.allSingleChatRoomMessage()
+              this.setState({ chatMessage: '', uploadMediaFiles: [] })
+
+            })
+            .catch((error) => {
+              console.log("sendChatMessageApi api error", error)
+            });
+        }
       }
     }
   }
@@ -731,7 +755,7 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    // getAllChats: (user) => dispatch(getAllUserChats(user)),
+    chatMessageSend: (user) => dispatch(chatMessageSend(user)),
   };
 };
 export default connect(

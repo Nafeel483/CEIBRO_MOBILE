@@ -127,7 +127,7 @@ class EditScreen extends Component {
         }
 
         const source1 = {
-          name: 'profilePic', type: `image/jpg`, uri
+          name: name, type: type, uri
         }
 
 
@@ -302,7 +302,7 @@ class EditScreen extends Component {
                   textContainerStyle={{ backgroundColor: 'transparent', marginTop: Platform.OS == 'ios' ? 0 : 0 }}
                   textInputStyle={{ width: '60%', backgroundColor: 'transparent', borderColor: "transparent" }}
                   containerStyle={{ width: '74%', backgroundColor: 'transparent', borderColor: "transparent" }}
-                 
+
                 // withDarkTheme
                 // autoFocus
                 />

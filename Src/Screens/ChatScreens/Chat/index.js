@@ -309,6 +309,7 @@ class Chats extends Component {
     const { loadingAllChats } = this.props.chat
     const allChats = this.props.chat?.allChats?.length > 0 ? this.props.chat?.allChats : []
     let profileUser = this.props.user?.myProfile ? this.props.user?.myProfile : this.props.auth?.userLogin?.user
+   
     let inviteCount = this.props.user?.inviteCount ? this.props.user?.inviteCount : null
 
     return (

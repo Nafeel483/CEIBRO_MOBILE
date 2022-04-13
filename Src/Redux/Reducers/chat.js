@@ -45,6 +45,24 @@ const chatReducer = (state = initialState, action) => {
       };
 
 
+    //  Send Chats
+    case types.SEND_CHATS_REQUEST:
+      return {
+        ...state,
+        loadingSendChats: true,
+      };
+    case types.SEND_CHATS_SUCCESS:
+      return {
+        ...state,
+        sendChat: action.payload,
+        loadingSendChats: false,
+      };
+    case types.SEND_CHATS_FAILURE:
+      return {
+        ...state,
+        loadingSendChats: false,
+      };
+
 
     default: {
       return { ...state };
