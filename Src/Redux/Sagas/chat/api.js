@@ -6,13 +6,7 @@ import axios from 'axios';
 
 // getChatsAPi
 export function* getChatsApi(chat) {
-  console.log("Get Profile JWT TOKEN", chat)
-  // const data = new URLSearchParams();
-  // data.append('name', chat.name)
-  // data.append('type', chat.type)
-  // data.append('favourite', chat.favourite)
-
-
+  // console.log("Get Profile JWT TOKEN", chat)
   const opt = {
     method: 'GET',
     headers: {
@@ -30,7 +24,7 @@ export function* getChatsApi(chat) {
 
 // createChatApi
 export function* createChatApi(user) {
-  console.log("createChatApi JWT TOKEN", user)
+  // console.log("createChatApi JWT TOKEN", user)
 
   const data = new URLSearchParams();
   // data.append('id', user.id)
@@ -59,7 +53,7 @@ export function* createChatApi(user) {
 
 // chatMessageSendApi
 export function* chatMessageSendApi(messageData) {
-  console.log("Get chatMessageSendApi ", messageData)
+  // console.log("Get chatMessageSendApi ", messageData)
 
   let formData = new FormData();
   formData.append("message", messageData.message);
@@ -100,5 +94,22 @@ export function* chatMessageSendApi(messageData) {
   const response = yield fetch(`${CONSTANTS.BASE_URL}/chat/message/reply`, opt);
   const message = yield response.json();
 
+  return yield ({ status: response.status, message })
+}
+
+
+// unreadMessageCountAPI
+export function* unreadMessageCountAPI(token) {
+  const opt = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Authorization': 'Bearer ' + token,
+      // token: userToken
+    },
+
+  }
+  const response = yield fetch(`${CONSTANTS.BASE_URL}/chat/unread/count`, opt);
+  const message = yield response.json();
   return yield ({ status: response.status, message })
 }

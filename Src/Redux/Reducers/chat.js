@@ -64,6 +64,24 @@ const chatReducer = (state = initialState, action) => {
       };
 
 
+       //  unread message counts
+    case types.UNREAD_MESSAGE_COUNT_REQUEST:
+      return {
+        ...state,
+        loadingUnread: true,
+      };
+    case types.UNREAD_MESSAGE_COUNT_SUCCESS:
+      return {
+        ...state,
+        unreadChatCount: action.payload,
+        loadingUnread: false,
+      };
+    case types.UNREAD_MESSAGE_COUNT_FAILURE:
+      return {
+        ...state,
+        loadingUnread: false,
+      };
+
     default: {
       return { ...state };
     }

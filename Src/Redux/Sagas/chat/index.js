@@ -1,7 +1,10 @@
 import { Alert } from 'react-native';
 import { put, takeEvery } from 'redux-saga/effects';
 import { types } from '../../Types/chat';
-import { getChatsApi, createChatApi, chatMessageSendApi } from './api';
+import {
+  getChatsApi, createChatApi, chatMessageSendApi,
+  unreadMessageCountAPI
+} from './api';
 import AsyncStorage from '@react-native-community/async-storage';
 import { showMessage, hideMessage } from "react-native-flash-message";
 import { navigate } from '../../../Navigation/AppNavigation';
@@ -74,10 +77,35 @@ function* chatMessageSend(action) {
   }
 }
 
+
+// unreadMessageCount
+function* unreadMessageCount(action) {
+  try {
+    const result = yield unreadMessageCountAPI(action.payload);
+    console.log('unreadMessageCountAPI result Response', result)
+    if (result.status === 200) {
+      yield put({ type: types.UNREAD_MESSAGE_COUNT_SUCCESS, payload: result.message });
+    }
+    else {
+      yield put({ type: types.UNREAD_MESSAGE_COUNT_FAILURE, payload: result.message });
+      if (result.message?.error) {
+      }
+      else {
+      }
+    }
+  } catch (error) {
+    yield put({ type: types.UNREAD_MESSAGE_COUNT_FAILURE, payload: error });
+    console.log(" unreadMessageCountAPI --The Error", error);
+  }
+}
+
 export function* chatWatcher() {
   yield takeEvery(types.GET_ALL_CHATS_REQUEST, getAllUserChats);
   yield takeEvery(types.CREATE_CHATS_REQUEST, createUserChat);
   yield takeEvery(types.SEND_CHATS_REQUEST, chatMessageSend);
+
+  yield takeEvery(types.UNREAD_MESSAGE_COUNT_REQUEST, unreadMessageCount);
+
 
 
 }

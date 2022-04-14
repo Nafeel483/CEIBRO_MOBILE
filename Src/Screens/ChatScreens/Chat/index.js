@@ -30,7 +30,8 @@ import Loader from '../../../Components/Loader';
 import { getAllUserChats } from '../../../Redux/Actions/chat';
 import {
   getMyAllInvites, getMyAllConnections,
-  getMyInviteCount, getMyConnectionsCount
+  getMyInviteCount, getMyConnectionsCount,
+  unreadMessageCount
 } from '../../../Redux/Actions/users';
 import moment from 'moment';
 import * as API from '../../../Redux/Selectors/AllApi';
@@ -57,6 +58,7 @@ class Chats extends Component {
         favourite: false,
         token: accessToken
       }
+      this.props.unreadMessageCount(accessToken)
       this.props.getAllChats(chatData)
       this.props.getMyInviteCount(accessToken)
       this.props.getMyConnectionsCount(accessToken)
@@ -437,6 +439,7 @@ const mapDispatchToProps = (dispatch) => {
     getMyInviteCount: (user) => dispatch(getMyInviteCount(user)),
     getMyAllInvites: (user) => dispatch(getMyAllInvites(user)),
     getMyAllConnections: (user) => dispatch(getMyAllConnections(user)),
+    unreadMessageCount: (user) => dispatch(unreadMessageCount(user)),
   };
 };
 export default connect(

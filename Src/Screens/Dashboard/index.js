@@ -21,7 +21,11 @@ import MyTask from '../../Components/MyTask';
 import MyProjects from '../../Components/MyProjects';
 import ButtonModel from '../../Components/ButtonModel';
 import { connect } from 'react-redux';
-import { getMyAllInvites, getMyAllConnections, getMyInviteCount, getMyConnectionsCount } from '../../Redux/Actions/users';
+import {
+  getMyAllInvites, getMyAllConnections,
+  getMyInviteCount, getMyConnectionsCount
+} from '../../Redux/Actions/users';
+import { unreadMessageCount } from '../../Redux/Actions/chat';
 import Loader from '../../Components/Loader';
 
 class Dashboard extends Component {
@@ -119,6 +123,7 @@ class Dashboard extends Component {
       this.props.getMyConnectionsCount(accessToken)
       this.props.getMyAllInvites(accessToken)
       this.props.getMyAllConnections(accessToken)
+      this.props.unreadMessageCount(accessToken)
     })
   }
 
@@ -275,6 +280,7 @@ const mapDispatchToProps = (dispatch) => {
     getMyAllConnections: (user) => dispatch(getMyAllConnections(user)),
     getMyConnectionsCount: (user) => dispatch(getMyConnectionsCount(user)),
     getMyInviteCount: (user) => dispatch(getMyInviteCount(user)),
+    unreadMessageCount: (user) => dispatch(unreadMessageCount(user)),
   };
 };
 export default connect(

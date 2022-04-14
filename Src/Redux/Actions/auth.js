@@ -30,3 +30,19 @@ export function logoutUser(user) {
     payload: user
   };
 }
+
+
+export function verifyUser(user) {
+  return {
+    type: types.VERIFY_USER_REQUEST,
+    payload: user
+  };
+}
+
+
+export function resetUserPassword(user) {
+  return {
+    type: types.RESET_USER_PASSWORD_REQUEST,
+    payload: user
+  };
+}

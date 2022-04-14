@@ -23,6 +23,7 @@ import {
   getMyAllInvites, getMyAllConnections,
   getMyInviteCount, getMyConnectionsCount
 } from '../../Redux/Actions/users';
+import { unreadMessageCount } from '../../Redux/Actions/chat';
 import { connect } from 'react-redux';
 
 
@@ -111,6 +112,7 @@ class Projects extends Component {
       this.props.getMyConnectionsCount(accessToken)
       this.props.getMyAllInvites(accessToken)
       this.props.getMyAllConnections(accessToken)
+      this.props.unreadMessageCount(accessToken)
     })
 
   }
@@ -231,6 +233,7 @@ const mapDispatchToProps = (dispatch) => {
     getMyInviteCount: (user) => dispatch(getMyInviteCount(user)),
     getMyAllInvites: (user) => dispatch(getMyAllInvites(user)),
     getMyAllConnections: (user) => dispatch(getMyAllConnections(user)),
+    unreadMessageCount: (user) => dispatch(unreadMessageCount(user)),
   };
 };
 export default connect(

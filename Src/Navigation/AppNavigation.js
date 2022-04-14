@@ -12,6 +12,8 @@ import GroupInfo from '../Screens/ChatScreens/GroupInfo';
 import EditProfile from '../Screens/EditProfile';
 import ForgotPassword from '../Screens/Authentication/ForgotPassword';
 import Connection from '../Screens/Connection';
+import VerifyEmail from '../Screens/Authentication/VerifyEmail';
+import ResetPassword from '../Screens/Authentication/ResetPassword';
 
 enableScreens();
 
@@ -102,8 +104,20 @@ export const AuthStack = () => {
             id: 'ForgotPassword', animation: 'fade-in'
           }
         ]} />
+        <Stack.Screen name='VerifyEmail' component={VerifyEmail} options={() => options}
+        sharedElementsConfig={(props) => [
+          {
+            id: 'VerifyEmail', animation: 'fade-in'
+          }
+        ]} />
+         <Stack.Screen name='ResetPassword' component={ResetPassword} options={() => options}
+        sharedElementsConfig={(props) => [
+          {
+            id: 'ResetPassword', animation: 'fade-in'
+          }
+        ]} />
 
-
+{/*  */}
 
     </Stack.Navigator>
   )

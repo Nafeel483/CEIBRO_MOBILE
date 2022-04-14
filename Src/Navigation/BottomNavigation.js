@@ -2,7 +2,9 @@ import React from 'react';
 import {
   StyleSheet,
   Image,
-  Platform
+  Platform,
+  Text,
+  View
 } from 'react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Images from '../Styles/Images';
@@ -14,6 +16,8 @@ import Projects from '../Screens/Projects';
 import Tasks from '../Screens/Tasks';
 import Chat from '../Screens/ChatScreens/Chat';
 import Works from '../Screens/Works';
+import { connect } from 'react-redux';
+
 
 const navigationRef = React.createRef();
 
@@ -85,7 +89,9 @@ export const workStack = () => {
     </WorkStack.Navigator>
   );
 }
-export const BottomTabView = () => {
+export const BottomTabView = (props) => {
+  console.log("Bottom Tabs", props, props?.chat)
+  let unreadChatCount = props?.chat?.unreadChatCount?.count ? props?.chat?.unreadChatCount?.count : 0
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -112,15 +118,41 @@ export const BottomTabView = () => {
             image = focused ? Images.workIcon : Images.workIcon;
           }
           return (
-            <Image
-              source={image}
-              style={{
-                width: route.name === 'Tasks' ? hp(2.6) : route.name === 'Projects' ? hp(2.8) : hp(2.8),
-                height: route.name === 'Tasks' ? hp(2.8) : route.name === 'Projects' ? hp(2.9) : hp(2.8),
-                tintColor: focused ? Colors.Black : Colors.blue,
-                marginTop: Platform.OS == 'ios' ? hp(1) : 0
-              }}
-            />
+            <>
+              <Image
+                source={image}
+                style={{
+                  width: route.name === 'Tasks' ? hp(2.6) : route.name === 'Projects' ? hp(2.8) : hp(2.8),
+                  height: route.name === 'Tasks' ? hp(2.8) : route.name === 'Projects' ? hp(2.9) : hp(2.8),
+                  tintColor: focused ? Colors.Black : Colors.blue,
+                  marginTop: Platform.OS == 'ios' ? hp(1) : 0
+                }}
+              />
+              {
+                route.name === 'Chat' && unreadChatCount != 0 ?
+                  <View style={{
+                    height: hp(2.3),
+                    width: hp(2.3),
+                    position: 'absolute',
+                    right: 15,
+                    top: 2,
+                    borderRadius: hp(2.3),
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: Colors.red,
+                  }}>
+                    <Text style={{
+                       fontSize: hp(1.3),
+                       color: Colors.White,
+                       fontWeight: '700',
+                       fontFamily: "Inter",
+                    }}>
+                      {`${unreadChatCount?.toString()}`}
+                    </Text>
+                  </View>
+                  : null
+              }
+            </>
           );
         },
         tabBarStyle: { height: hp(10), },
@@ -144,5 +176,10 @@ export const BottomTabView = () => {
   );
 }
 
+const mapStateToProps = state => {
+  return {
+    chat: state.chat
+  }
+}
 
-export default BottomTabView;
+export default connect(mapStateToProps, null)(BottomTabView)

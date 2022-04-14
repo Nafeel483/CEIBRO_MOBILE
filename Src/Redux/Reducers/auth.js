@@ -64,9 +64,45 @@ const authReducer = (state = initialState, action) => {
         loadingForgot: false,
       };
 
+    // Verify User
+    case types.VERIFY_USER_REQUEST:
+      return {
+        ...state,
+        loadingVerifyOtp: true,
+      };
+    case types.VERIFY_USER_SUCCESS:
+      return {
+        ...state,
+        verifyOtp: action.payload,
+        loadingVerifyOtp: false,
+      };
+    case types.VERIFY_USER_FAILURE:
+      return {
+        ...state,
+        loadingVerifyOtp: false,
+      };
 
 
-       // Logout User
+
+    // Reset User Password
+    case types.RESET_USER_PASSWORD_REQUEST:
+      return {
+        ...state,
+        loadingReset: true,
+      };
+    case types.RESET_USER_PASSWORD_SUCCESS:
+      return {
+        ...state,
+        resetPassword: action.payload,
+        loadingReset: false,
+      };
+    case types.RESET_USER_PASSWORD_FAILURE:
+      return {
+        ...state,
+        loadingReset: false,
+      };
+
+    // Logout User
     case types.LOGOUT_USER_REQUEST:
       return {
         ...state,

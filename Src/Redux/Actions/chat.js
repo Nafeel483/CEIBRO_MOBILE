@@ -22,3 +22,11 @@ export function chatMessageSend(user) {
     payload: user
   };
 }
+
+
+export function unreadMessageCount(user) {
+  return {
+    type: types.UNREAD_MESSAGE_COUNT_REQUEST,
+    payload: user
+  };
+}

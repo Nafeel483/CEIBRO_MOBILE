@@ -3,7 +3,8 @@ import { put, takeEvery, call, delay } from 'redux-saga/effects';
 import { types } from '../../Types/auth';
 import {
   loginWithEmailApi, registerUserApi,
-  forgotUserApi, logoutApi
+  forgotUserApi, logoutApi,
+  verifyUserApi, resetUserPasswordApi
 } from './api';
 import AsyncStorage from '@react-native-community/async-storage';
 import { showMessage, hideMessage } from "react-native-flash-message";
@@ -72,7 +73,7 @@ function* registerUser(action) {
         color: "white" // text color
       })
       navigate('AuthStack', {
-        screen: 'Login',
+        screen: 'VerifyEmail',
       });
     }
     else {
@@ -105,9 +106,16 @@ function* forgotPasswordUser(action) {
     if (result?.status === 204) {
       yield put({ type: types.FORGOT_USER_SUCCESS, payload: result.message });
       // saveLoginData(result.message)     
-      // navigate('BottomTabView', {
-      //   screen: 'Dashboard',
-      // });
+      showMessage({
+        message: "Check Email",
+        description: "Check Email for Verification",
+        type: "default",
+        backgroundColor: "#009900", // background color
+        color: "white" // text color
+      })
+      navigate('AuthStack', {
+        screen: 'ResetPassword',
+      });
     }
     else {
       yield put({ type: types.FORGOT_USER_FAILURE, payload: result.message });
@@ -161,10 +169,93 @@ function* logoutUser(action) {
 }
 
 
+// verifyUser
+function* verifyUser(action) {
+  try {
+    const result = yield verifyUserApi(action.payload);
+    console.log('verifyUserApi Response', result)
+    if (result?.status == 200) {
+      yield put({ type: types.VERIFY_USER_SUCCESS, payload: result.message });
+      showMessage({
+        message: "Email Verified",
+        description: "Email verified Now Login",
+        type: "default",
+        backgroundColor: "#009900", // background color
+        color: "white" // text color
+      })
+      navigate('AuthStack', {
+        screen: 'Login',
+      });
+    }
+    else {
+      yield put({ type: types.VERIFY_USER_FAILURE, payload: result.message });
+      if (result.message?.message) {
+        showMessage({
+          message: "Verify Email Failed",
+          description: "Verify Email Failed",
+          type: "default",
+          backgroundColor: "#9c1730", // background color
+          color: "white" // text color
+        })
+      }
+      else {
+      }
+    }
+  } catch (error) {
+    yield put({ type: types.VERIFY_USER_FAILURE, payload: error });
+    console.log("The Error", error);
+  }
+}
+
+
+
+// resetUserPassword
+function* resetUserPassword(action) {
+  try {
+    const result = yield resetUserPasswordApi(action.payload);
+    console.log('resetUserPassword Response', result)
+    if (result?.status == 200) {
+      yield put({ type: types.RESET_USER_PASSWORD_SUCCESS, payload: result.message });
+      showMessage({
+        message: "Reset Successfully Done",
+        description: "Reset Successfully Done",
+        type: "default",
+        backgroundColor: "#009900", // background color
+        color: "white" // text color
+      })
+      navigate('AuthStack', {
+        screen: 'Login',
+      });
+    }
+    else {
+      yield put({ type: types.RESET_USER_PASSWORD_FAILURE, payload: result.message });
+      if (result.message?.message) {
+        showMessage({
+          message: "Password Reset Failed",
+          description: "Reset Failed! Try Again ",
+          type: "default",
+          backgroundColor: "#9c1730", // background color
+          color: "white" // text color
+        })
+      }
+      else {
+      }
+    }
+  } catch (error) {
+    yield put({ type: types.RESET_USER_PASSWORD_FAILURE, payload: error });
+    console.log("resetUserPassword The Error", error);
+  }
+}
+
+
 export function* authWatcher() {
   yield takeEvery(types.LOGIN_REQUEST, loginWithEmail);
   yield takeEvery(types.REGISTER_USER_REQUEST, registerUser);
   yield takeEvery(types.FORGOT_USER_REQUEST, forgotPasswordUser);
+  yield takeEvery(types.VERIFY_USER_REQUEST, verifyUser);
+  yield takeEvery(types.RESET_USER_PASSWORD_REQUEST, resetUserPassword);
+
+
   yield takeEvery(types.LOGOUT_USER_REQUEST, logoutUser);
 
 
