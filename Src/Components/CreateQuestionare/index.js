@@ -17,12 +17,15 @@ import Colors from '../../Styles/Colors';
 import CheckBox from '@react-native-community/checkbox';
 import ToggleSwitch from 'toggle-switch-react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import DropDownPicker from 'react-native-dropdown-picker';
+import DatePicker from 'react-native-date-picker';
+import moment from 'moment';
 
 
 const CreateQuestionare = (props) => {
-  const { open, close } = props
+  const { open, close, groupInfo, assignedMember } = props
   const [title, setTitle] = useState("")
-  const [dueDate, setDueDate] = useState("")
+  const [dueDate, setDueDate] = useState(new Date())
   const [assigned, setAssigned] = useState("")
   const [questionTitle, setQuestionTitle] = useState("")
   const [questionType, setQuestionType] = useState("")
@@ -31,6 +34,28 @@ const CreateQuestionare = (props) => {
   const [nudgeToogle, setNudgeToogle] = useState(false)
   const [answerToogle, setAnswerToogle] = useState(false)
 
+
+  const [openDrop, setOpenDrop] = useState(false);
+  const [value, setValue] = useState(null);
+  const [items, setItems] = useState([
+    { label: 'Multiple', value: 'multiple' },
+    { label: 'Checkbox', value: 'checkbox' },
+    { label: 'Short Answer', value: 'shortAnswer' },
+  ]);
+
+
+  const [openAssignedDrop, setOpenAssignedDrop] = useState(false);
+  const [valueAssigned, setValueAssigned] = useState([]);
+  const [itemsAssigned, setItemsAssigned] = useState(assignedMember);
+
+  const [dateOpen, setDateOpen] = useState(false)
+
+  // console.log("_____Nafeel____", "groupInfo = ", groupInfo, "itemsAssigned = ", valueAssigned)
+
+
+  const dateModel = () => {
+    setDateOpen(!dateOpen)
+  }
 
   return (
     <>
@@ -81,29 +106,46 @@ const CreateQuestionare = (props) => {
 
           <View style={Styles.seperator} />
           {/* Due Date */}
-          <View style={Styles.emailWrapper}>
+          <TouchableOpacity onPress={dateModel}
+            style={Styles.emailWrapper}>
             <Text style={Styles.tabText}>{"Due date"}</Text>
             <View style={Styles.inboxLine} />
-            <TextInput
-              style={Styles.emailInput}
-              value={dueDate}
-              placeholder={"06/06/21"}
-              placeholderTextColor={Colors.textColor}
-              autoCapitalize='none'
-              onChangeText={(value) => {
-                setDueDate(value)
-              }}
-            />
-            <TouchableOpacity>
+            <View style={Styles.emailInput1}>
+              <Text style={[Styles.emailInput1Text, {
+                color: dueDate != "" ? Colors.Black : Colors.textColor
+              }]}>{dueDate != "" ? moment(dueDate).format('L') : "Select Date"}</Text>
+            </View>
+            <View>
               <Image source={Images.calender} style={Styles.searchStyle} />
-            </TouchableOpacity>
-          </View>
+            </View>
+          </TouchableOpacity>
           <View style={Styles.seperator} />
           {/* Assigned */}
           <View style={Styles.emailWrapper}>
             <Text style={Styles.tabText}>{"Assigned "}</Text>
             <View style={Styles.inboxLine} />
-            <TextInput
+            <View style={Styles.emailInput1}>
+              <DropDownPicker
+                multiple={true}
+                min={0}
+                max={5}
+                open={openAssignedDrop}
+                value={valueAssigned}
+                items={itemsAssigned}
+                placeholder={"Select Members"}
+                placeholderStyle={Styles.emailInput1Text}
+                style={Styles.dropDownStyle}
+                modalContentContainerStyle={Styles.emailInput1Text}
+                setOpen={setOpenAssignedDrop}
+                setValue={setValueAssigned}
+                setItems={setItemsAssigned}
+                dropDownDirection="TOP"
+                dropDownContainerStyle={{
+                  backgroundColor: "#dfdfdf"
+                }}
+              />
+            </View>
+            {/* <TextInput
               style={Styles.emailInput}
               value={assigned}
               placeholder={"All"}
@@ -115,7 +157,7 @@ const CreateQuestionare = (props) => {
             />
             <TouchableOpacity>
               <Image source={Images.dropDown} style={Styles.searchStyle} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           <View style={Styles.seperator} />
 
@@ -141,12 +183,12 @@ const CreateQuestionare = (props) => {
               <Text style={Styles.listText}>{"Show answers"}</Text>
             </View>
           </View>
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}>
             <View style={Styles.scrollWrapper}>
               <Text style={Styles.questionText}>{"Question"}</Text>
 
-              <View style={Styles.seperator} />
 
+              <View style={Styles.seperator} />
               {/* Title */}
               <View style={Styles.emailWrapper}>
                 <Text style={Styles.tabText}>{"Question title"}</Text>
@@ -167,19 +209,20 @@ const CreateQuestionare = (props) => {
               <View style={Styles.emailWrapper}>
                 <Text style={Styles.tabText}>{"Question type"}</Text>
                 <View style={Styles.inboxLine} />
-                <TextInput
-                  style={Styles.emailInput}
-                  value={questionType}
-                  placeholder={"Select question type"}
-                  placeholderTextColor={Colors.textColor}
-                  autoCapitalize='none'
-                  onChangeText={(value) => {
-                    setQuestionType(value)
-                  }}
-                />
-                <TouchableOpacity>
-                  <Image source={Images.dropDown} style={Styles.searchStyle} />
-                </TouchableOpacity>
+                <View style={Styles.emailInput1}>
+                  <DropDownPicker
+                    open={openDrop}
+                    value={value}
+                    items={items}
+                    placeholder={"Select Question type"}
+                    placeholderStyle={Styles.emailInput1Text}
+                    style={Styles.dropDownStyle}
+                    modalContentContainerStyle={Styles.emailInput1Text}
+                    setOpen={setOpenDrop}
+                    setValue={setValue}
+                    setItems={setItems}
+                  />
+                </View>
               </View>
               <View style={Styles.seperator} />
 
@@ -198,6 +241,24 @@ const CreateQuestionare = (props) => {
 
         </View>
       </Modal>
+
+      {
+        dateOpen == true ?
+
+          <DatePicker
+            modal
+            open={dateOpen}
+            date={dueDate}
+            onConfirm={(date) => {
+              setDateOpen(false)
+              setDueDate(date)
+            }}
+            onCancel={() => {
+              setDateOpen(false)
+            }}
+          />
+          : null
+      }
     </>
   );
 }

@@ -58,12 +58,12 @@ class Chats extends Component {
         favourite: false,
         token: accessToken
       }
-      this.props.unreadMessageCount(accessToken)
       this.props.getAllChats(chatData)
       this.props.getMyInviteCount(accessToken)
       this.props.getMyConnectionsCount(accessToken)
       this.props.getMyAllInvites(accessToken)
       this.props.getMyAllConnections(accessToken)
+      this.props.unreadMessageCount(accessToken)
     })
 
   }

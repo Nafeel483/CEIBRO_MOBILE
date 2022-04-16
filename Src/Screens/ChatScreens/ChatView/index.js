@@ -78,7 +78,8 @@ class ChatView extends Component {
       forwardChatID: [],
       uploadFilesData: [],
       uploadMediaFiles: [],
-      listColumn: 4
+      listColumn: 4,
+      questionareData: []
     };
   }
 
@@ -184,9 +185,53 @@ class ChatView extends Component {
 
   }
 
-  questionModelCall = () => {
-    this.setState({ openModel: !this.state.openModel })
+  questionModelCall = (message) => {
+    let token = this.props.auth?.userLogin?.tokens?.access?.token
+    if (message?.questions.length > 0) {
+      API.getQuestionareById(message?._id, token)
+        .then((res) => {
+          console.log("getQuestionareById Response api====>", res)
+          this.setState({
+            questionareData: res,
+            openModel: true
+          })
+        })
+        .catch((error) => {
+          console.log("getQuestionareById api error", error)
+        });
+    }
   }
+  closeQuestionModelCall = () => {
+    this.setState({ openModel: false })
+  }
+
+  sendSubmit = (questions, id) => {
+    let token = this.props.auth?.userLogin?.tokens?.access?.token
+    let data = {
+      questions: questions
+    }
+    if (questions?.length > 0) {
+      API.answerQuestionareById(data, id, token)
+        .then((res) => {
+          // console.log("answerQuestionareById Response api====>", res)
+          this.setState({
+            openModel: false
+          })
+          showMessage({
+            message: "Answer Saved",
+            description: "Answer Saved",
+            type: "default",
+            backgroundColor: "#009900", // background color
+            color: "white" // text color
+          })
+        })
+        .catch((error) => {
+          // console.log("answerQuestionareById api error", error)
+        });
+    }
+
+  }
+
   createQuestion = () => {
     this.setState({ createModel: !this.state.createModel })
   }
@@ -496,7 +541,7 @@ class ChatView extends Component {
       senderID, openModel, createModel, openAddMember, moreMembersList,
       chatMemberName, memberId, allPinnedChatList, userReplyData,
       forwardOpen, forwardChatID, uploadMediaFiles,
-      listColumn
+      listColumn, questionareData
     } = this.state
 
 
@@ -509,6 +554,18 @@ class ChatView extends Component {
 
     const currentUser = this.props.auth?.userLogin?.user?.id
     // console.log("uploadMediaFiles===== ", uploadMediaFiles)
+
+    let assignedMember = []
+    if (groupInfo?.members?.length > 0) {
+      for (let i = 0; i < groupInfo?.members?.length; i++) {
+        let data = {
+          label: `${groupInfo?.members?.[i]?.firstName} ${groupInfo?.members?.[i]?.surName}`,
+          value: `${groupInfo?.members?.[i]?.id}`
+        }
+        assignedMember.push(data)
+      }
+    }
+
     return (
       <>
         <MenuProvider>
@@ -701,13 +758,18 @@ class ChatView extends Component {
                   openModel == true ?
                     <QuestionareModel
                       open={openModel}
-                      close={this.questionModelCall} />
+                      data={questionareData}
+                      currentUser={currentUser}
+                      sendSubmit={this.sendSubmit}
+                      close={this.closeQuestionModelCall} />
                     : null
                 }
                 {
                   createModel == true ?
                     <CreateQuestionare
                       open={createModel}
+                      groupInfo={groupInfo}
+                      assignedMember={assignedMember}
                       close={this.createQuestion} />
                     : null
                 }

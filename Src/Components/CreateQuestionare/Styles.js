@@ -151,6 +151,19 @@ const styles = StyleSheet.create({
     color: Colors.Black,
     marginLeft: hp(2)
   },
+  emailInput1: {
+    marginLeft: hp(1.5),
+    flex: 1,
+  },
+  emailInput1Text: {
+    fontSize: hp(1.7),
+    color: Colors.Black,
+    fontFamily: "Inter",
+    fontWeight: '500'
+  },
+  dropDownStyle: {
+    borderColor: Colors.White
+  }
 });
 
 export default styles;

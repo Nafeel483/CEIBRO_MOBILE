@@ -46,6 +46,9 @@ const images = {
   filledPin: require('../Assets/Profile/filledPin.png'),
   Decline: require('../Assets/Profile/Decline.png'),
   Photo: require('../Assets/Profile/Photo.png'),
+  circle: require('../Assets/Profile/circle.png'),
+  circleFilled: require('../Assets/Profile/circleFilled.png'),
+
 
   // Chat Assets
   favourite: require('../Assets/Chat/favourite.png'),

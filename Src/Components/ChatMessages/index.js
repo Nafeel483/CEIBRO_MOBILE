@@ -142,7 +142,7 @@ export const ShowChatMessages = ({ key, showmessage, userId, chatRoomMembers,
 
                               {
                                 showmessage?.questions?.length > 0 ?
-                                  <TouchableOpacity onPress={questionModelCall}
+                                  <TouchableOpacity onPress={() => { questionModelCall(showmessage) }}
                                     style={styles.questionContainer}>
                                     <Text style={styles.questionText}>{"Questionarie"}</Text>
                                     <Image source={Images.document} style={styles.questionDoc} />
@@ -213,7 +213,7 @@ export const ShowChatMessages = ({ key, showmessage, userId, chatRoomMembers,
 
                             {
                               showmessage?.questions?.length > 0 ?
-                                <TouchableOpacity onPress={questionModelCall}
+                                <TouchableOpacity onPress={() => { questionModelCall(showmessage) }}
                                   style={styles.questionContainer}>
                                   <Text style={styles.questionText}>{"Questionarie name"}</Text>
                                   <Image source={Images.document} style={styles.questionDoc} />
@@ -374,7 +374,7 @@ export const ShowChatMessages = ({ key, showmessage, userId, chatRoomMembers,
                               }
                               {
                                 showmessage?.questions?.length > 0 ?
-                                  <TouchableOpacity onPress={questionModelCall}
+                                  <TouchableOpacity onPress={() => { questionModelCall(showmessage) }}
                                     style={styles.questionContainer}>
                                     <Text style={styles.questionText}>{"Questionarie name"}</Text>
                                     <Image source={Images.document} style={styles.questionDoc} />
@@ -445,7 +445,7 @@ export const ShowChatMessages = ({ key, showmessage, userId, chatRoomMembers,
                             }
                             {
                               showmessage?.questions?.length > 0 ?
-                                <TouchableOpacity onPress={questionModelCall}
+                                <TouchableOpacity onPress={() => { questionModelCall(showmessage) }}
                                   style={styles.questionContainer}>
                                   <Text style={styles.questionText}>{"Questionarie"}</Text>
                                   <Image source={Images.document} style={styles.questionDoc} />

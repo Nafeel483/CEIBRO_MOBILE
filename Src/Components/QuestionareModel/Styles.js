@@ -100,7 +100,9 @@ const styles = StyleSheet.create({
     color: Colors.Black,
     fontFamily: "Inter",
     fontWeight: '500',
-    width: wp('80%')
+    width: wp('80%'),
+    marginTop: hp(1.5),
+    marginBottom: hp(1.5)
   },
   downloadIcon: {
     width: hp(5),
@@ -110,15 +112,16 @@ const styles = StyleSheet.create({
     marginTop: hp(1.5),
     width: widthScreen / 1.12,
     alignSelf: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between'
+    // flexDirection: 'row',
+    // justifyContent: 'space-between'
   },
   itemQuestionText: {
     fontSize: hp(2),
     color: Colors.Black,
     fontFamily: "Inter",
     fontWeight: '500',
-    width: wp('60%')
+    width: wp('60%'),
+    marginTop: hp(0.5)
   },
   itemPercentageText: {
     fontSize: hp(1.75),
@@ -139,7 +142,45 @@ const styles = StyleSheet.create({
     height: hp(3.5),
     borderRadius: 6,
     marginRight: hp(1)
-  }
+  },
+  iconCircle: {
+    width: hp(2.5),
+    height: hp(2.5),
+    borderRadius: 50,
+    marginTop: hp(0.5),
+    marginLeft: hp(0.2),
+    tintColor: "#DADFE6"
+  },
+  iconCircle1: {
+    width: hp(2.5),
+    height: hp(2.5),
+    borderRadius: 50,
+    marginTop: hp(0.5),
+    marginLeft: hp(0.2),
+    tintColor: Colors.golden
+  },
+  emailWrapper: {
+    flexDirection: 'row',
+    borderWidth: 1.5,
+    borderColor: Colors.lightGrey,
+    backgroundColor: Colors.White,
+    borderRadius: 10,
+    height: hp(6),
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    width: widthScreen / 1.2,
+    marginTop: hp(1.5),
+    marginBottom: hp(1)
+  },
+  emailInput: {
+    marginLeft: hp(1.5),
+    flex: 1,
+    fontSize: hp(1.8),
+    color: Colors.Black,
+    fontFamily: "Inter",
+    fontWeight: '500'
+  },
 });
 
 export default styles;

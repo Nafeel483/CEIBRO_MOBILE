@@ -280,3 +280,36 @@ export const InviteUserApi = (invite, token) => {
 
   }).then(response => response.data);
 }
+
+
+// getQuestionareById
+export const getQuestionareById = (id, token) => {
+  console.log("Questionare Get == ", id, token)
+  return axios({
+    method: 'get',
+    url: `${CONSTANTS.BASE_URL}/chat/questioniar/view/${id}`,
+    headers: {
+      "accept": 'application/json, text/plain, */*',
+      "Content-Type": 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer ' + token,
+    },
+
+  }).then(response => response.data);
+}
+
+
+// answerQuestionareById
+export const answerQuestionareById = (message, id, token) => {
+  console.log("Questionare post == ", message, id, token)
+  return axios({
+    method: 'post',
+    url: `${CONSTANTS.BASE_URL}/chat/questioniar/view/${id}`,
+    headers: {
+      "accept": 'application/json, text/plain, */*',
+      "Content-Type": 'application/json',
+      'Authorization': 'Bearer ' + token,
+    },
+    data: message,
+
+  }).then(response => response.data);
+}
